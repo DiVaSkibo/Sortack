@@ -76,20 +76,47 @@ flutter:
   fonts:
     - family: Rubik
       fonts:
-        - asset: assets/font/Rubik-Light.ttf
-        - asset: assets/font/Rubik-Regular.ttf
-        - asset: assets/font/Rubik-Medium.ttf
-        - asset: assets/font/Rubik-SemiBold.ttf
-        - asset: assets/font/Rubik-Bold.ttf
-        - asset: assets/font/Rubik-ExtraBold.ttf
-        - asset: assets/font/Rubik-Black.ttf
-          style: normal
+        - asset: assets/font/Rubik/Rubik-Light.ttf
+          weight: 300
+        - asset: assets/font/Rubik/Rubik-LightItalic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/font/Rubik/Rubik-Regular.ttf
+          weight: 400
+        - asset: assets/font/Rubik/Rubik-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/font/Rubik/Rubik-Medium.ttf
+          weight: 500
+        - asset: assets/font/Rubik/Rubik-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/font/Rubik/Rubik-SemiBold.ttf
+          weight: 600
+        - asset: assets/font/Rubik/Rubik-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/font/Rubik/Rubik-Bold.ttf
+          weight: 700
+        - asset: assets/font/Rubik/Rubik-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/font/Rubik/Rubik-ExtraBold.ttf
+          weight: 800
+        - asset: assets/font/Rubik/Rubik-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+        - asset: assets/font/Rubik/Rubik-Black.ttf
+          weight: 900
+        - asset: assets/font/Rubik/Rubik-BlackItalic.ttf
+          weight: 900
+          style: italic
     - family: Rubik One
       fonts:
-        - asset: assets/font/RubikOne-Regular.ttf
+        - asset: assets/font/Rubik One/RubikOne-Regular.ttf
     - family: Rubik Mono One
       fonts:
-        - asset: assets/font/RubikMonoOne-Regular.ttf
+        - asset: assets/font/Rubik Mono One/RubikMonoOne-Regular.ttf
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
