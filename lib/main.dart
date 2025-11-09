@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tool/_palette.dart';
 import 'page/home.dart';
+import 'page/kanban.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,8 +24,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: 'main',
-      routes: {'main': (context) => const MyHomePage()},
+      initialRoute: 'home',
+      routes: {
+        'home': (context) => const MyHomePage(),
+        'kanban': (context) => const KanbanPage(),
+      },
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'dart:io';
 import 'package:sortack/tool/_palette.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -27,14 +26,14 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 60,
-          children: [
+          children: <Widget>[
             SvgPicture.asset('assets/icon/Sortack.svg'),
             Text(
               'Sortack welcomes!',
               style: TextStyle(fontFamily: 'Rubik Mono One', fontSize: 60),
             ),
             FilledButton(
-              onPressed: () => {stdout.writeln('I Join')},
+              onPressed: () => Navigator.pushNamed(context, 'kanban'),
               child: Text('Join it'),
             ),
           ],

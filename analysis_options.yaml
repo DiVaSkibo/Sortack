@@ -10,6 +10,8 @@
 analyzer:
   errors:
     constant_identifier_names: ignore
+    must_be_immutable: ignore
+    no_logic_in_create_state: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
