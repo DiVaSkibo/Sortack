@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sortack/tool/_palette.dart';
 import 'package:sortack/tool/_constants.dart';
+import 'package:sortack/elements/_base.dart';
 
 class KanbanCard extends StatefulWidget {
   final String title;
@@ -26,6 +27,7 @@ class _KanbanCardState extends State<KanbanCard> {
   late PointsTShirt? points = widget.points;
   late final void Function(KanbanCard what)? onDelete = widget.onDelete;
   late final _controllers = <String, TextEditingController>{};
+  final _last = {};
 
   @override
   void initState() {
@@ -41,84 +43,6 @@ class _KanbanCardState extends State<KanbanCard> {
     }
     super.dispose();
   }
-
-  final _last = {};
-  AlertDialog _dialog() => AlertDialog(
-    backgroundColor: Palette.BG,
-    surfaceTintColor: Palette.FG_ACCENT,
-    icon: Icon(Icons.mode_outlined, size: 40, color: Palette.FG_SHADOW),
-    content: SizedBox(
-      width: 450,
-      child: Wrap(
-        spacing: 25,
-        runSpacing: 25,
-        children: <Widget>[
-          TextField(
-            controller: TextEditingController(text: title),
-            onChanged: (value) {
-              _last['title'] ??= title;
-              setState(() {
-                title = value;
-              });
-            },
-            decoration: InputDecoration(labelText: 'Title:'),
-          ),
-          TextFormField(
-            controller: TextEditingController(text: description),
-            onChanged: (value) {
-              _last['description'] ??= description;
-              setState(() {
-                description = value;
-              });
-            },
-            keyboardType: TextInputType.multiline,
-            minLines: 1,
-            maxLines: 3,
-            decoration: InputDecoration(labelText: 'Description:'),
-          ),
-          DropdownButtonFormField(
-            items: List<DropdownMenuItem<PointsTShirt>>.generate(
-              PointsTShirt.values.length,
-              (index) => DropdownMenuItem(
-                value: PointsTShirt.values[index],
-                child: Text(PointsTShirt.values[index].name),
-              ),
-            ),
-            initialValue: points,
-            onChanged: (value) {
-              _last['points'] ??= points;
-              setState(() {
-                points = value;
-              });
-            },
-            decoration: InputDecoration(labelText: 'Points:'),
-          ),
-        ],
-      ),
-    ),
-    actions: <Widget>[
-      IconButton(
-        onPressed: () {
-          setState(() {
-            title = _last['title'] ?? title;
-            description = _last['description'] ?? description;
-            points = _last['points'] ?? points;
-          });
-          Navigator.of(context).pop();
-        },
-        icon: Icon(Icons.replay_rounded),
-      ),
-      IconButton(
-        onPressed: () {
-          setState(() {
-            onDelete!(widget);
-          });
-          Navigator.of(context).pop();
-        },
-        icon: Icon(Icons.delete_forever_rounded),
-      ),
-    ],
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +99,44 @@ class _KanbanCardState extends State<KanbanCard> {
                     IconButton(
                       onPressed: () => showDialog(
                         context: context,
-                        builder: (context) => _dialog(),
+                        builder: (context) => FlowDialog.task(
+                          purpose: TaskFlowPurposes.edit,
+                          title: title,
+                          description: description,
+                          points: points,
+                          onTitleChanged: (value) {
+                            _last['title'] ??= title;
+                            setState(() {
+                              title = value;
+                            });
+                          },
+                          onDescriptionChanged: (value) {
+                            _last['description'] ??= description;
+                            setState(() {
+                              description = value;
+                            });
+                          },
+                          onPointsChanged: (value) {
+                            _last['points'] ??= points;
+                            setState(() {
+                              points = value;
+                            });
+                          },
+                          onCancel: () {
+                            setState(() {
+                              title = _last['title'] ?? title;
+                              description = _last['description'] ?? description;
+                              points = _last['points'] ?? points;
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          onDelete: () {
+                            setState(() {
+                              onDelete!(widget);
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        ),
                       ),
                       icon: Icon(Icons.more_vert),
                       iconSize: 17,

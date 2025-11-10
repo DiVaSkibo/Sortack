@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_palette.dart';
+import 'package:sortack/elements/_base.dart';
 import 'package:sortack/elements/kanban_card.dart';
 import 'package:sortack/elements/kanban_column.dart';
 
@@ -12,7 +13,7 @@ class KanbanPage extends StatefulWidget {
 }
 
 class _KanbanPageState extends State<KanbanPage> {
-  final List<KanbanColumn> kanbans = <KanbanColumn>[
+  final List<KanbanColumn> kanbanColumns = <KanbanColumn>[
     KanbanColumn(
       status: 'To Do',
       color: Colors.redAccent,
@@ -60,77 +61,7 @@ class _KanbanPageState extends State<KanbanPage> {
       ],
     ),
   ];
-
   final _task = {};
-  AlertDialog _dialog() => AlertDialog(
-    backgroundColor: Palette.BG,
-    surfaceTintColor: Palette.FG_ACCENT,
-    icon: Icon(
-      Icons.precision_manufacturing,
-      size: 40,
-      color: Palette.FG_SHADOW,
-    ),
-    content: SizedBox(
-      width: 450,
-      child: Wrap(
-        spacing: 25,
-        runSpacing: 25,
-        children: <Widget>[
-          TextField(
-            controller: TextEditingController(),
-            onChanged: (value) {
-              _task['title'] = value;
-            },
-            decoration: InputDecoration(labelText: 'Title:'),
-          ),
-          TextFormField(
-            controller: TextEditingController(),
-            onChanged: (value) {
-              _task['description'] = value;
-            },
-            keyboardType: TextInputType.multiline,
-            minLines: 1,
-            maxLines: 3,
-            decoration: InputDecoration(labelText: 'Description:'),
-          ),
-          DropdownButtonFormField(
-            items: List<DropdownMenuItem<PointsTShirt>>.generate(
-              PointsTShirt.values.length,
-              (index) => DropdownMenuItem(
-                value: PointsTShirt.values[index],
-                child: Text(PointsTShirt.values[index].name),
-              ),
-            ),
-            onChanged: (value) {
-              _task['points'] = value;
-            },
-            decoration: InputDecoration(labelText: 'Points:'),
-          ),
-        ],
-      ),
-    ),
-    actions: <Widget>[
-      IconButton(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: Icon(Icons.cancel_rounded),
-      ),
-      IconButton(
-        onPressed: () {
-          if (!_task.containsKey('title')) return;
-          kanbans.first.push(
-            KanbanCard(
-              title: _task['title'],
-              description: _task['description'],
-              points: _task['points'],
-            ),
-          );
-          _task.clear();
-          Navigator.of(context).pop();
-        },
-        icon: Icon(Icons.create),
-      ),
-    ],
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -148,12 +79,38 @@ class _KanbanPageState extends State<KanbanPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 25,
-          children: kanbans,
+          children: kanbanColumns,
         ),
       ),
       floatingActionButton: IconButton(
-        onPressed: () =>
-            showDialog(context: context, builder: (context) => _dialog()),
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => FlowDialog.task(
+            purpose: TaskFlowPurposes.create,
+            onTitleChanged: (value) {
+              _task['title'] = value;
+            },
+            onDescriptionChanged: (value) {
+              _task['description'] = value;
+            },
+            onPointsChanged: (value) {
+              _task['points'] = value;
+            },
+            onCancel: Navigator.of(context).pop,
+            onCreate: () {
+              if (!_task.containsKey('title')) return;
+              kanbanColumns.first.push(
+                KanbanCard(
+                  title: _task['title'],
+                  description: _task['description'],
+                  points: _task['points'],
+                ),
+              );
+              _task.clear();
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         icon: Icon(Icons.add),
       ),
     );
