@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sortack/tool/_palette.dart';
+import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/kanban_card.dart';
 
 class KanbanColumn extends StatefulWidget {

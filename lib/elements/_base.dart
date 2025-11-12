@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sortack/tool/_constants.dart';
-import 'package:sortack/tool/_palette.dart';
+import 'package:sortack/tool/_style.dart';
 
 class FlowDialog extends StatelessWidget {
   final IconData? icon;
@@ -64,16 +64,16 @@ class FlowDialog extends StatelessWidget {
            icon: Icon(switch (purpose) {
              TaskFlowPurposes.create => Icons.cancel_rounded,
              TaskFlowPurposes.edit => Icons.replay_rounded,
-           }),
+           }, color: Palette.WHITE),
          ),
          switch (purpose) {
            TaskFlowPurposes.create => IconButton(
              onPressed: onCreate,
-             icon: Icon(Icons.create_rounded),
+             icon: Icon(Icons.create_rounded, color: Palette.WHITE),
            ),
            TaskFlowPurposes.edit => IconButton(
              onPressed: onDelete,
-             icon: Icon(Icons.delete_forever_rounded),
+             icon: Icon(Icons.delete_forever_rounded, color: Palette.WHITE),
            ),
          },
        ];
@@ -81,11 +81,7 @@ class FlowDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Palette.BG,
-      surfaceTintColor: Palette.FG_ACCENT,
-      icon: icon != null
-          ? Icon(icon, size: 40, color: Palette.FG_SHADOW)
-          : null,
+      icon: icon != null ? Icon(icon, size: 40) : null,
       content: SizedBox(
         width: 450,
         child: Wrap(spacing: 25, runSpacing: 25, children: inputs),

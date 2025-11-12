@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sortack/tool/_palette.dart';
 import 'package:sortack/tool/_constants.dart';
+import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 
 class KanbanCard extends StatefulWidget {

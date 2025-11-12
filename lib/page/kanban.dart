@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sortack/tool/_constants.dart';
-import 'package:sortack/tool/_palette.dart';
+import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 import 'package:sortack/elements/kanban_card.dart';
 import 'package:sortack/elements/kanban_column.dart';
@@ -66,6 +66,78 @@ class _KanbanPageState extends State<KanbanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Kanban'),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.keyboard_return_rounded),
+        ),
+        actions: <Widget>[
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: Scaffold.of(context).openEndDrawer,
+              icon: Icon(Icons.blur_on_rounded),
+            ),
+          ),
+        ],
+        flexibleSpace: Icon(
+          Icons.view_week_rounded,
+          color: Palette.FG,
+        ), // view_week_rounded amp_stories_rounded
+      ),
+      endDrawer: Container(
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.centerRight,
+            radius: 1,
+            colors: [
+              Palette.FG,
+              Palette.BG,
+            ], //[Palette.FG_TRANS, Palette.FG_TRANS, Colors.transparent],
+          ),
+        ),
+        child: Drawer(
+          child: ListView(
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    radius: 1,
+                    colors: [Palette.BG, Palette.FG_SHADOW],
+                  ),
+                ),
+                padding: EdgeInsetsGeometry.all(0),
+                child: Icon(Icons.blur_on_rounded, size: 75),
+              ),
+              TextButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.explore_rounded),
+                label: Text('Explore'),
+              ),
+              TextButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.fort_rounded),
+                label: Text('Fort'),
+              ),
+              TextButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.format_paint_rounded),
+                label: Text('Format paint'),
+              ),
+              TextButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.airplane_ticket_rounded),
+                label: Text('Airplane ticket'),
+              ),
+              TextButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.church_rounded),
+                label: Text('Church'),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -76,10 +148,12 @@ class _KanbanPageState extends State<KanbanPage> {
             colors: [Palette.BG_SHADOW, Palette.BG],
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 25,
-          children: kanbanColumns,
+        child: SingleChildScrollView(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 25,
+            children: kanbanColumns,
+          ),
         ),
       ),
       floatingActionButton: IconButton(
