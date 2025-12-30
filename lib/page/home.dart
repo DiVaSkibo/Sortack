@@ -16,13 +16,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.bottomCenter,
-            radius: 1.0,
-            colors: [Palette.BG_SHADOW, Palette.BG],
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: Gradients.GROUND),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 60,

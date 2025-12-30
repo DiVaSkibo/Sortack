@@ -79,7 +79,7 @@ flutter:
         - asset: assets/font/Rubik/Rubik-Light.ttf
           weight: 300
         - asset: assets/font/Rubik/Rubik-LightItalic.ttf
-          weight: 400
+          weight: 300
           style: italic
         - asset: assets/font/Rubik/Rubik-Regular.ttf
           weight: 400

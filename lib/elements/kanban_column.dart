@@ -69,7 +69,7 @@ class _KanbanColumnState extends State<KanbanColumn> {
           height: MediaQuery.of(context).size.height / 1.25,
           padding: EdgeInsets.all(15),
           decoration: const BoxDecoration(
-            color: Palette.BG_SHADOW,
+            gradient: Gradients.SURFACE,
             borderRadius: BorderRadius.all(Radius.elliptical(40, 30)),
           ),
           child: Column(spacing: 10, children: tasks),

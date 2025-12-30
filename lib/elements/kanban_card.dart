@@ -50,7 +50,7 @@ class _KanbanCardState extends State<KanbanCard> {
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        //color: Palette.FG,
+        //color: Colours.FG,
         //borderRadius: BorderRadius.all(Radius.elliptical(20, 15)),
         image: DecorationImage(
           image: AssetImage('assets/icon/Tasktack.png'),
@@ -68,13 +68,7 @@ class _KanbanCardState extends State<KanbanCard> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
                     Spacer(),
                     Container(
                       width: 22,
@@ -91,7 +85,7 @@ class _KanbanCardState extends State<KanbanCard> {
                           style: TextStyle(
                             fontSize: 10,
                             fontStyle: FontStyle.italic,
-                            color: Palette.FG_ACCENT,
+                            color: Colours.ACCENT,
                           ),
                         ),
                       ),
@@ -141,16 +135,13 @@ class _KanbanCardState extends State<KanbanCard> {
                       icon: Icon(Icons.more_vert),
                       iconSize: 17,
                       padding: EdgeInsets.all(0),
-                      color: Palette.FG_SHADOW,
+                      color: Colours.UNFRONT,
                       style: IconButton.styleFrom(minimumSize: Size(5, 5)),
                     ),
                   ],
                 ),
                 if (description != null)
-                  Text(
-                    description!,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-                  ),
+                  Text(description!, style: TextStyle(fontSize: 11)),
               ],
             ),
           ),

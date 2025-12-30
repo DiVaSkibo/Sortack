@@ -82,7 +82,7 @@ class _KanbanPageState extends State<KanbanPage> {
         ],
         flexibleSpace: Icon(
           Icons.view_week_rounded,
-          color: Palette.FG,
+          color: Colours.FRONT,
         ), // view_week_rounded amp_stories_rounded
       ),
       endDrawer: Container(
@@ -90,10 +90,7 @@ class _KanbanPageState extends State<KanbanPage> {
           gradient: RadialGradient(
             center: Alignment.centerRight,
             radius: 1,
-            colors: [
-              Palette.FG,
-              Palette.BG,
-            ], //[Palette.FG_TRANS, Palette.FG_TRANS, Colors.transparent],
+            colors: [Colours.FRONT, Colours.BACK],
           ),
         ),
         child: Drawer(
@@ -103,7 +100,7 @@ class _KanbanPageState extends State<KanbanPage> {
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     radius: 1,
-                    colors: [Palette.BG, Palette.FG_SHADOW],
+                    colors: [Colours.BACK, Colours.UNFRONT],
                   ),
                 ),
                 padding: EdgeInsetsGeometry.all(0),
@@ -141,13 +138,7 @@ class _KanbanPageState extends State<KanbanPage> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.bottomCenter,
-            radius: 1.0,
-            colors: [Palette.BG_SHADOW, Palette.BG],
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: Gradients.GROUND),
         child: SingleChildScrollView(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -185,7 +176,7 @@ class _KanbanPageState extends State<KanbanPage> {
             },
           ),
         ),
-        icon: Icon(Icons.add),
+        icon: Icon(Icons.add_task_rounded),
       ),
     );
   }
