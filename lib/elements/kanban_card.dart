@@ -85,7 +85,7 @@ class _KanbanCardState extends State<KanbanCard> {
                           style: TextStyle(
                             fontSize: 10,
                             fontStyle: FontStyle.italic,
-                            color: Colours.ACCENT,
+                            color: Colours.CENTER,
                           ),
                         ),
                       ),

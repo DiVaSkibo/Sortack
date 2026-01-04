@@ -64,16 +64,16 @@ class FlowDialog extends StatelessWidget {
            icon: Icon(switch (purpose) {
              TaskFlowPurposes.create => Icons.cancel_rounded,
              TaskFlowPurposes.edit => Icons.replay_rounded,
-           }, color: Colours.LIGHT),
+           }, color: Colours.W),
          ),
          switch (purpose) {
            TaskFlowPurposes.create => IconButton(
              onPressed: onCreate,
-             icon: Icon(Icons.task_alt_rounded, color: Colours.LIGHT),
+             icon: Icon(Icons.task_alt_rounded, color: Colours.W),
            ),
            TaskFlowPurposes.edit => IconButton(
              onPressed: onDelete,
-             icon: Icon(Icons.delete_forever_rounded, color: Colours.LIGHT),
+             icon: Icon(Icons.delete_forever_rounded, color: Colours.W),
            ),
          },
        ];
