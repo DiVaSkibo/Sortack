@@ -4,6 +4,7 @@ import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 import 'package:sortack/elements/kanban_card.dart';
 import 'package:sortack/elements/kanban_column.dart';
+import 'package:sortack/elements/kanban_board.dart';
 
 class KanbanPage extends StatefulWidget {
   const KanbanPage({super.key});
@@ -136,17 +137,23 @@ class _KanbanPageState extends State<KanbanPage> {
         ),
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(gradient: Gradients.GROUND),
-        child: SingleChildScrollView(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 25,
-            children: kanbanColumns,
-          ),
-        ),
+        child: KanbanBoard(), //SingleChildScrollView(child: KanbanBoard()),
       ),
+      // body: Container(
+      //   width: MediaQuery.of(context).size.width,
+      //   height: MediaQuery.of(context).size.height,
+      //   decoration: const BoxDecoration(gradient: Gradients.GROUND),
+      //   child: SingleChildScrollView(
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       spacing: 25,
+      //       children: kanbanColumns,
+      //     ),
+      //   ),
+      // ),
       floatingActionButton: IconButton(
         onPressed: () => showDialog(
           context: context,

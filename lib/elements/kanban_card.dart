@@ -47,7 +47,7 @@ class _KanbanCardState extends State<KanbanCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         //color: Colours.FG,
