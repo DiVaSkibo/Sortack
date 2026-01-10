@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
-import 'package:sortack/elements/_base.dart';
-import 'package:sortack/elements/kanban_card.dart';
 import 'package:sortack/elements/kanban_board.dart';
 
 class KanbanPage extends StatefulWidget {
@@ -13,7 +10,7 @@ class KanbanPage extends StatefulWidget {
 }
 
 class _KanbanPageState extends State<KanbanPage> {
-  final _task = {};
+  final KanbanBoard _kanbanBoard = KanbanBoard();
 
   @override
   Widget build(BuildContext context) {
@@ -91,39 +88,15 @@ class _KanbanPageState extends State<KanbanPage> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(gradient: Gradients.GROUND),
-        child: KanbanBoard(),
+        child: _kanbanBoard,
       ),
-      // floatingActionButton: IconButton(
-      //   onPressed: () => showDialog(
-      //     context: context,
-      //     builder: (context) => FlowDialog.task(
-      //       purpose: TaskFlowPurposes.create,
-      //       onTitleChanged: (value) {
-      //         _task['title'] = value;
-      //       },
-      //       onDescriptionChanged: (value) {
-      //         _task['description'] = value;
-      //       },
-      //       onPointsChanged: (value) {
-      //         _task['points'] = value;
-      //       },
-      //       onCancel: Navigator.of(context).pop,
-      //       onCreate: () {
-      //         if (!_task.containsKey('title')) return;
-      //         kanbanColumns.first.push(
-      //           KanbanCard(
-      //             title: _task['title'],
-      //             description: _task['description'],
-      //             points: _task['points'],
-      //           ),
-      //         );
-      //         _task.clear();
-      //         Navigator.of(context).pop();
-      //       },
-      //     ),
-      //   ),
-      //   icon: Icon(Icons.add_task_rounded),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => _kanbanBoard.buildFlowDialog(),
+        ),
+        child: Icon(Icons.add_task_rounded),
+      ),
     );
   }
 }

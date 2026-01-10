@@ -13,7 +13,7 @@ class KanbanCardData {
 
 class KanbanCard extends StatefulWidget {
   final KanbanCardData data;
-  final void Function(KanbanCard what)? onDelete;
+  final void Function(KanbanCardData what)? onDelete;
 
   const KanbanCard({super.key, required this.data, this.onDelete});
 
@@ -35,7 +35,7 @@ class KanbanCard extends StatefulWidget {
 
 class _KanbanCardState extends State<KanbanCard> {
   late KanbanCardData data = widget.data;
-  late final void Function(KanbanCard what)? onDelete = widget.onDelete;
+  late final void Function(KanbanCardData what)? onDelete = widget.onDelete;
   late final _controllers = <String, TextEditingController>{};
   final _last = {};
 
@@ -150,7 +150,7 @@ class _KanbanCardState extends State<KanbanCard> {
                           },
                           onDelete: () {
                             setState(() {
-                              onDelete!(widget);
+                              onDelete!(data);
                             });
                             Navigator.of(context).pop();
                           },

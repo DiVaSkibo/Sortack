@@ -68,7 +68,14 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        inputDecorationTheme: InputDecorationTheme(
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          foregroundColor: Colours.CENTER,
+          backgroundColor: Colours.WARNING,
+          focusColor: Colours.W,
+          hoverColor: Colours.ACTOP,
+          splashColor: Colours.NOTOK,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           fillColor: Colours.SHADOW,
           hoverColor: Colours.TINGE,
@@ -123,7 +130,7 @@ class MyApp extends StatelessWidget {
           barrierColor: Colours.SHADOW,
           iconColor: Colours.FRONT,
         ),
-        dropdownMenuTheme: DropdownMenuThemeData(
+        dropdownMenuTheme: const DropdownMenuThemeData(
           menuStyle: MenuStyle(
             backgroundColor: WidgetStatePropertyAll(Colours.WARNING),
             elevation: WidgetStatePropertyAll(8),

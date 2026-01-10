@@ -3,58 +3,43 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/kanban_card.dart';
 
-class KanbanColumn extends DragAndDropList {
+class KanbanColumn {
   String status;
   final List<KanbanCardData> tasks;
-  //late final List<KanbanCard> tasks;
   Color? color;
 
-  KanbanColumn({required this.status, required this.tasks, this.color})
-    // : tasks = tasks
-    //       .map((data) => KanbanCard(data: data, onDelete: (task) => pop(task)))
-    //       .toList(),
-    : super(
-        decoration: BoxDecoration(
-          gradient: Gradients.SURFACE,
-          borderRadius: BorderRadius.circular(15),
+  KanbanColumn({required this.status, required this.tasks, this.color});
+
+  DragAndDropList build() {
+    return DragAndDropList(
+      decoration: BoxDecoration(
+        gradient: Gradients.SURFACE,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      header: Text(
+        status,
+        style: TextStyle(
+          color: color,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
         ),
-        header: Text(
-          status,
-          style: TextStyle(
-            color: color,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+      ),
+      children: List.generate(
+        tasks.length,
+        (index) => DragAndDropItem(
+          child: KanbanCard(
+            key: ValueKey(tasks[index].title),
+            data: tasks[index],
+            onDelete: (what) => pop(what),
+          ), //pop()),
         ),
-        children: List.generate(
-          tasks.length,
-          (index) => DragAndDropItem(
-            child: KanbanCard(
-              data: tasks[index],
-              onDelete: (what) => {},
-            ), //pop()),
-          ),
-        ),
-        // children: tasks
-        //     .map(
-        //       (data) => DragAndDropItem(
-        //         child: KanbanCard(data: data, onDelete: (what) => {}), //pop()),
-        //       ),
-        //     )
-        //     .toList(),
-      );
+      ),
+    );
+  }
 
   void push(KanbanCardData what) {
     debugPrint('${what.toString()} is pushed to $status');
-    tasks.add(
-      what,
-      // KanbanCard(
-      //   title: what.title,
-      //   description: what.description,
-      //   points: what.points,
-      //   onDelete: (task) => pop(task),
-      // ),
-    );
+    tasks.add(what);
   }
 
   void pop(KanbanCardData what) {
@@ -65,17 +50,7 @@ class KanbanColumn extends DragAndDropList {
 
   void insert(KanbanCardData what, int where) {
     debugPrint('${what.toString()} is inserted at $where');
-    tasks.insert(
-      where,
-      what,
-      // KanbanCard(
-      //   title: what.title,
-      //   description: what.description,
-      //   points: what.points,
-      //   onDelete: (task) => pop(task),
-      // ),
-    );
-    debugPrint('or isn`t?');
+    tasks.insert(where, what);
     debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
   }
 
