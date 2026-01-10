@@ -3,7 +3,6 @@ import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 import 'package:sortack/elements/kanban_card.dart';
-import 'package:sortack/elements/kanban_column.dart';
 import 'package:sortack/elements/kanban_board.dart';
 
 class KanbanPage extends StatefulWidget {
@@ -14,54 +13,6 @@ class KanbanPage extends StatefulWidget {
 }
 
 class _KanbanPageState extends State<KanbanPage> {
-  final List<KanbanColumn> kanbanColumns = <KanbanColumn>[
-    KanbanColumn(
-      status: 'To Do',
-      color: Colors.redAccent,
-      tasks: <KanbanCard>[
-        KanbanCard(
-          title: 'Database',
-          description: 'Architecture and build database using Firebase',
-          points: PointsTShirt.XL,
-        ),
-        KanbanCard(
-          title: 'Search system',
-          description:
-              'Search for available libraries for search system\nIf nothing, make by ourself',
-          points: PointsTShirt.L,
-        ),
-      ],
-    ),
-    KanbanColumn(
-      status: 'In Progress',
-      color: Colors.yellowAccent,
-      tasks: [
-        KanbanCard(
-          title: 'Sign In page',
-          description: 'Create sign in page according to design in Figma',
-          points: PointsTShirt.S,
-        ),
-      ],
-    ),
-    KanbanColumn(
-      status: 'Done',
-      color: Colors.greenAccent,
-      tasks: [
-        KanbanCard(
-          title: 'Sign In page design',
-          description: 'Design sign in page using Figma',
-          points: PointsTShirt.L,
-        ),
-        KanbanCard(title: 'What', description: 'What actually do'),
-        KanbanCard(
-          title: 'Who',
-          description: 'Who actually do',
-          points: PointsTShirt.XXL,
-          onDelete: (what) {},
-        ),
-      ],
-    ),
-  ];
   final _task = {};
 
   @override
@@ -140,51 +91,39 @@ class _KanbanPageState extends State<KanbanPage> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(gradient: Gradients.GROUND),
-        child: KanbanBoard(), //SingleChildScrollView(child: KanbanBoard()),
+        child: KanbanBoard(),
       ),
-      // body: Container(
-      //   width: MediaQuery.of(context).size.width,
-      //   height: MediaQuery.of(context).size.height,
-      //   decoration: const BoxDecoration(gradient: Gradients.GROUND),
-      //   child: SingleChildScrollView(
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       spacing: 25,
-      //       children: kanbanColumns,
+      // floatingActionButton: IconButton(
+      //   onPressed: () => showDialog(
+      //     context: context,
+      //     builder: (context) => FlowDialog.task(
+      //       purpose: TaskFlowPurposes.create,
+      //       onTitleChanged: (value) {
+      //         _task['title'] = value;
+      //       },
+      //       onDescriptionChanged: (value) {
+      //         _task['description'] = value;
+      //       },
+      //       onPointsChanged: (value) {
+      //         _task['points'] = value;
+      //       },
+      //       onCancel: Navigator.of(context).pop,
+      //       onCreate: () {
+      //         if (!_task.containsKey('title')) return;
+      //         kanbanColumns.first.push(
+      //           KanbanCard(
+      //             title: _task['title'],
+      //             description: _task['description'],
+      //             points: _task['points'],
+      //           ),
+      //         );
+      //         _task.clear();
+      //         Navigator.of(context).pop();
+      //       },
       //     ),
       //   ),
+      //   icon: Icon(Icons.add_task_rounded),
       // ),
-      floatingActionButton: IconButton(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => FlowDialog.task(
-            purpose: TaskFlowPurposes.create,
-            onTitleChanged: (value) {
-              _task['title'] = value;
-            },
-            onDescriptionChanged: (value) {
-              _task['description'] = value;
-            },
-            onPointsChanged: (value) {
-              _task['points'] = value;
-            },
-            onCancel: Navigator.of(context).pop,
-            onCreate: () {
-              if (!_task.containsKey('title')) return;
-              kanbanColumns.first.push(
-                KanbanCard(
-                  title: _task['title'],
-                  description: _task['description'],
-                  points: _task['points'],
-                ),
-              );
-              _task.clear();
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        icon: Icon(Icons.add_task_rounded),
-      ),
     );
   }
 }

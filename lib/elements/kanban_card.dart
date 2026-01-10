@@ -3,28 +3,38 @@ import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 
+class KanbanCardData {
+  String title;
+  String? description;
+  PointsTShirt? points;
+
+  KanbanCardData({required this.title, this.description, this.points});
+}
+
 class KanbanCard extends StatefulWidget {
-  final String title;
-  final String? description;
-  final PointsTShirt? points;
+  final KanbanCardData data;
   final void Function(KanbanCard what)? onDelete;
 
-  const KanbanCard({
+  const KanbanCard({super.key, required this.data, this.onDelete});
+
+  KanbanCard.from({
     super.key,
-    required this.title,
-    this.description,
-    this.points,
+    required String title,
+    String? description,
+    PointsTShirt? points,
     this.onDelete,
-  });
+  }) : data = KanbanCardData(
+         title: title,
+         description: description,
+         points: points,
+       );
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
 }
 
 class _KanbanCardState extends State<KanbanCard> {
-  late String title = widget.title;
-  late String? description = widget.description;
-  late PointsTShirt? points = widget.points;
+  late KanbanCardData data = widget.data;
   late final void Function(KanbanCard what)? onDelete = widget.onDelete;
   late final _controllers = <String, TextEditingController>{};
   final _last = {};
@@ -32,8 +42,8 @@ class _KanbanCardState extends State<KanbanCard> {
   @override
   void initState() {
     super.initState();
-    _controllers['title'] = TextEditingController(text: title);
-    _controllers['description'] = TextEditingController(text: description);
+    _controllers['title'] = TextEditingController(text: data.title);
+    _controllers['description'] = TextEditingController(text: data.description);
   }
 
   @override
@@ -46,6 +56,16 @@ class _KanbanCardState extends State<KanbanCard> {
 
   @override
   Widget build(BuildContext context) {
+    //     ListTile(
+    //       title: Text(
+    //         tasks[taskIndex],
+    //         style: const TextStyle(color: Colors.white),
+    //       ),
+    //       leading: const Icon(
+    //         Icons.circle,
+    //         color: Colors.yellow,
+    //       ), // Твій циліндр
+    //     ),
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -68,7 +88,10 @@ class _KanbanCardState extends State<KanbanCard> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
+                    Text(
+                      data.title,
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
                     Spacer(),
                     Container(
                       width: 22,
@@ -81,7 +104,7 @@ class _KanbanCardState extends State<KanbanCard> {
                       ),
                       child: Center(
                         child: Text(
-                          points != null ? points!.name : '?',
+                          data.points != null ? data.points!.name : '?',
                           style: TextStyle(
                             fontSize: 10,
                             fontStyle: FontStyle.italic,
@@ -95,32 +118,33 @@ class _KanbanCardState extends State<KanbanCard> {
                         context: context,
                         builder: (context) => FlowDialog.task(
                           purpose: TaskFlowPurposes.edit,
-                          title: title,
-                          description: description,
-                          points: points,
+                          title: data.title,
+                          description: data.description,
+                          points: data.points,
                           onTitleChanged: (value) {
-                            _last['title'] ??= title;
+                            _last['title'] ??= data.title;
                             setState(() {
-                              title = value;
+                              data.title = value;
                             });
                           },
                           onDescriptionChanged: (value) {
-                            _last['description'] ??= description;
+                            _last['description'] ??= data.description;
                             setState(() {
-                              description = value;
+                              data.description = value;
                             });
                           },
                           onPointsChanged: (value) {
-                            _last['points'] ??= points;
+                            _last['points'] ??= data.points;
                             setState(() {
-                              points = value;
+                              data.points = value;
                             });
                           },
                           onCancel: () {
                             setState(() {
-                              title = _last['title'] ?? title;
-                              description = _last['description'] ?? description;
-                              points = _last['points'] ?? points;
+                              data.title = _last['title'] ?? data.title;
+                              data.description =
+                                  _last['description'] ?? data.description;
+                              data.points = _last['points'] ?? data.points;
                             });
                             Navigator.of(context).pop();
                           },
@@ -140,8 +164,8 @@ class _KanbanCardState extends State<KanbanCard> {
                     ),
                   ],
                 ),
-                if (description != null)
-                  Text(description!, style: TextStyle(fontSize: 11)),
+                if (data.description != null)
+                  Text(data.description!, style: TextStyle(fontSize: 11)),
               ],
             ),
           ),
