@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
+import 'package:sortack/elements/_base.dart';
 import 'package:sortack/elements/kanban_board.dart';
 
 class KanbanPage extends StatefulWidget {
@@ -84,12 +85,7 @@ class _KanbanPageState extends State<KanbanPage> {
           ),
         ),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(gradient: Gradients.GROUND),
-        child: _kanbanBoard,
-      ),
+      body: Ground(child: _kanbanBoard),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,

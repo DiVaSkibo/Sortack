@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'tool/_constants.dart';
 import 'tool/_style.dart';
 import 'page/home.dart';
 import 'page/kanban.dart';
@@ -146,6 +146,21 @@ class MyApp extends StatelessWidget {
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbVisibility: WidgetStateProperty.all(false),
+          trackVisibility: WidgetStateProperty.all(false),
+          thickness: WidgetStateProperty.all(4),
+          radius: const Radius.circular(4),
+          crossAxisMargin: 2,
+          mainAxisMargin: 20,
+          minThumbLength: 20,
+          thumbColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.dragged)
+                ? Colours.BOTTOM
+                : Colours.FRONT,
+          ),
+          trackColor: WidgetStateProperty.all(Colours.BACK),
         ),
         tabBarTheme: const TabBarThemeData(
           tabAlignment: TabAlignment.fill,

@@ -1,6 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
+
+class Ground extends StatelessWidget {
+  final Widget child;
+
+  const Ground({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(gradient: Gradients.GROUND),
+      child: child,
+    );
+  }
+}
 
 class FlowDialog extends StatelessWidget {
   final IconData? icon;

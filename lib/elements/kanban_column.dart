@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/kanban_card.dart';
 
@@ -9,33 +9,6 @@ class KanbanColumn {
   Color? color;
 
   KanbanColumn({required this.status, required this.tasks, this.color});
-
-  DragAndDropList build() {
-    return DragAndDropList(
-      decoration: BoxDecoration(
-        gradient: Gradients.SURFACE,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      header: Text(
-        status,
-        style: TextStyle(
-          color: color,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      children: List.generate(
-        tasks.length,
-        (index) => DragAndDropItem(
-          child: KanbanCard(
-            key: ValueKey(tasks[index].title),
-            data: tasks[index],
-            onDelete: (what) => pop(what),
-          ), //pop()),
-        ),
-      ),
-    );
-  }
 
   void push(KanbanCardData what) {
     debugPrint('${what.toString()} is pushed to $status');
@@ -52,6 +25,35 @@ class KanbanColumn {
     debugPrint('${what.toString()} is inserted at $where');
     tasks.insert(where, what);
     debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
+  }
+
+  DragAndDropList build() {
+    return DragAndDropList(
+      verticalAlignment: CrossAxisAlignment.center,
+      decoration: BoxDecoration(
+        gradient: Gradients.SURFACE,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      header: Text(
+        status,
+        style: TextStyle(
+          color: color,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      contentsWhenEmpty: Icon(unicon(), size: 30),
+      children: List.generate(
+        tasks.length,
+        (index) => DragAndDropItem(
+          child: KanbanCard(
+            key: ValueKey(tasks[index].title),
+            data: tasks[index],
+            onDelete: (what) => pop(what),
+          ),
+        ),
+      ),
+    );
   }
 
   //   @override

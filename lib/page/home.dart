@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
+import 'package:sortack/elements/_base.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -13,10 +14,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(gradient: Gradients.GROUND),
+      body: Ground(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 60,

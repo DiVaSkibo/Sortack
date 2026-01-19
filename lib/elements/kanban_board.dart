@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/tool/_constants.dart';
 import 'package:sortack/tool/_style.dart';
@@ -65,7 +64,14 @@ class _KanbanBoardState extends State<KanbanBoard> {
       ],
     ),
   ];
+  final ScrollController _columnsScrollController = ScrollController();
   final _task = {};
+
+  @override
+  void dispose() {
+    _columnsScrollController.dispose();
+    super.dispose();
+  }
 
   FlowDialog buildFlowDialog() => FlowDialog.task(
     purpose: TaskFlowPurposes.create,
@@ -104,26 +110,32 @@ class _KanbanBoardState extends State<KanbanBoard> {
     //       children: columns,
     //     ),
     //   );
-    return DragAndDropLists(
-      axis: Axis.horizontal,
-      listWidth: 300,
-      listDraggingWidth: 300,
-      listPadding: const EdgeInsets.all(8.0),
-      itemDragOnLongPress: false,
-      listDragOnLongPress: false,
-      children: columns.map((column) => column.build()).toList(),
-      onItemReorder: (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
-        setState(() {
-          var data = columns[oldListIndex].tasks.elementAt(oldItemIndex);
-          columns[oldListIndex].pop(data);
-          columns[newListIndex].insert(data, newItemIndex);
-        });
-      },
-      onListReorder: (oldListIndex, newListIndex) {
-        setState(() {
-          columns.insert(newListIndex, columns.removeAt(oldListIndex));
-        });
-      },
+    return Scrollbar(
+      controller: _columnsScrollController,
+      scrollbarOrientation: ScrollbarOrientation.top,
+      child: DragAndDropLists(
+        axis: Axis.horizontal,
+        listWidth: 450, // MediaQuery.of(context).size.width / 3,
+        listPadding: const EdgeInsets.all(8.0),
+        lastItemTargetHeight: 200,
+        itemDragOnLongPress: false,
+        listDragOnLongPress: false,
+        scrollController: _columnsScrollController,
+        children: columns.map((column) => column.build()).toList(),
+        onItemReorder:
+            (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
+              setState(() {
+                var data = columns[oldListIndex].tasks.elementAt(oldItemIndex);
+                columns[oldListIndex].pop(data);
+                columns[newListIndex].insert(data, newItemIndex);
+              });
+            },
+        onListReorder: (oldListIndex, newListIndex) {
+          setState(() {
+            columns.insert(newListIndex, columns.removeAt(oldListIndex));
+          });
+        },
+      ),
     );
   }
 }
