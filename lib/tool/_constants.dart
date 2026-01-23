@@ -54,7 +54,19 @@ enum TaskParameters {
   points,
   role,
   assignee,
-  notes,
+  notes;
+
+  IconData icon() => [
+    Icons.numbers_rounded,
+    Icons.title_rounded,
+    Icons.text_fields_rounded,
+    Icons.air_rounded,
+    Icons.priority_high_rounded,
+    Icons.adjust_rounded,
+    Icons.work_rounded,
+    Icons.accessibility_rounded,
+    Icons.comment_rounded,
+  ][index];
 }
 
 enum TaskFlowPurposes { create, edit }

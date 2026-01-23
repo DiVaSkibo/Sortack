@@ -17,33 +17,6 @@ class Ground extends StatelessWidget {
   }
 }
 
-List<PopupMenuEntry<TaskParameters>> popupTaskParametersMenu() => [
-  PopupMenuItem(value: TaskParameters.id, child: Icon(Icons.numbers_rounded)),
-  PopupMenuItem(value: TaskParameters.title, child: Icon(Icons.title_rounded)),
-  PopupMenuItem(
-    value: TaskParameters.description,
-    child: Icon(Icons.text_fields_rounded),
-  ),
-  PopupMenuItem(value: TaskParameters.status, child: Icon(Icons.air_rounded)),
-  PopupMenuItem(
-    value: TaskParameters.priority,
-    child: Icon(Icons.priority_high_rounded),
-  ),
-  PopupMenuItem(
-    value: TaskParameters.points,
-    child: Icon(Icons.adjust_rounded),
-  ),
-  PopupMenuItem(value: TaskParameters.role, child: Icon(Icons.work_rounded)),
-  PopupMenuItem(
-    value: TaskParameters.assignee,
-    child: Icon(Icons.accessibility_rounded),
-  ),
-  PopupMenuItem(
-    value: TaskParameters.notes,
-    child: Icon(Icons.comment_rounded),
-  ),
-];
-
 class FlowDialog extends StatelessWidget {
   final IconData? icon;
   final List<Widget> inputs;
@@ -60,7 +33,8 @@ class FlowDialog extends StatelessWidget {
   FlowDialog.filter({
     super.key,
     required TaskParameters parameter,
-    PointsTShirt? points,
+    PointsTShirt? from,
+    PointsTShirt? to,
     Function(dynamic value)? onValueChanged,
     Function()? onCancel,
     Function(PointsTShirt, PointsTShirt)? onAccept,
@@ -76,7 +50,7 @@ class FlowDialog extends StatelessWidget {
             child: Text(PointsTShirt.values[index].name),
           ),
         ),
-        initialValue: points,
+        initialValue: from,
         onChanged: (value) {
           _buf['from'] = value;
         },
@@ -91,7 +65,7 @@ class FlowDialog extends StatelessWidget {
             child: Text(PointsTShirt.values[index].name),
           ),
         ),
-        initialValue: points,
+        initialValue: to,
         onChanged: (value) {
           _buf['to'] = value;
         },

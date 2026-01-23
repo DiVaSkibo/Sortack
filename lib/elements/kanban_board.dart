@@ -119,19 +119,12 @@ class _KanbanBoardState extends State<KanbanBoard> {
 
   @override
   Widget build(BuildContext context) {
-    //   SingleChildScrollView(
-    //     child: Row(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       spacing: 25,
-    //       children: columns,
-    //     ),
-    //   );
     return Scrollbar(
       controller: _columnsScrollController,
       scrollbarOrientation: ScrollbarOrientation.top,
       child: DragAndDropLists(
         axis: Axis.horizontal,
-        listWidth: 450, // MediaQuery.of(context).size.width / 3,
+        listWidth: MediaQuery.of(context).size.width / 3,
         listPadding: const EdgeInsets.all(8.0),
         lastItemTargetHeight: 200,
         itemDragOnLongPress: false,

@@ -38,7 +38,6 @@ class KanbanColumn {
     _filter['by'] = by;
     _filter['from'] = from;
     _filter['to'] = to;
-    //by != null ? tasks.where((task) => testBy(task, by)).toList() : tasks;
   }
 
   DragAndDropList build() {
@@ -81,33 +80,4 @@ class KanbanColumn {
       ),
     );
   }
-
-  //   @override
-  //   Widget build(BuildContext context) {
-  //     return Column(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       spacing: 15,
-  //       children: <Widget>[
-  //         Text(
-  //           status,
-  //           style: TextStyle(
-  //             color: color,
-  //             fontSize: 20,
-  //             fontWeight: FontWeight.w600,
-  //           ),
-  //         ),
-  //         Container(
-  //           width: MediaQuery.of(context).size.width / 3.5,
-  //           height: MediaQuery.of(context).size.height / 1.25,
-  //           padding: EdgeInsets.all(15),
-  //           decoration: const BoxDecoration(
-  //             gradient: Gradients.SURFACE,
-  //             borderRadius: BorderRadius.all(Radius.elliptical(40, 30)),
-  //           ),
-  //           child: Column(spacing: 10, children: tasks),
-  //         ),
-  //       ],
-  //     );
-  //   }
-  // }
 }

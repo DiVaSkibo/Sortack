@@ -12,48 +12,66 @@ class KanbanPage extends StatefulWidget {
 
 class _KanbanPageState extends State<KanbanPage> {
   final KanbanBoard _kanbanBoard = KanbanBoard();
+  final _buf = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Kanban'),
-        flexibleSpace: Icon(
-          Icons.view_kanban_rounded,
-          color: Colours.BOTTOM,
-        ), // view_week_rounded amp_stories_rounded
+        flexibleSpace: Icon(Icons.view_kanban_rounded, color: Colours.BOTTOM),
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.keyboard_return_rounded),
         ),
         actions: <Widget>[
-          PopupMenuButton(
+          PopupMenuButton<TaskParameters>(
             tooltip: 'sort',
-            initialValue: TaskParameters.id,
+            initialValue: _buf['sort'],
             icon: Icon(Icons.sort_rounded),
-            itemBuilder: (context) => popupTaskParametersMenu(),
-            onSelected: (TaskParameters value) => _kanbanBoard.sort(by: value),
+            itemBuilder: (context) => TaskParameters.values
+                .map(
+                  (value) =>
+                      PopupMenuItem(value: value, child: Icon(value.icon())),
+                )
+                .toList(),
+            onSelected: (TaskParameters value) {
+              setState(() => _buf['sort'] = value);
+              _kanbanBoard.sort(by: value);
+            },
           ),
-          PopupMenuButton(
+          PopupMenuButton<TaskParameters>(
             tooltip: 'filter',
-            initialValue: TaskParameters.id,
+            initialValue: _buf['filter'],
             icon: Icon(Icons.filter_list_rounded),
-            itemBuilder: (context) => popupTaskParametersMenu(),
-            onSelected: (TaskParameters value) => showDialog(
-              context: context,
-              builder: (context) => FlowDialog.filter(
-                parameter: TaskParameters.points,
-                points: PointsTShirt.S,
-                onValueChanged: (value) => {},
-                onCancel: Navigator.of(context).pop,
-                onAccept: (from, to) => _kanbanBoard.filter(
-                  by: TaskParameters.points,
-                  from: from,
-                  to: to,
+            itemBuilder: (context) => TaskParameters.values
+                .map(
+                  (value) =>
+                      PopupMenuItem(value: value, child: Icon(value.icon())),
+                )
+                .toList(),
+            onSelected: (TaskParameters value) {
+              setState(() => _buf['filter'] = value);
+              showDialog(
+                context: context,
+                builder: (context) => FlowDialog.filter(
+                  parameter: value,
+                  from: _buf['from'],
+                  to: _buf['to'],
+                  onCancel: Navigator.of(context).pop,
+                  onAccept: (from, to) {
+                    _buf['from'] = from;
+                    _buf['to'] = to;
+                    _kanbanBoard.filter(
+                      by: TaskParameters.points,
+                      from: from,
+                      to: to,
+                    );
+                    Navigator.of(context).pop();
+                  },
                 ),
-              ),
-            ),
-            // (TaskParameters value) => _kanbanBoard.filter(by: value),
+              );
+            },
           ),
           Builder(
             builder: (context) => IconButton(
