@@ -21,14 +21,64 @@ class FlowDialog extends StatelessWidget {
   final IconData? icon;
   final List<Widget> inputs;
   final List<Widget> actions;
-  //final _buf = {};
+  final _buf = {};
 
-  const FlowDialog({
+  FlowDialog({
     super.key,
     this.icon,
     required this.inputs,
     required this.actions,
   });
+
+  FlowDialog.filter({
+    super.key,
+    required TaskParameters parameter,
+    PointsTShirt? points,
+    Function(dynamic value)? onValueChanged,
+    Function()? onCancel,
+    Function(PointsTShirt, PointsTShirt)? onAccept,
+  }) : icon = Icons.filter_rounded,
+       inputs = <Widget>[],
+       actions = <Widget>[] {
+    inputs.addAll([
+      DropdownButtonFormField(
+        items: List<DropdownMenuItem>.generate(
+          PointsTShirt.values.length,
+          (index) => DropdownMenuItem(
+            value: PointsTShirt.values[index],
+            child: Text(PointsTShirt.values[index].name),
+          ),
+        ),
+        initialValue: points,
+        onChanged: (value) {
+          _buf['from'] = value;
+        },
+        decoration: InputDecoration(labelText: 'from'),
+      ),
+      Text('< x <'),
+      DropdownButtonFormField(
+        items: List<DropdownMenuItem>.generate(
+          PointsTShirt.values.length,
+          (index) => DropdownMenuItem(
+            value: PointsTShirt.values[index],
+            child: Text(PointsTShirt.values[index].name),
+          ),
+        ),
+        initialValue: points,
+        onChanged: (value) {
+          _buf['to'] = value;
+        },
+        decoration: InputDecoration(labelText: 'to'),
+      ),
+    ]);
+    actions.addAll([
+      IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
+      IconButton(
+        onPressed: () => onAccept!(_buf['from'], _buf['to']),
+        icon: Icon(Icons.check_rounded),
+      ),
+    ]);
+  }
 
   FlowDialog.task({
     super.key,

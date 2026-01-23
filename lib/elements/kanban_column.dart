@@ -10,24 +10,51 @@ class KanbanColumn {
 
   KanbanColumn({required this.status, required this.tasks, this.color});
 
+  TaskParameters? _sortedBy;
+  final _filter = {};
+
   void push(KanbanCardData what) {
-    debugPrint('${what.toString()} is pushed to $status');
+    //debugPrint('${what.toString()} is pushed to $status');
     tasks.add(what);
   }
 
   void pop(KanbanCardData what) {
-    debugPrint('${what.toString()} is poped from $status');
+    //debugPrint('${what.toString()} is poped from $status');
     tasks.remove(what);
-    debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
+    //debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
   }
 
   void insert(KanbanCardData what, int where) {
-    debugPrint('${what.toString()} is inserted at $where');
+    //debugPrint('${what.toString()} is inserted at $where');
     tasks.insert(where, what);
-    debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
+    //debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
+  }
+
+  void sort({TaskParameters? by}) {
+    _sortedBy = by;
+    by != null ? tasks.sort((a, b) => compareBetween(a, b, by)) : tasks.sort();
+  }
+
+  void filter({TaskParameters? by, dynamic from, dynamic to}) {
+    _filter['by'] = by;
+    _filter['from'] = from;
+    _filter['to'] = to;
+    //by != null ? tasks.where((task) => testBy(task, by)).toList() : tasks;
   }
 
   DragAndDropList build() {
+    var filteredTasks = _filter['by'] != null
+        ? tasks
+              .where(
+                (task) => testInterval(
+                  task,
+                  _filter['by'],
+                  _filter['from'],
+                  _filter['to'],
+                ),
+              )
+              .toList()
+        : tasks;
     return DragAndDropList(
       verticalAlignment: CrossAxisAlignment.center,
       decoration: BoxDecoration(
@@ -44,11 +71,11 @@ class KanbanColumn {
       ),
       contentsWhenEmpty: Icon(unicon(), size: 30),
       children: List.generate(
-        tasks.length,
+        filteredTasks.length,
         (index) => DragAndDropItem(
           child: KanbanCard(
-            key: ValueKey(tasks[index].title),
-            data: tasks[index],
+            key: ValueKey(filteredTasks[index].title),
+            data: filteredTasks[index],
             onDelete: (what) => pop(what),
           ),
         ),

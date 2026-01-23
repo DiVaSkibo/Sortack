@@ -10,6 +10,10 @@ class KanbanBoard extends StatefulWidget {
 
   final _KanbanBoardState _kanbanBoardState = _KanbanBoardState();
 
+  void sort({TaskParameters? by}) => _kanbanBoardState.sort(by: by);
+  void filter({TaskParameters? by, dynamic from, dynamic to}) =>
+      _kanbanBoardState.filter(by: by, from: from, to: to);
+
   FlowDialog buildFlowDialog() => _kanbanBoardState.buildFlowDialog();
 
   @override
@@ -71,6 +75,18 @@ class _KanbanBoardState extends State<KanbanBoard> {
   void dispose() {
     _columnsScrollController.dispose();
     super.dispose();
+  }
+
+  void sort({TaskParameters? by}) {
+    setState(() {
+      for (var column in columns) column.sort(by: by);
+    });
+  }
+
+  void filter({TaskParameters? by, dynamic from, dynamic to}) {
+    setState(() {
+      for (var column in columns) column.filter(by: by, from: from, to: to);
+    });
   }
 
   FlowDialog buildFlowDialog() => FlowDialog.task(

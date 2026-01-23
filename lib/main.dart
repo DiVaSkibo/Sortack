@@ -130,6 +130,16 @@ class MyApp extends StatelessWidget {
           barrierColor: Colours.SHADOW,
           iconColor: Colours.FRONT,
         ),
+        popupMenuTheme: const PopupMenuThemeData(
+          position: PopupMenuPosition.under,
+          color: Colours.BACK_GLOW,
+          surfaceTintColor: Colours.BACK,
+          shadowColor: Colours.o,
+          iconColor: Colours.CENTER,
+          iconSize: 20,
+          textStyle: TextStyle(color: Colours.CENTER),
+          labelTextStyle: WidgetStatePropertyAll(TextStyle(color: Colours.TOP)),
+        ),
         dropdownMenuTheme: const DropdownMenuThemeData(
           menuStyle: MenuStyle(
             backgroundColor: WidgetStatePropertyAll(Colours.WARNING),

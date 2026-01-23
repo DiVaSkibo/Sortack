@@ -18,11 +18,61 @@ class _KanbanPageState extends State<KanbanPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Kanban'),
+        flexibleSpace: Icon(
+          Icons.view_kanban_rounded,
+          color: Colours.BOTTOM,
+        ), // view_week_rounded amp_stories_rounded
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.keyboard_return_rounded),
         ),
         actions: <Widget>[
+          PopupMenuButton(
+            tooltip: 'sort',
+            initialValue: TaskParameters.id,
+            icon: Icon(Icons.sort_rounded),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: TaskParameters.id,
+                child: Icon(Icons.numbers_rounded),
+              ),
+              PopupMenuItem(
+                value: TaskParameters.points,
+                child: Icon(Icons.adjust_rounded),
+              ),
+            ],
+            onSelected: (TaskParameters value) => _kanbanBoard.sort(by: value),
+          ),
+          PopupMenuButton(
+            tooltip: 'filter',
+            initialValue: TaskParameters.id,
+            icon: Icon(Icons.filter_list_rounded),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: TaskParameters.id,
+                child: Icon(Icons.numbers_rounded),
+              ),
+              PopupMenuItem(
+                value: TaskParameters.points,
+                child: Icon(Icons.adjust_rounded),
+              ),
+            ],
+            onSelected: (TaskParameters value) => showDialog(
+              context: context,
+              builder: (context) => FlowDialog.filter(
+                parameter: TaskParameters.points,
+                points: PointsTShirt.S,
+                onValueChanged: (value) => {},
+                onCancel: Navigator.of(context).pop,
+                onAccept: (from, to) => _kanbanBoard.filter(
+                  by: TaskParameters.points,
+                  from: from,
+                  to: to,
+                ),
+              ),
+            ),
+            // (TaskParameters value) => _kanbanBoard.filter(by: value),
+          ),
           Builder(
             builder: (context) => IconButton(
               onPressed: Scaffold.of(context).openEndDrawer,
@@ -30,10 +80,6 @@ class _KanbanPageState extends State<KanbanPage> {
             ),
           ),
         ],
-        flexibleSpace: Icon(
-          Icons.view_week_rounded,
-          color: Colours.FRONT,
-        ), // view_week_rounded amp_stories_rounded
       ),
       endDrawer: Container(
         decoration: const BoxDecoration(
