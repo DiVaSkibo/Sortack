@@ -1,6 +1,6 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:sortack/tool/_constants.dart';
-import 'package:sortack/tool/_classes.dart';
+import 'package:sortack/tool/_consts.dart';
+import 'package:sortack/tool/_oop.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/kanban_card.dart';
 
@@ -31,7 +31,7 @@ class KanbanColumn {
   }
 
   void sort({TaskParameters? by}) {
-    by != null ? tasks.sort((a, b) => compareBetween(a, b, by)) : tasks.sort();
+    by != null ? tasks.sort((a, b) => a.compareTo(b, by: by)) : tasks.sort();
   }
 
   void filter({TaskParameters? by, dynamic from, dynamic to}) {
@@ -44,11 +44,10 @@ class KanbanColumn {
     var filteredTasks = _filter['by'] != null
         ? tasks
               .where(
-                (task) => testInterval(
-                  task,
-                  _filter['by'],
-                  _filter['from'],
-                  _filter['to'],
+                (x) => x.testInterval(
+                  by: _filter['by'],
+                  from: _filter['from'],
+                  to: _filter['to'],
                 ),
               )
               .toList()

@@ -1,4 +1,4 @@
-import 'package:sortack/tool/_constants.dart';
+import 'package:sortack/tool/_consts.dart';
 import 'package:sortack/tool/_style.dart';
 
 class Ground extends StatelessWidget {
@@ -75,7 +75,9 @@ class FlowDialog extends StatelessWidget {
     actions.addAll([
       IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
       IconButton(
-        onPressed: () => onAccept!(_buf['from'], _buf['to']),
+        onPressed: () => _buf['from'] != null && _buf['to'] != null
+            ? onAccept!(_buf['from'], _buf['to'])
+            : debugPrint('\n! INTERVAL VALUES ARE NULLS !\n'),
         icon: Icon(Icons.check_rounded),
       ),
     ]);

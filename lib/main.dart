@@ -1,9 +1,11 @@
-import 'tool/_constants.dart';
+import 'tool/_consts.dart';
 import 'tool/_style.dart';
 import 'page/home.dart';
 import 'page/kanban.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

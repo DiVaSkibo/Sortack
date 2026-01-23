@@ -1,5 +1,5 @@
-import 'package:sortack/tool/_constants.dart';
-import 'package:sortack/tool/_classes.dart';
+import 'package:sortack/tool/_consts.dart';
+import 'package:sortack/tool/_oop.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 
