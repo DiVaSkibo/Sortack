@@ -1,18 +1,11 @@
 import 'package:sortack/tool/_constants.dart';
+import 'package:sortack/tool/_classes.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 
-class KanbanCardData {
-  String title;
-  String? description;
-  PointsTShirt? points;
-
-  KanbanCardData({required this.title, this.description, this.points});
-}
-
 class KanbanCard extends StatefulWidget {
-  final KanbanCardData data;
-  final void Function(KanbanCardData what)? onDelete;
+  final Task data;
+  final void Function(Task what)? onDelete;
 
   const KanbanCard({super.key, required this.data, this.onDelete});
 
@@ -22,19 +15,15 @@ class KanbanCard extends StatefulWidget {
     String? description,
     PointsTShirt? points,
     this.onDelete,
-  }) : data = KanbanCardData(
-         title: title,
-         description: description,
-         points: points,
-       );
+  }) : data = Task(title: title, description: description, points: points);
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
 }
 
 class _KanbanCardState extends State<KanbanCard> {
-  late KanbanCardData data = widget.data;
-  late final void Function(KanbanCardData what)? onDelete = widget.onDelete;
+  late Task data = widget.data;
+  late final void Function(Task what)? onDelete = widget.onDelete;
   late final _controllers = <String, TextEditingController>{};
   final _last = {};
 

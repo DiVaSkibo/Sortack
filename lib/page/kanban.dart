@@ -31,32 +31,14 @@ class _KanbanPageState extends State<KanbanPage> {
             tooltip: 'sort',
             initialValue: TaskParameters.id,
             icon: Icon(Icons.sort_rounded),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: TaskParameters.id,
-                child: Icon(Icons.numbers_rounded),
-              ),
-              PopupMenuItem(
-                value: TaskParameters.points,
-                child: Icon(Icons.adjust_rounded),
-              ),
-            ],
+            itemBuilder: (context) => popupTaskParametersMenu(),
             onSelected: (TaskParameters value) => _kanbanBoard.sort(by: value),
           ),
           PopupMenuButton(
             tooltip: 'filter',
             initialValue: TaskParameters.id,
             icon: Icon(Icons.filter_list_rounded),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: TaskParameters.id,
-                child: Icon(Icons.numbers_rounded),
-              ),
-              PopupMenuItem(
-                value: TaskParameters.points,
-                child: Icon(Icons.adjust_rounded),
-              ),
-            ],
+            itemBuilder: (context) => popupTaskParametersMenu(),
             onSelected: (TaskParameters value) => showDialog(
               context: context,
               builder: (context) => FlowDialog.filter(

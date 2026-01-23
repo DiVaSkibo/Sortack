@@ -1,8 +1,37 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 export 'package:flutter/material.dart';
+export 'dart:math';
 
-enum PointsFibonacci { X0, X1, X2, X3, X5, X8, X13, X20, X40, X100 }
+enum Status { toDo, inProgress, done }
+
+enum PriorityLevel implements Comparable<PriorityLevel> {
+  critical,
+  very_high,
+  high,
+  medium,
+  low,
+  very_low;
+
+  @override
+  int compareTo(PriorityLevel other) => index - other.index;
+}
+
+enum PointsFibonacci implements Comparable<PointsFibonacci> {
+  X0,
+  X1,
+  X2,
+  X3,
+  X5,
+  X8,
+  X13,
+  X20,
+  X40,
+  X100;
+
+  @override
+  int compareTo(PointsFibonacci other) => index - other.index;
+}
 
 enum PointsTShirt implements Comparable<PointsTShirt> {
   XS,
@@ -16,7 +45,17 @@ enum PointsTShirt implements Comparable<PointsTShirt> {
   int compareTo(PointsTShirt other) => index - other.index;
 }
 
-enum TaskParameters { id, name, points, status, role, assignee }
+enum TaskParameters {
+  id,
+  title,
+  description,
+  status,
+  priority,
+  points,
+  role,
+  assignee,
+  notes,
+}
 
 enum TaskFlowPurposes { create, edit }
 
@@ -38,42 +77,63 @@ const List<IconData> Unicons = [
 IconData unicon() => Unicons[Random().nextInt(Unicons.length)];
 
 int compareBetween(dynamic a, dynamic b, TaskParameters by) {
+  dynamic avalue, bvalue;
   switch (by) {
     case TaskParameters.id:
-      return a.hashCode.compareTo(b.hashCode);
-    case TaskParameters.name:
-      return a.name.compareTo(b.name);
-    case TaskParameters.points:
-      if (a.points == null)
-        return 0;
-      else if (b.points == null)
-        return 1;
-      return a.points!.index.compareTo(b.points!.index);
+      avalue = a.id;
+      bvalue = b.id;
+      break;
+    case TaskParameters.title:
+      avalue = a.title;
+      bvalue = b.title;
+      break;
+    case TaskParameters.description:
+      avalue = a.description;
+      bvalue = b.description;
+      break;
     case TaskParameters.status:
-      return a.status.compareTo(b.status);
+      avalue = a.status;
+      bvalue = b.status;
+      break;
+    case TaskParameters.priority:
+      avalue = a.priority;
+      bvalue = b.priority;
+      break;
+    case TaskParameters.points:
+      avalue = a.points;
+      bvalue = b.points;
+      break;
     case TaskParameters.role:
-      if (a.role == null)
-        return 0;
-      else if (b.role == null)
-        return 1;
-      return a.role!.index.compareTo(b.role!.index);
+      avalue = a.role;
+      bvalue = b.role;
+      break;
     case TaskParameters.assignee:
-      if (a.assignee == null)
-        return 0;
-      else if (b.assignee == null)
-        return 1;
-      return a.assignee!.index.compareTo(b.assignee!.index);
+      avalue = a.assignee;
+      bvalue = b.assignee;
+      break;
+    case TaskParameters.notes:
+      avalue = a.notes;
+      bvalue = b.notes;
+      break;
   }
+  if (avalue == null)
+    return 0;
+  else if (bvalue == null)
+    return 1;
+  return avalue.compareTo(bvalue);
 }
 
 bool testInterval(dynamic x, TaskParameters by, dynamic from, dynamic to) {
   dynamic value = switch (by) {
-    TaskParameters.id => x.hashCode,
-    TaskParameters.name => x.name,
-    TaskParameters.points => x.points,
+    TaskParameters.id => x.id,
+    TaskParameters.title => x.title,
+    TaskParameters.description => x.description,
     TaskParameters.status => x.status,
+    TaskParameters.priority => x.priority,
+    TaskParameters.points => x.points,
     TaskParameters.role => x.role,
     TaskParameters.assignee => x.assignee,
+    TaskParameters.notes => x.notes,
   };
   if (value == null) return false;
   if (from == to) return value.compareTo(from) == 0;

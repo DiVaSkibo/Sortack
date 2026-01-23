@@ -1,8 +1,8 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/tool/_constants.dart';
+import 'package:sortack/tool/_classes.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
-import 'package:sortack/elements/kanban_card.dart';
 import 'package:sortack/elements/kanban_column.dart';
 
 class KanbanBoard extends StatefulWidget {
@@ -25,13 +25,13 @@ class _KanbanBoardState extends State<KanbanBoard> {
     KanbanColumn(
       status: 'To Do',
       color: Colours.NOTOK,
-      tasks: <KanbanCardData>[
-        KanbanCardData(
+      tasks: <Task>[
+        Task(
           title: 'Database',
           description: 'Architecture and build database using Firebase',
           points: PointsTShirt.XL,
         ),
-        KanbanCardData(
+        Task(
           title: 'Search system',
           description:
               'Search for available libraries for search system\nIf nothing, make by ourself',
@@ -42,8 +42,8 @@ class _KanbanBoardState extends State<KanbanBoard> {
     KanbanColumn(
       status: 'In Progress',
       color: Colours.INOK,
-      tasks: <KanbanCardData>[
-        KanbanCardData(
+      tasks: <Task>[
+        Task(
           title: 'Sign In page',
           description: 'Create sign in page according to design in Figma',
           points: PointsTShirt.S,
@@ -53,14 +53,14 @@ class _KanbanBoardState extends State<KanbanBoard> {
     KanbanColumn(
       status: 'Done',
       color: Colours.OK,
-      tasks: <KanbanCardData>[
-        KanbanCardData(
+      tasks: <Task>[
+        Task(
           title: 'Sign In page design',
           description: 'Design sign in page using Figma',
           points: PointsTShirt.L,
         ),
-        KanbanCardData(title: 'What', description: 'What actually do'),
-        KanbanCardData(
+        Task(title: 'What', description: 'What actually do'),
+        Task(
           title: 'Who',
           description: 'Who actually do',
           points: PointsTShirt.XXL,
@@ -105,7 +105,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
       if (!_task.containsKey('title')) return;
       setState(() {
         columns.first.push(
-          KanbanCardData(
+          Task(
             title: _task['title'],
             description: _task['description'],
             points: _task['points'],

@@ -1,37 +1,36 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/tool/_constants.dart';
+import 'package:sortack/tool/_classes.dart';
 import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/kanban_card.dart';
 
 class KanbanColumn {
   String status;
-  final List<KanbanCardData> tasks;
+  final List<Task> tasks;
   Color? color;
 
   KanbanColumn({required this.status, required this.tasks, this.color});
 
-  TaskParameters? _sortedBy;
   final _filter = {};
 
-  void push(KanbanCardData what) {
+  void push(Task what) {
     //debugPrint('${what.toString()} is pushed to $status');
     tasks.add(what);
   }
 
-  void pop(KanbanCardData what) {
+  void pop(Task what) {
     //debugPrint('${what.toString()} is poped from $status');
     tasks.remove(what);
     //debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
   }
 
-  void insert(KanbanCardData what, int where) {
+  void insert(Task what, int where) {
     //debugPrint('${what.toString()} is inserted at $where');
     tasks.insert(where, what);
     //debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
   }
 
   void sort({TaskParameters? by}) {
-    _sortedBy = by;
     by != null ? tasks.sort((a, b) => compareBetween(a, b, by)) : tasks.sort();
   }
 
