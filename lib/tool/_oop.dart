@@ -95,5 +95,5 @@ class Task {
 
   @override
   String toString() =>
-      '[$id]\n$title: $description\n $status ^$priority .$points\n @$role %$assignee\n$notes';
+      '[$id]\n"$title": "$description"\n $status ^$priority .$points\n @"$role" %"$assignee"\n"$notes"';
 }

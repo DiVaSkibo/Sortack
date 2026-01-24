@@ -1,5 +1,4 @@
 import 'tool/_consts.dart';
-import 'tool/_style.dart';
 import 'page/home.dart';
 import 'page/kanban.dart';
 

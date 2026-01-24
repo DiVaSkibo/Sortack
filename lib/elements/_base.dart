@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:sortack/tool/_consts.dart';
-import 'package:sortack/tool/_style.dart';
 
 class Ground extends StatelessWidget {
   final Widget child;
@@ -17,73 +17,92 @@ class Ground extends StatelessWidget {
   }
 }
 
-class FlowDialog extends StatelessWidget {
+class FilterDialog<T> extends StatelessWidget {
+  final TaskParameters parameter;
+  final T? from;
+  final T? to;
+  final Function()? onCancel;
+  final Function(dynamic, dynamic)? onAccept;
+  final _buf = {};
+
+  FilterDialog({
+    super.key,
+    required this.parameter,
+    this.from,
+    this.to,
+    this.onCancel,
+    this.onAccept,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      icon: Icon(parameter.icon(), size: 40),
+      content: SizedBox(
+        width: 450,
+        child: Wrap(
+          spacing: 25,
+          runSpacing: 25,
+          children: [
+            DropdownButtonFormField(
+              items: List<DropdownMenuItem>.generate(
+                PointsTShirt.values.length,
+                (index) => DropdownMenuItem(
+                  value: PointsTShirt.values[index],
+                  child: Text(PointsTShirt.values[index].name),
+                ),
+              ),
+              initialValue: from,
+              onChanged: (value) {
+                _buf['from'] = value;
+              },
+              decoration: InputDecoration(labelText: 'from'),
+            ),
+            Text('< x <'),
+            DropdownButtonFormField(
+              items: List<DropdownMenuItem>.generate(
+                PointsTShirt.values.length,
+                (index) => DropdownMenuItem(
+                  value: PointsTShirt.values[index],
+                  child: Text(PointsTShirt.values[index].name),
+                ),
+              ),
+              initialValue: to,
+              onChanged: (value) {
+                _buf['to'] = value;
+              },
+              decoration: InputDecoration(labelText: 'to'),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
+        IconButton(
+          onPressed: () => _buf['from'] != null && _buf['to'] != null
+              ? onAccept!(_buf['from'], _buf['to'])
+              : debugPrint('\n! INTERVAL VALUES ARE NULLS !\n'),
+          icon: Icon(Icons.check_rounded),
+        ),
+      ],
+    );
+  }
+}
+
+class TasksetDialog extends StatelessWidget {
   final IconData? icon;
   final List<Widget> inputs;
   final List<Widget> actions;
   final _buf = {};
 
-  FlowDialog({
+  TasksetDialog({
     super.key,
     this.icon,
     required this.inputs,
     required this.actions,
   });
 
-  FlowDialog.filter({
-    super.key,
-    required TaskParameters parameter,
-    PointsTShirt? from,
-    PointsTShirt? to,
-    Function(dynamic value)? onValueChanged,
-    Function()? onCancel,
-    Function(PointsTShirt, PointsTShirt)? onAccept,
-  }) : icon = Icons.filter_rounded,
-       inputs = <Widget>[],
-       actions = <Widget>[] {
-    inputs.addAll([
-      DropdownButtonFormField(
-        items: List<DropdownMenuItem>.generate(
-          PointsTShirt.values.length,
-          (index) => DropdownMenuItem(
-            value: PointsTShirt.values[index],
-            child: Text(PointsTShirt.values[index].name),
-          ),
-        ),
-        initialValue: from,
-        onChanged: (value) {
-          _buf['from'] = value;
-        },
-        decoration: InputDecoration(labelText: 'from'),
-      ),
-      Text('< x <'),
-      DropdownButtonFormField(
-        items: List<DropdownMenuItem>.generate(
-          PointsTShirt.values.length,
-          (index) => DropdownMenuItem(
-            value: PointsTShirt.values[index],
-            child: Text(PointsTShirt.values[index].name),
-          ),
-        ),
-        initialValue: to,
-        onChanged: (value) {
-          _buf['to'] = value;
-        },
-        decoration: InputDecoration(labelText: 'to'),
-      ),
-    ]);
-    actions.addAll([
-      IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
-      IconButton(
-        onPressed: () => _buf['from'] != null && _buf['to'] != null
-            ? onAccept!(_buf['from'], _buf['to'])
-            : debugPrint('\n! INTERVAL VALUES ARE NULLS !\n'),
-        icon: Icon(Icons.check_rounded),
-      ),
-    ]);
-  }
-
-  FlowDialog.task({
+  TasksetDialog.task({
     super.key,
     required TaskFlowPurposes purpose,
     String? title,

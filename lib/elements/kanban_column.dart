@@ -1,7 +1,6 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/tool/_consts.dart';
 import 'package:sortack/tool/_oop.dart';
-import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/kanban_card.dart';
 
 class KanbanColumn {
@@ -72,7 +71,7 @@ class KanbanColumn {
         (index) => DragAndDropItem(
           child: KanbanCard(
             key: ValueKey(filteredTasks[index].title),
-            data: filteredTasks[index],
+            task: filteredTasks[index],
             onDelete: (what) => pop(what),
           ),
         ),

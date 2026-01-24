@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+export 'package:flutter/material.dart';
 
 class Fonts {
   static const RUBIK = 'Rubik';

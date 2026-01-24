@@ -1,5 +1,4 @@
 import 'package:sortack/tool/_consts.dart';
-import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 import 'package:sortack/elements/kanban_board.dart';
 
@@ -54,7 +53,7 @@ class _KanbanPageState extends State<KanbanPage> {
               setState(() => _buf['filter'] = value);
               showDialog(
                 context: context,
-                builder: (context) => FlowDialog.filter(
+                builder: (context) => FilterDialog(
                   parameter: value,
                   from: _buf['from'],
                   to: _buf['to'],
@@ -135,7 +134,7 @@ class _KanbanPageState extends State<KanbanPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,
-          builder: (context) => _kanbanBoard.buildFlowDialog(),
+          builder: (context) => _kanbanBoard.buildTasksetDialog(),
         ),
         child: Icon(Icons.add_task_rounded),
       ),

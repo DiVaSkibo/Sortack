@@ -1,7 +1,6 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/tool/_consts.dart';
 import 'package:sortack/tool/_oop.dart';
-import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 import 'package:sortack/elements/kanban_column.dart';
 
@@ -14,7 +13,7 @@ class KanbanBoard extends StatefulWidget {
   void filter({TaskParameters? by, dynamic from, dynamic to}) =>
       _kanbanBoardState.filter(by: by, from: from, to: to);
 
-  FlowDialog buildFlowDialog() => _kanbanBoardState.buildFlowDialog();
+  TasksetDialog buildTasksetDialog() => _kanbanBoardState.buildTasksetDialog();
 
   @override
   State<KanbanBoard> createState() => _kanbanBoardState;
@@ -89,7 +88,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
     });
   }
 
-  FlowDialog buildFlowDialog() => FlowDialog.task(
+  TasksetDialog buildTasksetDialog() => TasksetDialog.task(
     purpose: TaskFlowPurposes.create,
     onTitleChanged: (value) {
       _task['title'] = value;

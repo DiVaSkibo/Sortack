@@ -1,13 +1,12 @@
 import 'package:sortack/tool/_consts.dart';
 import 'package:sortack/tool/_oop.dart';
-import 'package:sortack/tool/_style.dart';
 import 'package:sortack/elements/_base.dart';
 
 class KanbanCard extends StatefulWidget {
-  final Task data;
+  final Task task;
   final void Function(Task what)? onDelete;
 
-  const KanbanCard({super.key, required this.data, this.onDelete});
+  const KanbanCard({super.key, required this.task, this.onDelete});
 
   KanbanCard.from({
     super.key,
@@ -15,14 +14,14 @@ class KanbanCard extends StatefulWidget {
     String? description,
     PointsTShirt? points,
     this.onDelete,
-  }) : data = Task(title: title, description: description, points: points);
+  }) : task = Task(title: title, description: description, points: points);
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
 }
 
 class _KanbanCardState extends State<KanbanCard> {
-  late Task data = widget.data;
+  late Task task = widget.task;
   late final void Function(Task what)? onDelete = widget.onDelete;
   late final _controllers = <String, TextEditingController>{};
   final _last = {};
@@ -30,8 +29,8 @@ class _KanbanCardState extends State<KanbanCard> {
   @override
   void initState() {
     super.initState();
-    _controllers['title'] = TextEditingController(text: data.title);
-    _controllers['description'] = TextEditingController(text: data.description);
+    _controllers['title'] = TextEditingController(text: task.title);
+    _controllers['description'] = TextEditingController(text: task.description);
   }
 
   @override
@@ -77,7 +76,7 @@ class _KanbanCardState extends State<KanbanCard> {
                 Row(
                   children: <Widget>[
                     Text(
-                      data.title,
+                      task.title,
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
                     Spacer(),
@@ -92,7 +91,7 @@ class _KanbanCardState extends State<KanbanCard> {
                       ),
                       child: Center(
                         child: Text(
-                          data.points != null ? data.points!.name : '?',
+                          task.points != null ? task.points!.name : '?',
                           style: TextStyle(
                             fontSize: 10,
                             fontStyle: FontStyle.italic,
@@ -104,41 +103,41 @@ class _KanbanCardState extends State<KanbanCard> {
                     IconButton(
                       onPressed: () => showDialog(
                         context: context,
-                        builder: (context) => FlowDialog.task(
+                        builder: (context) => TasksetDialog.task(
                           purpose: TaskFlowPurposes.edit,
-                          title: data.title,
-                          description: data.description,
-                          points: data.points,
+                          title: task.title,
+                          description: task.description,
+                          points: task.points,
                           onTitleChanged: (value) {
-                            _last['title'] ??= data.title;
+                            _last['title'] ??= task.title;
                             setState(() {
-                              data.title = value;
+                              task.title = value;
                             });
                           },
                           onDescriptionChanged: (value) {
-                            _last['description'] ??= data.description;
+                            _last['description'] ??= task.description;
                             setState(() {
-                              data.description = value;
+                              task.description = value;
                             });
                           },
                           onPointsChanged: (value) {
-                            _last['points'] ??= data.points;
+                            _last['points'] ??= task.points;
                             setState(() {
-                              data.points = value;
+                              task.points = value;
                             });
                           },
                           onCancel: () {
                             setState(() {
-                              data.title = _last['title'] ?? data.title;
-                              data.description =
-                                  _last['description'] ?? data.description;
-                              data.points = _last['points'] ?? data.points;
+                              task.title = _last['title'] ?? task.title;
+                              task.description =
+                                  _last['description'] ?? task.description;
+                              task.points = _last['points'] ?? task.points;
                             });
                             Navigator.of(context).pop();
                           },
                           onDelete: () {
                             setState(() {
-                              onDelete!(data);
+                              onDelete!(task);
                             });
                             Navigator.of(context).pop();
                           },
@@ -152,8 +151,8 @@ class _KanbanCardState extends State<KanbanCard> {
                     ),
                   ],
                 ),
-                if (data.description != null)
-                  Text(data.description!, style: TextStyle(fontSize: 11)),
+                if (task.description != null)
+                  Text(task.description!, style: TextStyle(fontSize: 11)),
               ],
             ),
           ),

@@ -1,9 +1,22 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
-export 'package:flutter/material.dart';
 export 'dart:math';
+import 'package:sortack/tool/_style.dart';
+export 'package:sortack/tool/_style.dart';
 
-enum Status { toDo, inProgress, done }
+enum Status implements Comparable<Status> {
+  toDo,
+  inProgress,
+  done;
+
+  Color colour() => switch (this) {
+    toDo => Colours.NOTOK,
+    inProgress => Colours.INOK,
+    done => Colours.OK,
+  };
+
+  @override
+  int compareTo(Status other) => index - other.index;
+}
 
 enum PriorityLevel implements Comparable<PriorityLevel> {
   critical,
@@ -12,6 +25,15 @@ enum PriorityLevel implements Comparable<PriorityLevel> {
   medium,
   low,
   very_low;
+
+  Color colour() => switch (this) {
+    critical => Colours.NOTOK,
+    very_high => Colours.NOTOK,
+    high => Colours.NOTOK,
+    medium => Colours.INOK,
+    low => Colours.OK,
+    very_low => Colours.BOTTOM,
+  };
 
   @override
   int compareTo(PriorityLevel other) => index - other.index;
@@ -56,17 +78,29 @@ enum TaskParameters {
   assignee,
   notes;
 
-  IconData icon() => [
-    Icons.numbers_rounded,
-    Icons.title_rounded,
-    Icons.text_fields_rounded,
-    Icons.air_rounded,
-    Icons.priority_high_rounded,
-    Icons.adjust_rounded,
-    Icons.work_rounded,
-    Icons.accessibility_rounded,
-    Icons.comment_rounded,
-  ][index];
+  Type type() => switch (this) {
+    id => int,
+    title => String,
+    description => String,
+    status => Status,
+    priority => PriorityLevel,
+    points => PointsTShirt,
+    role => String,
+    assignee => String,
+    notes => String,
+  };
+
+  IconData icon() => switch (this) {
+    id => Icons.numbers_rounded,
+    title => Icons.title_rounded,
+    description => Icons.text_fields_rounded,
+    status => Icons.air_rounded,
+    priority => Icons.priority_high_rounded,
+    points => Icons.adjust_rounded,
+    role => Icons.work_rounded,
+    assignee => Icons.accessibility_rounded,
+    notes => Icons.comment_rounded,
+  };
 }
 
 enum TaskFlowPurposes { create, edit }
