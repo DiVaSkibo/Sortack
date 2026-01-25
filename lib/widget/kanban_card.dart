@@ -1,6 +1,6 @@
 import 'package:sortack/tool/_consts.dart';
 import 'package:sortack/tool/_oop.dart';
-import 'package:sortack/elements/_base.dart';
+import 'package:sortack/widget/_base.dart';
 
 class KanbanCard extends StatefulWidget {
   final Task task;
@@ -103,28 +103,39 @@ class _KanbanCardState extends State<KanbanCard> {
                     IconButton(
                       onPressed: () => showDialog(
                         context: context,
-                        builder: (context) => TasksetDialog.task(
-                          purpose: TaskFlowPurposes.edit,
-                          title: task.title,
-                          description: task.description,
-                          points: task.points,
-                          onTitleChanged: (value) {
-                            _last['title'] ??= task.title;
-                            setState(() {
-                              task.title = value;
-                            });
-                          },
-                          onDescriptionChanged: (value) {
-                            _last['description'] ??= task.description;
-                            setState(() {
-                              task.description = value;
-                            });
-                          },
-                          onPointsChanged: (value) {
-                            _last['points'] ??= task.points;
-                            setState(() {
-                              task.points = value;
-                            });
+                        builder: (context) => TasksetDialog.edit(
+                          task: task,
+                          onChanged: (value, prmtr) {
+                            switch (prmtr) {
+                              case TaskParameters.title:
+                                {
+                                  _last['title'] ??= task.title;
+                                  setState(() {
+                                    task.title = value;
+                                  });
+                                  break;
+                                }
+                              case TaskParameters.description:
+                                {
+                                  _last['description'] ??= task.description;
+                                  setState(() {
+                                    task.description = value;
+                                  });
+                                  break;
+                                }
+                              case TaskParameters.points:
+                                {
+                                  _last['points'] ??= task.points;
+                                  setState(() {
+                                    task.points = value;
+                                  });
+                                  break;
+                                }
+                              default:
+                                debugPrint(
+                                  '? Task edit with no task parameter case... ?',
+                                );
+                            }
                           },
                           onCancel: () {
                             setState(() {
@@ -135,10 +146,10 @@ class _KanbanCardState extends State<KanbanCard> {
                             });
                             Navigator.of(context).pop();
                           },
-                          onDelete: () {
-                            setState(() {
-                              onDelete!(task);
-                            });
+                          onAccept: (task) {
+                            // setState(() {
+                            //   onDelete!(task);
+                            // });
                             Navigator.of(context).pop();
                           },
                         ),

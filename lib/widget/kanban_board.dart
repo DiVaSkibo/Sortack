@@ -1,8 +1,8 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/tool/_consts.dart';
 import 'package:sortack/tool/_oop.dart';
-import 'package:sortack/elements/_base.dart';
-import 'package:sortack/elements/kanban_column.dart';
+import 'package:sortack/widget/_base.dart';
+import 'package:sortack/widget/kanban_column.dart';
 
 class KanbanBoard extends StatefulWidget {
   KanbanBoard({super.key});
@@ -68,7 +68,6 @@ class _KanbanBoardState extends State<KanbanBoard> {
     ),
   ];
   final ScrollController _columnsScrollController = ScrollController();
-  final _task = {};
 
   @override
   void dispose() {
@@ -88,30 +87,13 @@ class _KanbanBoardState extends State<KanbanBoard> {
     });
   }
 
-  TasksetDialog buildTasksetDialog() => TasksetDialog.task(
-    purpose: TaskFlowPurposes.create,
-    onTitleChanged: (value) {
-      _task['title'] = value;
-    },
-    onDescriptionChanged: (value) {
-      _task['description'] = value;
-    },
-    onPointsChanged: (value) {
-      _task['points'] = value;
-    },
+  TasksetDialog buildTasksetDialog() => TasksetDialog.create(
     onCancel: Navigator.of(context).pop,
-    onCreate: () {
-      if (!_task.containsKey('title')) return;
+    onAccept: (task) {
+      if (task.title.isEmpty) return;
       setState(() {
-        columns.first.push(
-          Task(
-            title: _task['title'],
-            description: _task['description'],
-            points: _task['points'],
-          ),
-        );
+        columns.first.push(task);
       });
-      _task.clear();
       Navigator.of(context).pop();
     },
   );

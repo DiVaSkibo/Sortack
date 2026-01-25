@@ -1,6 +1,6 @@
 import 'package:sortack/tool/_consts.dart';
-import 'package:sortack/elements/_base.dart';
-import 'package:sortack/elements/kanban_board.dart';
+import 'package:sortack/widget/_base.dart';
+import 'package:sortack/widget/kanban_board.dart';
 
 class KanbanPage extends StatefulWidget {
   const KanbanPage({super.key});

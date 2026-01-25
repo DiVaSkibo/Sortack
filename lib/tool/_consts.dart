@@ -103,8 +103,6 @@ enum TaskParameters {
   };
 }
 
-enum TaskFlowPurposes { create, edit }
-
 const List<IconData> Unicons = [
   Icons.outlined_flag_rounded,
   Icons.auto_awesome_outlined,

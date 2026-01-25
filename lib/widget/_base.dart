@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:sortack/tool/_consts.dart';
+import 'package:sortack/tool/_oop.dart';
 
 class Ground extends StatelessWidget {
   final Widget child;
@@ -90,80 +90,27 @@ class FilterDialog<T> extends StatelessWidget {
 }
 
 class TasksetDialog extends StatelessWidget {
+  final Task task;
   final IconData? icon;
-  final List<Widget> inputs;
-  final List<Widget> actions;
-  final _buf = {};
+  final Function(dynamic, TaskParameters)? onChanged;
+  final Function() onCancel;
+  final Function(Task) onAccept;
 
-  TasksetDialog({
+  TasksetDialog.create({
     super.key,
-    this.icon,
-    required this.inputs,
-    required this.actions,
-  });
+    this.onChanged,
+    required this.onCancel,
+    required this.onAccept,
+  }) : task = Task(title: ''),
+       icon = Icons.precision_manufacturing_rounded;
 
-  TasksetDialog.task({
+  const TasksetDialog.edit({
     super.key,
-    required TaskFlowPurposes purpose,
-    String? title,
-    String? description,
-    PointsTShirt? points,
-    Function(String value)? onTitleChanged,
-    Function(String value)? onDescriptionChanged,
-    Function(PointsTShirt? value)? onPointsChanged,
-    Function()? onCancel,
-    Function()? onCreate,
-    Function()? onDelete,
-  }) : icon = switch (purpose) {
-         TaskFlowPurposes.create => Icons.precision_manufacturing_rounded,
-         TaskFlowPurposes.edit => Icons.mode_outlined,
-       },
-       inputs = <Widget>[
-         TextField(
-           controller: TextEditingController(text: title),
-           onChanged: onTitleChanged,
-           decoration: InputDecoration(labelText: 'Title:'),
-         ),
-         TextFormField(
-           controller: TextEditingController(text: description),
-           onChanged: onDescriptionChanged,
-           keyboardType: TextInputType.multiline,
-           minLines: 1,
-           maxLines: 3,
-           decoration: InputDecoration(labelText: 'Description:'),
-         ),
-         DropdownButtonFormField(
-           items: List<DropdownMenuItem<PointsTShirt>>.generate(
-             PointsTShirt.values.length,
-             (index) => DropdownMenuItem(
-               value: PointsTShirt.values[index],
-               child: Text(PointsTShirt.values[index].name),
-             ),
-           ),
-           initialValue: points,
-           onChanged: onPointsChanged,
-           decoration: InputDecoration(labelText: 'Points:'),
-         ),
-       ],
-       actions = <Widget>[
-         IconButton(
-           onPressed: onCancel,
-           icon: Icon(switch (purpose) {
-             TaskFlowPurposes.create => Icons.cancel_rounded,
-             TaskFlowPurposes.edit => Icons.replay_rounded,
-           }, color: Colours.W),
-         ),
-         switch (purpose) {
-           TaskFlowPurposes.create => IconButton(
-             onPressed: onCreate,
-             icon: Icon(Icons.task_alt_rounded, color: Colours.W),
-           ),
-           TaskFlowPurposes.edit => IconButton(
-             onPressed: onDelete,
-             icon: Icon(Icons.delete_forever_rounded, color: Colours.W),
-           ),
-         },
-       ];
+    required this.task,
+    this.onChanged,
+    required this.onCancel,
+    required this.onAccept,
+  }) : icon = Icons.mode_outlined;
 
   @override
   Widget build(BuildContext context) {
@@ -171,9 +118,58 @@ class TasksetDialog extends StatelessWidget {
       icon: icon != null ? Icon(icon, size: 40) : null,
       content: SizedBox(
         width: 450,
-        child: Wrap(spacing: 25, runSpacing: 25, children: inputs),
+        child: Wrap(
+          spacing: 25,
+          runSpacing: 25,
+          children: <Widget>[
+            TextField(
+              controller: TextEditingController(text: task.title),
+              onChanged: (value) {
+                task.title = value;
+                if (onChanged != null) onChanged!(value, TaskParameters.title);
+              },
+              decoration: InputDecoration(labelText: 'Title:'),
+            ),
+            TextFormField(
+              controller: TextEditingController(text: task.description),
+              onChanged: (value) {
+                task.description = value;
+                if (onChanged != null)
+                  onChanged!(value, TaskParameters.description);
+              },
+              keyboardType: TextInputType.multiline,
+              minLines: 1,
+              maxLines: 3,
+              decoration: InputDecoration(labelText: 'Description:'),
+            ),
+            DropdownButtonFormField(
+              items: List<DropdownMenuItem<PointsTShirt>>.generate(
+                PointsTShirt.values.length,
+                (index) => DropdownMenuItem(
+                  value: PointsTShirt.values[index],
+                  child: Text(PointsTShirt.values[index].name),
+                ),
+              ),
+              initialValue: task.points,
+              onChanged: (value) {
+                task.points = value;
+                if (onChanged != null) onChanged!(value, TaskParameters.points);
+              },
+              decoration: InputDecoration(labelText: 'Points:'),
+            ),
+          ],
+        ),
       ),
-      actions: actions,
+      actions: <Widget>[
+        IconButton(
+          onPressed: onCancel,
+          icon: Icon(Icons.cancel_rounded, color: Colours.W),
+        ),
+        IconButton(
+          onPressed: () => onAccept(task),
+          icon: Icon(Icons.task_alt_rounded, color: Colours.W),
+        ),
+      ],
     );
   }
 }
