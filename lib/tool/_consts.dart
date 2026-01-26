@@ -90,6 +90,18 @@ enum TaskParameters {
     notes => String,
   };
 
+  List parameterValues() => switch (this) {
+    TaskParameters.id => [],
+    TaskParameters.title => [],
+    TaskParameters.description => [],
+    TaskParameters.status => Status.values,
+    TaskParameters.priority => PriorityLevel.values,
+    TaskParameters.points => PointsTShirt.values,
+    TaskParameters.role => [],
+    TaskParameters.assignee => [],
+    TaskParameters.notes => [],
+  };
+
   IconData icon() => switch (this) {
     id => Icons.numbers_rounded,
     title => Icons.title_rounded,

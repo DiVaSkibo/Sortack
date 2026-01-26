@@ -17,70 +17,97 @@ class Ground extends StatelessWidget {
   }
 }
 
-class FilterDialog<T> extends StatelessWidget {
-  final TaskParameters parameter;
-  final T? from;
-  final T? to;
+class FilterDialog extends StatelessWidget {
+  final List values;
+  dynamic from;
+  dynamic to;
   final Function()? onCancel;
   final Function(dynamic, dynamic)? onAccept;
-  final _buf = {};
+  final IconData? icon;
+  late Widget fromField;
+  late Widget toField;
 
   FilterDialog({
     super.key,
-    required this.parameter,
+    required this.values,
     this.from,
     this.to,
     this.onCancel,
     this.onAccept,
-  });
+    this.icon,
+  }) {
+    fromField = DropdownButtonFormField(
+      items: List<DropdownMenuItem>.generate(
+        values.length,
+        (index) => DropdownMenuItem(
+          value: values[index],
+          child: Text(values[index].name),
+        ),
+      ),
+      initialValue: from,
+      onChanged: (value) {
+        from = value;
+      },
+      decoration: InputDecoration(labelText: 'from'),
+    );
+    toField = DropdownButtonFormField(
+      items: List<DropdownMenuItem>.generate(
+        values.length,
+        (index) => DropdownMenuItem(
+          value: values[index],
+          child: Text(values[index].name),
+        ),
+      ),
+      initialValue: to,
+      onChanged: (value) {
+        to = value;
+      },
+    );
+  }
+
+  FilterDialog.numbers({
+    super.key,
+    this.from,
+    this.to,
+    this.onCancel,
+    this.onAccept,
+    this.icon,
+  }) : values = [] {
+    fromField = TextField(
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      controller: TextEditingController(text: from),
+      onChanged: (value) {
+        from = value;
+      },
+      decoration: InputDecoration(labelText: 'from'),
+    );
+    toField = TextField(
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      controller: TextEditingController(text: to),
+      onChanged: (value) {
+        to = value;
+      },
+      decoration: InputDecoration(labelText: 'from'),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      icon: Icon(parameter.icon(), size: 40),
+      icon: icon != null ? Icon(icon, size: 40) : null,
       content: SizedBox(
         width: 450,
         child: Wrap(
           spacing: 25,
           runSpacing: 25,
-          children: [
-            DropdownButtonFormField(
-              items: List<DropdownMenuItem>.generate(
-                PointsTShirt.values.length,
-                (index) => DropdownMenuItem(
-                  value: PointsTShirt.values[index],
-                  child: Text(PointsTShirt.values[index].name),
-                ),
-              ),
-              initialValue: from,
-              onChanged: (value) {
-                _buf['from'] = value;
-              },
-              decoration: InputDecoration(labelText: 'from'),
-            ),
-            Text('< x <'),
-            DropdownButtonFormField(
-              items: List<DropdownMenuItem>.generate(
-                PointsTShirt.values.length,
-                (index) => DropdownMenuItem(
-                  value: PointsTShirt.values[index],
-                  child: Text(PointsTShirt.values[index].name),
-                ),
-              ),
-              initialValue: to,
-              onChanged: (value) {
-                _buf['to'] = value;
-              },
-              decoration: InputDecoration(labelText: 'to'),
-            ),
-          ],
+          children: [fromField, Text('< x <'), toField],
         ),
       ),
       actions: [
         IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
         IconButton(
-          onPressed: () => _buf['from'] != null && _buf['to'] != null
-              ? onAccept!(_buf['from'], _buf['to'])
+          onPressed: () => from != null && to != null
+              ? onAccept!(from, to)
               : debugPrint('\n! INTERVAL VALUES ARE NULLS !\n'),
           icon: Icon(Icons.check_rounded),
         ),
