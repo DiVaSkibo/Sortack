@@ -23,6 +23,65 @@ class MyApp extends StatelessWidget {
           selectionColor: Colours.UNTOP,
           selectionHandleColor: Colours.ACTOP,
         ),
+        colorScheme: const ColorScheme.dark(
+          brightness: Brightness.dark,
+          primary: Colours.W,
+          onPrimary: Colours.BACK_GLOW,
+          secondary: Colours.BOTTOM,
+          onSecondary: Colours.BACK_GLOW,
+          error: Colours.NOTOK,
+          onError: Colours.BACK,
+          surface: Colours.BACK,
+          onSurface: Colours.FRONT,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: Colours.SHADOW,
+          hoverColor: Colours.TINGE,
+          labelStyle: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colours.FRONT,
+          ),
+          hintStyle: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            fontStyle: FontStyle.italic,
+            color: Colours.UNFRONT,
+          ),
+          helperStyle: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontStyle: FontStyle.italic,
+            wordSpacing: 2,
+            color: Colours.BOTTOM,
+          ),
+          prefixStyle: TextStyle(fontSize: 13, color: Colours.UNBOTTOM),
+          suffixStyle: TextStyle(
+            fontWeight: FontWeight.w400,
+            color: Colours.UNBOTTOM,
+          ),
+          counterStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.normal,
+            color: Colours.BOTTOM,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colours.BACK, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(17)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colours.o, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(17)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colours.FRONT, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(17)),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colours.NOTOK, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(17)),
+          ),
+        ),
         textTheme: const TextTheme(labelLarge: TextStyle(fontSize: 20)),
         primaryTextTheme: const TextTheme(labelLarge: TextStyle(fontSize: 20)),
         iconTheme: const IconThemeData(size: 20, color: Colours.BOTTOM),
@@ -76,53 +135,37 @@ class MyApp extends StatelessWidget {
           hoverColor: Colours.ACTOP,
           splashColor: Colours.NOTOK,
         ),
-        inputDecorationTheme: const InputDecorationTheme(
-          filled: true,
-          fillColor: Colours.SHADOW,
-          hoverColor: Colours.TINGE,
-          labelStyle: TextStyle(
-            fontSize: 13,
+        listTileTheme: const ListTileThemeData(
+          style: ListTileStyle.list,
+          visualDensity: VisualDensity.comfortable,
+          titleTextStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: Fonts.RUBIK,
             fontWeight: FontWeight.w600,
+            color: Colours.BACK_GLOW,
+          ),
+          subtitleTextStyle: TextStyle(
+            fontSize: 12,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w500,
             color: Colours.FRONT,
           ),
-          hintStyle: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
+          leadingAndTrailingTextStyle: TextStyle(
+            fontSize: 14,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w700,
             fontStyle: FontStyle.italic,
-            color: Colours.UNFRONT,
-          ),
-          helperStyle: TextStyle(
-            fontWeight: FontWeight.w300,
-            fontStyle: FontStyle.italic,
-            wordSpacing: 2,
             color: Colours.BOTTOM,
           ),
-          prefixStyle: TextStyle(fontSize: 13, color: Colours.UNBOTTOM),
-          suffixStyle: TextStyle(
-            fontWeight: FontWeight.w400,
-            color: Colours.UNBOTTOM,
-          ),
-          counterStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontStyle: FontStyle.normal,
-            color: Colours.BOTTOM,
-          ),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colours.BACK, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colours.o, width: 0),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colours.FRONT, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colours.NOTOK, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
-          ),
+        ),
+        expansionTileTheme: const ExpansionTileThemeData(
+          expandedAlignment: Alignment.center,
+          collapsedBackgroundColor: Colours.TOP,
+          backgroundColor: Colours.ACTOP,
+          collapsedTextColor: Colours.BACK_GLOW,
+          textColor: Colours.B,
+          collapsedIconColor: Colours.CENTER,
+          iconColor: Colours.CENTER,
         ),
         dialogTheme: const DialogThemeData(
           alignment: Alignment.bottomRight,
