@@ -1,5 +1,6 @@
 import 'package:sortack/tool/_consts.dart';
 
+/// task class
 class Task {
   final int id;
   String title;

@@ -3,6 +3,9 @@ export 'dart:math';
 import 'package:sortack/tool/_style.dart';
 export 'package:sortack/tool/_style.dart';
 
+/// status enum - task status
+///
+/// [to do, in progress, done]
 enum Status implements Comparable<Status> {
   toDo,
   inProgress,
@@ -18,6 +21,9 @@ enum Status implements Comparable<Status> {
   int compareTo(Status other) => index - other.index;
 }
 
+/// priority level enum - task priority
+///
+/// [critical, very high, high, medium, low, very low]
 enum PriorityLevel implements Comparable<PriorityLevel> {
   critical,
   very_high,
@@ -39,6 +45,9 @@ enum PriorityLevel implements Comparable<PriorityLevel> {
   int compareTo(PriorityLevel other) => index - other.index;
 }
 
+/// fibonacci points enum - task points using fibonacci system
+///
+/// [0, 1, 2, 3, 5, 8, 13, 20, 40, 100]
 enum PointsFibonacci implements Comparable<PointsFibonacci> {
   X0,
   X1,
@@ -55,6 +64,9 @@ enum PointsFibonacci implements Comparable<PointsFibonacci> {
   int compareTo(PointsFibonacci other) => index - other.index;
 }
 
+/// tshirt points enum - task points using tshirt system
+///
+/// [XS, S, M, L, XL, XXL]
 enum PointsTShirt implements Comparable<PointsTShirt> {
   XS,
   S,
@@ -67,6 +79,9 @@ enum PointsTShirt implements Comparable<PointsTShirt> {
   int compareTo(PointsTShirt other) => index - other.index;
 }
 
+/// task parameters enum - parameters of a task class
+///
+/// [id, title, description, status, priority, points, role, assignee, notes]
 enum TaskParameters {
   id,
   title,
@@ -115,6 +130,7 @@ enum TaskParameters {
   };
 }
 
+/// useless icons, just for fun :P
 const List<IconData> Unicons = [
   Icons.outlined_flag_rounded,
   Icons.auto_awesome_outlined,
@@ -130,4 +146,6 @@ const List<IconData> Unicons = [
   Icons.emoji_events_outlined,
   Icons.diamond_outlined,
 ];
+
+/// random useless icon, just for fun :P
 IconData unicon() => Unicons[Random().nextInt(Unicons.length)];

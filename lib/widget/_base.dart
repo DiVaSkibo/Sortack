@@ -1,6 +1,7 @@
 import 'package:sortack/tool/_consts.dart';
 import 'package:sortack/tool/_oop.dart';
 
+/// ground widget - filled page background
 class Ground extends StatelessWidget {
   final Widget child;
 
@@ -17,6 +18,7 @@ class Ground extends StatelessWidget {
   }
 }
 
+/// filter dialog widget - dialog for tasks filtering by parameter
 class FilterDialog extends StatelessWidget {
   final List values;
   dynamic from;
@@ -116,6 +118,7 @@ class FilterDialog extends StatelessWidget {
   }
 }
 
+/// taskset dialog widget - dialog for setting task parameters
 class TasksetDialog extends StatelessWidget {
   final Task task;
   final IconData? icon;
