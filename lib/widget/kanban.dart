@@ -67,6 +67,21 @@ class _KanbanCardState extends State<KanbanCard> {
               .map((value) => Icon(value.icon(), color: Colours.CENTER))
               .toList(),
         ),
+        IconButton(
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => AcceptDialog(
+              message: 'Do you realy want to delete this task?...',
+              onCancel: Navigator.of(context).pop,
+              onAccept: () {
+                if (onDelete != null) onDelete!(task);
+                Navigator.of(context).pop();
+              },
+              icon: Icons.remove_rounded,
+            ),
+          ),
+          icon: Icon(Icons.remove_rounded),
+        ),
       ],
     );
   }
@@ -77,10 +92,21 @@ class KanbanColumn {
   String status;
   final List<Task> tasks;
   Color? color;
+  final Function()? onChanged;
 
-  KanbanColumn({required this.status, required this.tasks, this.color});
+  KanbanColumn({
+    required this.status,
+    required this.tasks,
+    this.color,
+    this.onChanged,
+  });
 
   final _filter = {};
+
+  void setState(void Function() fn) {
+    fn();
+    if (onChanged != null) onChanged!();
+  }
 
   void push(Task what) {
     //debugPrint('${what.toString()} is pushed to $status');
@@ -97,6 +123,13 @@ class KanbanColumn {
     //debugPrint('${what.toString()} is inserted at $where');
     tasks.insert(where, what);
     //debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
+  }
+
+  void swap(int oldItemIndex, int newItemIndex) {
+    if (oldItemIndex == newItemIndex) return;
+    var temp = tasks[oldItemIndex];
+    tasks[oldItemIndex] = tasks[newItemIndex];
+    tasks[newItemIndex] = temp;
   }
 
   void sort({TaskParameters? by}) {
@@ -142,7 +175,7 @@ class KanbanColumn {
           child: KanbanCard(
             key: ValueKey(filteredTasks[index].title),
             task: filteredTasks[index],
-            onDelete: (what) => pop(what),
+            onDelete: (what) => setState(() => pop(what)),
           ),
         ),
       ),
@@ -167,7 +200,7 @@ class KanbanBoard extends StatefulWidget {
 }
 
 class _KanbanBoardState extends State<KanbanBoard> {
-  final List<KanbanColumn> columns = <KanbanColumn>[
+  late final List<KanbanColumn> columns = <KanbanColumn>[
     KanbanColumn(
       status: 'To Do',
       color: Colours.NOTOK,
@@ -184,6 +217,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           points: PointsTShirt.L,
         ),
       ],
+      onChanged: () => setState(() {}),
     ),
     KanbanColumn(
       status: 'In Progress',
@@ -195,6 +229,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           points: PointsTShirt.S,
         ),
       ],
+      onChanged: () => setState(() {}),
     ),
     KanbanColumn(
       status: 'Done',
@@ -212,6 +247,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           points: PointsTShirt.XXL,
         ),
       ],
+      onChanged: () => setState(() {}),
     ),
   ];
   final ScrollController _columnsScrollController = ScrollController();
@@ -220,6 +256,13 @@ class _KanbanBoardState extends State<KanbanBoard> {
   void dispose() {
     _columnsScrollController.dispose();
     super.dispose();
+  }
+
+  void swap(int oldListIndex, int newListIndex) {
+    if (oldListIndex == newListIndex) return;
+    var temp = columns[oldListIndex];
+    columns[oldListIndex] = columns[newListIndex];
+    columns[newListIndex] = temp;
   }
 
   void sort({TaskParameters? by}) {
@@ -238,9 +281,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
     onCancel: Navigator.of(context).pop,
     onAccept: (task) {
       if (task.title.isEmpty) return;
-      setState(() {
-        columns.first.push(task);
-      });
+      columns.first.push(task);
       Navigator.of(context).pop();
     },
   );
@@ -261,15 +302,21 @@ class _KanbanBoardState extends State<KanbanBoard> {
         children: columns.map((column) => column.build()).toList(),
         onItemReorder:
             (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
-              setState(() {
-                var data = columns[oldListIndex].tasks.elementAt(oldItemIndex);
-                columns[oldListIndex].pop(data);
-                columns[newListIndex].insert(data, newItemIndex);
-              });
+              if (oldListIndex == newListIndex) {
+                setState(() {
+                  columns[newListIndex].swap(oldItemIndex, newItemIndex);
+                });
+              } else {
+                var task = columns[oldListIndex].tasks.elementAt(oldItemIndex);
+                setState(() {
+                  columns[oldListIndex].pop(task);
+                  columns[newListIndex].insert(task, newItemIndex);
+                });
+              }
             },
         onListReorder: (oldListIndex, newListIndex) {
           setState(() {
-            columns.insert(newListIndex, columns.removeAt(oldListIndex));
+            swap(oldListIndex, newListIndex);
           });
         },
       ),
