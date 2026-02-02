@@ -18,6 +18,88 @@ class Ground extends StatelessWidget {
   }
 }
 
+/// task controller - control task parameters
+class TaskController {
+  final Task task;
+  final TextEditingController _titleController;
+  final TextEditingController _descriptionController;
+  final TextEditingController _notesController;
+  final FocusNode _titleFocus = FocusNode();
+  final FocusNode _descriptionFocus = FocusNode();
+  final FocusNode _notesFocus = FocusNode();
+  void Function(void Function()) setState;
+
+  TaskController(this.task, {required this.setState})
+    : _titleController = TextEditingController(text: task.title),
+      _descriptionController = TextEditingController(text: task.description),
+      _notesController = TextEditingController(text: task.notes) {
+    _titleFocus.addListener(() {
+      if (!_titleFocus.hasFocus)
+        setState(() {
+          task.title = _titleController.text;
+          debugPrint(
+            'Task title:\n"${task.title}"\n\t("${_titleController.text}")',
+          );
+        });
+    });
+    _descriptionFocus.addListener(() {
+      if (!_descriptionFocus.hasFocus)
+        setState(() {
+          task.description = _descriptionController.text;
+          debugPrint(
+            'Task description:\n"${task.description}"\n\t("${_descriptionController.text}")',
+          );
+        });
+    });
+    _notesFocus.addListener(() {
+      if (!_notesFocus.hasFocus)
+        setState(() {
+          task.notes = _notesController.text;
+          debugPrint(
+            'Task notes:\n"${task.notes}"\n\t("${_notesController.text}")',
+          );
+        });
+    });
+  }
+
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _notesController.dispose();
+    _titleFocus.dispose();
+    _descriptionFocus.dispose();
+    _notesFocus.dispose();
+  }
+
+  TextField buildTitleField() => TextField(
+    controller: _titleController,
+    focusNode: _titleFocus,
+    onEditingComplete: () => _titleFocus.unfocus(),
+    onTapOutside: (event) => _titleFocus.unfocus(),
+  );
+  TextFormField buildDescriptionField() => TextFormField(
+    controller: _descriptionController,
+    focusNode: _descriptionFocus,
+    keyboardType: TextInputType.multiline,
+    minLines: 1,
+    maxLines: 3,
+    onTapOutside: (event) => _descriptionFocus.unfocus(),
+  );
+  PopupMenuButton buildPointsField() => PopupMenuButton<PointsTShirt>(
+    tooltip: 'points',
+    initialValue: task.points,
+    child: Text(task.points != null ? task.points!.name.toString() : '?'),
+    itemBuilder: (context) => PointsTShirt.values
+        .map((value) => PopupMenuItem(value: value, child: Text(value.name)))
+        .toList(),
+    onSelected: (PointsTShirt value) {
+      setState(() {
+        task.points = value;
+      });
+    },
+  );
+}
+
 /// accept dialog widget - dialog for accept action
 class AcceptDialog extends StatelessWidget {
   final String? message;

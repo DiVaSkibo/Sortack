@@ -35,7 +35,8 @@ class MyApp extends StatelessWidget {
           onSurface: Colours.FRONT,
         ),
         inputDecorationTheme: const InputDecorationTheme(
-          filled: true,
+          contentPadding: EdgeInsets.all(0),
+          filled: false,
           fillColor: Colours.SHADOW,
           hoverColor: Colours.TINGE,
           labelStyle: TextStyle(
@@ -66,20 +67,24 @@ class MyApp extends StatelessWidget {
             color: Colours.BOTTOM,
           ),
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colours.BACK, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
+            borderSide: BorderSide(color: Colours.o, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colours.o, width: 0),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colours.FRONT, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
+            borderSide: BorderSide(color: Colours.o, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colours.NOTOK, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(17)),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colours.NOTOK, width: 1),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
         ),
         textTheme: const TextTheme(labelLarge: TextStyle(fontSize: 20)),

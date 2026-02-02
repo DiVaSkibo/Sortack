@@ -25,21 +25,11 @@ class KanbanCard extends StatefulWidget {
 class _KanbanCardState extends State<KanbanCard> {
   late Task task = widget.task;
   late final void Function(Task what)? onDelete = widget.onDelete;
-  late final _controllers = <String, TextEditingController>{};
-  final _last = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _controllers['title'] = TextEditingController(text: task.title);
-    _controllers['description'] = TextEditingController(text: task.description);
-  }
+  late final _taskController = TaskController(task, setState: setState);
 
   @override
   void dispose() {
-    for (var controller in _controllers.values) {
-      controller.dispose();
-    }
+    _taskController.dispose();
     super.dispose();
   }
 
@@ -57,9 +47,9 @@ class _KanbanCardState extends State<KanbanCard> {
         side: BorderSide.none,
       ),
       leading: const Icon(Icons.task_rounded),
-      title: Text(task.title),
-      subtitle: task.description != null ? Text(task.description!) : null,
-      trailing: Text(task.points != null ? task.points!.name.toString() : '?'),
+      title: _taskController.buildTitleField(),
+      subtitle: _taskController.buildDescriptionField(),
+      trailing: _taskController.buildPointsField(),
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -281,7 +271,9 @@ class _KanbanBoardState extends State<KanbanBoard> {
     onCancel: Navigator.of(context).pop,
     onAccept: (task) {
       if (task.title.isEmpty) return;
-      columns.first.push(task);
+      setState(() {
+        columns.first.push(task);
+      });
       Navigator.of(context).pop();
     },
   );
