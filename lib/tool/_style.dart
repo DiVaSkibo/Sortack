@@ -53,3 +53,58 @@ class Gradients {
     colors: [Colours.BACK_GLOW, Colours.BACK],
   );
 }
+
+/// styles static const class - custom static const styles
+class Styles {
+  static const LARGE_TEXT = TextStyle(
+    fontFamily: Fonts.RUBIK_MONO_ONE,
+    fontSize: 60,
+  );
+  static const TASK_TITLE = TextStyle(
+    fontSize: 17,
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w600,
+    color: Colours.BACK,
+  );
+  static const TASK_DESCRIPTION = TextStyle(
+    height: 1.4,
+    fontSize: 13,
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w500,
+    color: Colours.BACK_GLOW,
+  );
+  static const TASK_NOTES = TextStyle(
+    height: 1.4,
+    fontSize: 11,
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w500,
+    fontStyle: FontStyle.italic,
+    color: Colours.BACK_GLOW,
+  );
+  static TextStyle columnText({Color? color}) =>
+      TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.w600);
+}
+
+/// decorations static const class - custom static const decorations
+class Decorations {
+  static const GROUND_BOX = BoxDecoration(gradient: Gradients.GROUND);
+  static final SURFACE_BOX = BoxDecoration(
+    gradient: Gradients.SURFACE,
+    borderRadius: BorderRadius.circular(15),
+  );
+  static const CARD_INPUT = InputDecoration(
+    contentPadding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+    filled: true,
+    fillColor: Colours.TOP,
+    hoverColor: Colours.CENTER,
+  );
+  static InputDecoration collapsedCardInput({String? labelText}) =>
+      InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(20.0, 12.0, 10.0, 18.0),
+        filled: true,
+        fillColor: Colours.ACTOP,
+        hoverColor: Colours.CENTER,
+        labelText: labelText,
+        floatingLabelAlignment: FloatingLabelAlignment.center,
+      );
+}

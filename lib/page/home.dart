@@ -19,10 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
           spacing: 60,
           children: <Widget>[
             SvgPicture.asset('assets/icon/Sortack.svg'),
-            Text(
-              'Sortack welcomes!',
-              style: TextStyle(fontFamily: Fonts.RUBIK_MONO_ONE, fontSize: 60),
-            ),
+            Text('Sortack welcomes!', style: Styles.LARGE_TEXT),
             FilledButton(
               onPressed: () => Navigator.pushNamed(context, 'kanban'),
               child: Text('Join it'),

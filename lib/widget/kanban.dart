@@ -48,30 +48,30 @@ class _KanbanCardState extends State<KanbanCard> {
       ),
       leading: const Icon(Icons.task_rounded),
       title: _taskController.buildTitleField(),
-      subtitle: _taskController.buildDescriptionField(),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => AcceptDialog(
+                message: 'Do you realy want to delete this task?...',
+                onCancel: Navigator.of(context).pop,
+                onAccept: () {
+                  if (onDelete != null) onDelete!(task);
+                  Navigator.of(context).pop();
+                },
+                icon: Icons.remove_rounded,
+              ),
+            ),
+            icon: Icon(Icons.remove_rounded),
+          ),
+        ],
+      ),
       trailing: _taskController.buildPointsField(),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: TaskParameters.values
-              .map((value) => Icon(value.icon(), color: Colours.CENTER))
-              .toList(),
-        ),
-        IconButton(
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => AcceptDialog(
-              message: 'Do you realy want to delete this task?...',
-              onCancel: Navigator.of(context).pop,
-              onAccept: () {
-                if (onDelete != null) onDelete!(task);
-                Navigator.of(context).pop();
-              },
-              icon: Icons.remove_rounded,
-            ),
-          ),
-          icon: Icon(Icons.remove_rounded),
-        ),
+        _taskController.buildDescriptionField(),
+        _taskController.buildNotesField(),
       ],
     );
   }
@@ -146,18 +146,8 @@ class KanbanColumn {
         : tasks;
     return DragAndDropList(
       verticalAlignment: CrossAxisAlignment.center,
-      decoration: BoxDecoration(
-        gradient: Gradients.SURFACE,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      header: Text(
-        status,
-        style: TextStyle(
-          color: color,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      decoration: Decorations.SURFACE_BOX,
+      header: Text(status, style: Styles.columnText(color: color)),
       contentsWhenEmpty: Icon(unicon(), size: 30),
       children: List.generate(
         filteredTasks.length,

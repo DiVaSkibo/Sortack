@@ -12,7 +12,7 @@ class Ground extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(gradient: Gradients.GROUND),
+      decoration: Decorations.GROUND_BOX,
       child: child,
     );
   }
@@ -76,14 +76,18 @@ class TaskController {
     focusNode: _titleFocus,
     onEditingComplete: () => _titleFocus.unfocus(),
     onTapOutside: (event) => _titleFocus.unfocus(),
+    style: Styles.TASK_TITLE,
+    decoration: Decorations.CARD_INPUT,
   );
   TextFormField buildDescriptionField() => TextFormField(
     controller: _descriptionController,
     focusNode: _descriptionFocus,
     keyboardType: TextInputType.multiline,
     minLines: 1,
-    maxLines: 3,
+    maxLines: 4,
     onTapOutside: (event) => _descriptionFocus.unfocus(),
+    style: Styles.TASK_DESCRIPTION,
+    decoration: Decorations.collapsedCardInput(labelText: 'Description'),
   );
   PopupMenuButton buildPointsField() => PopupMenuButton<PointsTShirt>(
     tooltip: 'points',
@@ -97,6 +101,16 @@ class TaskController {
         task.points = value;
       });
     },
+  );
+  TextFormField buildNotesField() => TextFormField(
+    controller: _notesController,
+    focusNode: _notesFocus,
+    keyboardType: TextInputType.multiline,
+    minLines: 1,
+    maxLines: 2,
+    onTapOutside: (event) => _notesFocus.unfocus(),
+    style: Styles.TASK_NOTES,
+    decoration: Decorations.collapsedCardInput(labelText: 'Notes'),
   );
 }
 
