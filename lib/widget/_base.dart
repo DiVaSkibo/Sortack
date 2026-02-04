@@ -21,97 +21,55 @@ class Ground extends StatelessWidget {
 /// task controller - control task parameters
 class TaskController {
   final Task task;
-  final TextEditingController _titleController;
-  final TextEditingController _descriptionController;
-  final TextEditingController _notesController;
-  final FocusNode _titleFocus = FocusNode();
-  final FocusNode _descriptionFocus = FocusNode();
-  final FocusNode _notesFocus = FocusNode();
+  final TextEditingController titleController;
+  final TextEditingController descriptionController;
+  final TextEditingController notesController;
+  final FocusNode titleFocus = FocusNode();
+  final FocusNode descriptionFocus = FocusNode();
+  final FocusNode notesFocus = FocusNode();
   void Function(void Function()) setState;
 
   TaskController(this.task, {required this.setState})
-    : _titleController = TextEditingController(text: task.title),
-      _descriptionController = TextEditingController(text: task.description),
-      _notesController = TextEditingController(text: task.notes) {
-    _titleFocus.addListener(() {
-      if (!_titleFocus.hasFocus)
+    : titleController = TextEditingController(text: task.title),
+      descriptionController = TextEditingController(text: task.description),
+      notesController = TextEditingController(text: task.notes) {
+    titleFocus.addListener(() {
+      if (!titleFocus.hasFocus)
         setState(() {
-          task.title = _titleController.text;
+          task.title = titleController.text;
           debugPrint(
-            'Task title:\n"${task.title}"\n\t("${_titleController.text}")',
+            'Task title:\n"${task.title}"\n\t("${titleController.text}")',
           );
         });
     });
-    _descriptionFocus.addListener(() {
-      if (!_descriptionFocus.hasFocus)
+    descriptionFocus.addListener(() {
+      if (!descriptionFocus.hasFocus)
         setState(() {
-          task.description = _descriptionController.text;
+          task.description = descriptionController.text;
           debugPrint(
-            'Task description:\n"${task.description}"\n\t("${_descriptionController.text}")',
+            'Task description:\n"${task.description}"\n\t("${descriptionController.text}")',
           );
         });
     });
-    _notesFocus.addListener(() {
-      if (!_notesFocus.hasFocus)
+    notesFocus.addListener(() {
+      if (!notesFocus.hasFocus)
         setState(() {
-          task.notes = _notesController.text;
+          task.notes = notesController.text;
           debugPrint(
-            'Task notes:\n"${task.notes}"\n\t("${_notesController.text}")',
+            'Task notes:\n"${task.notes}"\n\t("${notesController.text}")',
           );
         });
     });
   }
 
   void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    _notesController.dispose();
-    _titleFocus.dispose();
-    _descriptionFocus.dispose();
-    _notesFocus.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
+    notesController.dispose();
+    titleFocus.dispose();
+    descriptionFocus.dispose();
+    notesFocus.dispose();
   }
-
-  TextField buildTitleField() => TextField(
-    controller: _titleController,
-    focusNode: _titleFocus,
-    onEditingComplete: () => _titleFocus.unfocus(),
-    onTapOutside: (event) => _titleFocus.unfocus(),
-    style: Styles.TASK_TITLE,
-    decoration: Decorations.CARD_INPUT,
-  );
-  TextFormField buildDescriptionField() => TextFormField(
-    controller: _descriptionController,
-    focusNode: _descriptionFocus,
-    keyboardType: TextInputType.multiline,
-    minLines: 1,
-    maxLines: 4,
-    onTapOutside: (event) => _descriptionFocus.unfocus(),
-    style: Styles.TASK_DESCRIPTION,
-    decoration: Decorations.collapsedCardInput(labelText: 'Description'),
-  );
-  PopupMenuButton buildPointsField() => PopupMenuButton<PointsTShirt>(
-    tooltip: 'points',
-    initialValue: task.points,
-    child: Text(task.points != null ? task.points!.name.toString() : '?'),
-    itemBuilder: (context) => PointsTShirt.values
-        .map((value) => PopupMenuItem(value: value, child: Text(value.name)))
-        .toList(),
-    onSelected: (PointsTShirt value) {
-      setState(() {
-        task.points = value;
-      });
-    },
-  );
-  TextFormField buildNotesField() => TextFormField(
-    controller: _notesController,
-    focusNode: _notesFocus,
-    keyboardType: TextInputType.multiline,
-    minLines: 1,
-    maxLines: 2,
-    onTapOutside: (event) => _notesFocus.unfocus(),
-    style: Styles.TASK_NOTES,
-    decoration: Decorations.collapsedCardInput(labelText: 'Notes'),
-  );
 }
 
 /// accept dialog widget - dialog for accept action
@@ -297,11 +255,11 @@ class TasksetDialog extends StatelessWidget {
               decoration: InputDecoration(labelText: 'Description:'),
             ),
             DropdownButtonFormField(
-              items: List<DropdownMenuItem<PointsTShirt>>.generate(
-                PointsTShirt.values.length,
+              items: List<DropdownMenuItem<TaskPointsTShirt>>.generate(
+                TaskPointsTShirt.values.length,
                 (index) => DropdownMenuItem(
-                  value: PointsTShirt.values[index],
-                  child: Text(PointsTShirt.values[index].name),
+                  value: TaskPointsTShirt.values[index],
+                  child: Text(TaskPointsTShirt.values[index].name),
                 ),
               ),
               initialValue: task.points,

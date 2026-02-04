@@ -14,7 +14,7 @@ class KanbanCard extends StatefulWidget {
     super.key,
     required String title,
     String? description,
-    PointsTShirt? points,
+    TaskPointsTShirt? points,
     this.onDelete,
   }) : task = Task(title: title, description: description, points: points);
 
@@ -33,6 +33,48 @@ class _KanbanCardState extends State<KanbanCard> {
     super.dispose();
   }
 
+  TextField buildTitleField() => TextField(
+    controller: _taskController.titleController,
+    focusNode: _taskController.titleFocus,
+    onEditingComplete: () => _taskController.titleFocus.unfocus(),
+    onTapOutside: (event) => _taskController.titleFocus.unfocus(),
+    style: Styles.TASK_TITLE,
+    decoration: Decorations.CARD_INPUT,
+  );
+  TextFormField buildDescriptionField() => TextFormField(
+    controller: _taskController.descriptionController,
+    focusNode: _taskController.descriptionFocus,
+    keyboardType: TextInputType.multiline,
+    minLines: 1,
+    maxLines: 4,
+    onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
+    style: Styles.TASK_DESCRIPTION,
+    decoration: Decorations.collapsedCardInput(labelText: 'Description'),
+  );
+  PopupMenuButton buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
+    tooltip: 'points',
+    initialValue: task.points,
+    child: Text(task.points != null ? task.points!.name.toString() : '?'),
+    itemBuilder: (context) => TaskPointsTShirt.values
+        .map((value) => PopupMenuItem(value: value, child: Text(value.name)))
+        .toList(),
+    onSelected: (TaskPointsTShirt value) {
+      setState(() {
+        task.points = value;
+      });
+    },
+  );
+  TextFormField buildNotesField() => TextFormField(
+    controller: _taskController.notesController,
+    focusNode: _taskController.notesFocus,
+    keyboardType: TextInputType.multiline,
+    minLines: 1,
+    maxLines: 2,
+    onTapOutside: (event) => _taskController.notesFocus.unfocus(),
+    style: Styles.TASK_NOTES,
+    decoration: Decorations.collapsedCardInput(labelText: 'Notes'),
+  );
+
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -47,7 +89,7 @@ class _KanbanCardState extends State<KanbanCard> {
         side: BorderSide.none,
       ),
       leading: const Icon(Icons.task_rounded),
-      title: _taskController.buildTitleField(),
+      title: buildTitleField(),
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -68,11 +110,8 @@ class _KanbanCardState extends State<KanbanCard> {
           ),
         ],
       ),
-      trailing: _taskController.buildPointsField(),
-      children: [
-        _taskController.buildDescriptionField(),
-        _taskController.buildNotesField(),
-      ],
+      trailing: buildPointsField(),
+      children: [buildDescriptionField(), buildNotesField()],
     );
   }
 }
@@ -188,13 +227,13 @@ class _KanbanBoardState extends State<KanbanBoard> {
         Task(
           title: 'Database',
           description: 'Architecture and build database using Firebase',
-          points: PointsTShirt.XL,
+          points: TaskPointsTShirt.XL,
         ),
         Task(
           title: 'Search system',
           description:
               'Search for available libraries for search system\nIf nothing, make by ourself',
-          points: PointsTShirt.L,
+          points: TaskPointsTShirt.L,
         ),
       ],
       onChanged: () => setState(() {}),
@@ -206,7 +245,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
         Task(
           title: 'Sign In page',
           description: 'Create sign in page according to design in Figma',
-          points: PointsTShirt.S,
+          points: TaskPointsTShirt.S,
         ),
       ],
       onChanged: () => setState(() {}),
@@ -218,13 +257,13 @@ class _KanbanBoardState extends State<KanbanBoard> {
         Task(
           title: 'Sign In page design',
           description: 'Design sign in page using Figma',
-          points: PointsTShirt.L,
+          points: TaskPointsTShirt.L,
         ),
         Task(title: 'What', description: 'What actually do'),
         Task(
           title: 'Who',
           description: 'Who actually do',
-          points: PointsTShirt.XXL,
+          points: TaskPointsTShirt.XXL,
         ),
       ],
       onChanged: () => setState(() {}),

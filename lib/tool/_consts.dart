@@ -3,10 +3,10 @@ export 'dart:math';
 import 'package:sortack/tool/_style.dart';
 export 'package:sortack/tool/_style.dart';
 
-/// status enum - task status
+/// task status enum - task statuses
 ///
 /// [to do, in progress, done]
-enum Status implements Comparable<Status> {
+enum TaskStatus implements Comparable<TaskStatus> {
   toDo,
   inProgress,
   done;
@@ -18,13 +18,13 @@ enum Status implements Comparable<Status> {
   };
 
   @override
-  int compareTo(Status other) => index - other.index;
+  int compareTo(TaskStatus other) => index - other.index;
 }
 
-/// priority level enum - task priority
+/// task priority enum - task priority levels
 ///
 /// [critical, very high, high, medium, low, very low]
-enum PriorityLevel implements Comparable<PriorityLevel> {
+enum TaskPriority implements Comparable<TaskPriority> {
   critical,
   very_high,
   high,
@@ -42,13 +42,13 @@ enum PriorityLevel implements Comparable<PriorityLevel> {
   };
 
   @override
-  int compareTo(PriorityLevel other) => index - other.index;
+  int compareTo(TaskPriority other) => index - other.index;
 }
 
-/// fibonacci points enum - task points using fibonacci system
+/// task fibonacci points enum - task points using fibonacci system
 ///
 /// [0, 1, 2, 3, 5, 8, 13, 20, 40, 100]
-enum PointsFibonacci implements Comparable<PointsFibonacci> {
+enum TaskPointsFibonacci implements Comparable<TaskPointsFibonacci> {
   X0,
   X1,
   X2,
@@ -61,13 +61,13 @@ enum PointsFibonacci implements Comparable<PointsFibonacci> {
   X100;
 
   @override
-  int compareTo(PointsFibonacci other) => index - other.index;
+  int compareTo(TaskPointsFibonacci other) => index - other.index;
 }
 
-/// tshirt points enum - task points using tshirt system
+/// task tshirt points enum - task points using tshirt system
 ///
 /// [XS, S, M, L, XL, XXL]
-enum PointsTShirt implements Comparable<PointsTShirt> {
+enum TaskPointsTShirt implements Comparable<TaskPointsTShirt> {
   XS,
   S,
   M,
@@ -76,7 +76,7 @@ enum PointsTShirt implements Comparable<PointsTShirt> {
   XXL;
 
   @override
-  int compareTo(PointsTShirt other) => index - other.index;
+  int compareTo(TaskPointsTShirt other) => index - other.index;
 }
 
 /// task parameters enum - parameters of a task class
@@ -97,9 +97,9 @@ enum TaskParameters {
     id => int,
     title => String,
     description => String,
-    status => Status,
-    priority => PriorityLevel,
-    points => PointsTShirt,
+    status => TaskStatus,
+    priority => TaskPriority,
+    points => TaskPointsTShirt,
     role => String,
     assignee => String,
     notes => String,
@@ -109,9 +109,9 @@ enum TaskParameters {
     TaskParameters.id => [],
     TaskParameters.title => [],
     TaskParameters.description => [],
-    TaskParameters.status => Status.values,
-    TaskParameters.priority => PriorityLevel.values,
-    TaskParameters.points => PointsTShirt.values,
+    TaskParameters.status => TaskStatus.values,
+    TaskParameters.priority => TaskPriority.values,
+    TaskParameters.points => TaskPointsTShirt.values,
     TaskParameters.role => [],
     TaskParameters.assignee => [],
     TaskParameters.notes => [],

@@ -5,9 +5,9 @@ class Task {
   final int id;
   String title;
   String? description;
-  Status? status;
-  PriorityLevel? priority;
-  PointsTShirt? points;
+  TaskStatus? status;
+  TaskPriority? priority;
+  TaskPointsTShirt? points;
   String? role;
   String? assignee;
   String? notes;
