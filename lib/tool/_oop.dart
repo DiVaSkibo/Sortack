@@ -3,7 +3,7 @@ import 'package:sortack/tool/_consts.dart';
 /// task class
 class Task {
   final int id;
-  String title;
+  String? title;
   String? description;
   TaskStatus? status;
   TaskPriority? priority;
@@ -14,7 +14,7 @@ class Task {
 
   Task({
     int? id,
-    required this.title,
+    this.title,
     this.description,
     this.status,
     this.priority,

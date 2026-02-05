@@ -152,10 +152,7 @@ class _KanbanPageState extends State<KanbanPage> {
       ),
       body: Ground(child: _kanbanBoard),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => _kanbanBoard.buildTasksetDialog(),
-        ),
+        onPressed: _kanbanBoard.newTask,
         child: Icon(Icons.add_task_rounded),
       ),
     );

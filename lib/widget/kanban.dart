@@ -38,8 +38,11 @@ class _KanbanCardState extends State<KanbanCard> {
     focusNode: _taskController.titleFocus,
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
     onTapOutside: (event) => _taskController.titleFocus.unfocus(),
-    style: Styles.TASK_TITLE,
-    decoration: Decorations.CARD_INPUT,
+    style: Styles.TASK_TITLE_TEXT,
+    decoration: Decorations.cardInput(
+      collapsed: true,
+      hintText: 'I have to do ...',
+    ),
   );
   TextFormField buildDescriptionField() => TextFormField(
     controller: _taskController.descriptionController,
@@ -48,8 +51,11 @@ class _KanbanCardState extends State<KanbanCard> {
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
-    style: Styles.TASK_DESCRIPTION,
-    decoration: Decorations.collapsedCardInput(labelText: 'Description'),
+    style: Styles.TASK_DESCRIPTION_TEXT,
+    decoration: Decorations.cardInput(
+      collapsed: false,
+      labelText: 'Description',
+    ),
   );
   PopupMenuButton buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
     tooltip: 'points',
@@ -71,8 +77,8 @@ class _KanbanCardState extends State<KanbanCard> {
     minLines: 1,
     maxLines: 2,
     onTapOutside: (event) => _taskController.notesFocus.unfocus(),
-    style: Styles.TASK_NOTES,
-    decoration: Decorations.collapsedCardInput(labelText: 'Notes'),
+    style: Styles.TASK_NOTES_TEXT,
+    decoration: Decorations.cardInput(collapsed: false, labelText: 'Notes'),
   );
 
   @override
@@ -137,9 +143,12 @@ class KanbanColumn {
     if (onChanged != null) onChanged!();
   }
 
-  void push(Task what) {
-    //debugPrint('${what.toString()} is pushed to $status');
-    tasks.add(what);
+  void push(Task what, {bool front = false}) {
+    //debugPrint('${what.toString()} is pushed ${front ? 'front' : 'back'} to $status');
+    if (front)
+      tasks.insert(0, what);
+    else
+      tasks.add(what);
   }
 
   void pop(Task what) {
@@ -208,11 +217,10 @@ class KanbanBoard extends StatefulWidget {
 
   final _KanbanBoardState _kanbanBoardState = _KanbanBoardState();
 
+  void newTask() => _kanbanBoardState.newTask();
   void sort({TaskParameters? by}) => _kanbanBoardState.sort(by: by);
   void filter({TaskParameters? by, dynamic from, dynamic to}) =>
       _kanbanBoardState.filter(by: by, from: from, to: to);
-
-  TasksetDialog buildTasksetDialog() => _kanbanBoardState.buildTasksetDialog();
 
   @override
   State<KanbanBoard> createState() => _kanbanBoardState;
@@ -284,6 +292,12 @@ class _KanbanBoardState extends State<KanbanBoard> {
     columns[newListIndex] = temp;
   }
 
+  void newTask() {
+    setState(() {
+      columns.first.push(Task(), front: true);
+    });
+  }
+
   void sort({TaskParameters? by}) {
     setState(() {
       for (var column in columns) column.sort(by: by);
@@ -295,17 +309,6 @@ class _KanbanBoardState extends State<KanbanBoard> {
       for (var column in columns) column.filter(by: by, from: from, to: to);
     });
   }
-
-  TasksetDialog buildTasksetDialog() => TasksetDialog.create(
-    onCancel: Navigator.of(context).pop,
-    onAccept: (task) {
-      if (task.title.isEmpty) return;
-      setState(() {
-        columns.first.push(task);
-      });
-      Navigator.of(context).pop();
-    },
-  );
 
   @override
   Widget build(BuildContext context) {

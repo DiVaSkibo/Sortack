@@ -1,12 +1,14 @@
 import 'dart:math';
 export 'dart:math';
+import 'package:sortack/tool/_abstracts.dart';
+export 'package:sortack/tool/_abstracts.dart';
 import 'package:sortack/tool/_style.dart';
 export 'package:sortack/tool/_style.dart';
 
 /// task status enum - task statuses
 ///
 /// [to do, in progress, done]
-enum TaskStatus implements Comparable<TaskStatus> {
+enum TaskStatus with ComparableEnum<TaskStatus> {
   toDo,
   inProgress,
   done;
@@ -16,15 +18,12 @@ enum TaskStatus implements Comparable<TaskStatus> {
     inProgress => Colours.INOK,
     done => Colours.OK,
   };
-
-  @override
-  int compareTo(TaskStatus other) => index - other.index;
 }
 
 /// task priority enum - task priority levels
 ///
 /// [critical, very high, high, medium, low, very low]
-enum TaskPriority implements Comparable<TaskPriority> {
+enum TaskPriority with ComparableEnum<TaskPriority> {
   critical,
   very_high,
   high,
@@ -40,34 +39,35 @@ enum TaskPriority implements Comparable<TaskPriority> {
     low => Colours.OK,
     very_low => Colours.BOTTOM,
   };
-
-  @override
-  int compareTo(TaskPriority other) => index - other.index;
 }
 
 /// task fibonacci points enum - task points using fibonacci system
 ///
 /// [0, 1, 2, 3, 5, 8, 13, 20, 40, 100]
-enum TaskPointsFibonacci implements Comparable<TaskPointsFibonacci> {
-  X0,
-  X1,
-  X2,
-  X3,
-  X5,
-  X8,
-  X13,
-  X20,
-  X40,
-  X100;
+enum TaskPointsFibonacci with TaskPointing {
+  X0(0),
+  X1(1),
+  X2(2),
+  X3(3),
+  X5(5),
+  X8(8),
+  X13(13),
+  X20(20),
+  X40(40),
+  X100(100);
+
+  final int _value;
 
   @override
-  int compareTo(TaskPointsFibonacci other) => index - other.index;
+  int get value => _value;
+
+  const TaskPointsFibonacci(this._value);
 }
 
 /// task tshirt points enum - task points using tshirt system
 ///
 /// [XS, S, M, L, XL, XXL]
-enum TaskPointsTShirt implements Comparable<TaskPointsTShirt> {
+enum TaskPointsTShirt with TaskPointing {
   XS,
   S,
   M,
@@ -76,8 +76,20 @@ enum TaskPointsTShirt implements Comparable<TaskPointsTShirt> {
   XXL;
 
   @override
-  int compareTo(TaskPointsTShirt other) => index - other.index;
+  int get value => switch (this) {
+    XS => 0,
+    S => 2,
+    M => 8,
+    L => 13,
+    XL => 20,
+    XXL => 40,
+  };
 }
+
+/// task roles enum - task roles
+///
+/// [XS, S, M, L, XL, XXL]
+enum TaskRoles with ComparableEnum { Design, Development, QA }
 
 /// task parameters enum - parameters of a task class
 ///

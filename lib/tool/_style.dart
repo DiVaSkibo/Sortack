@@ -60,29 +60,42 @@ class Styles {
     fontFamily: Fonts.RUBIK_MONO_ONE,
     fontSize: 60,
   );
-  static const TASK_TITLE = TextStyle(
+  static TextStyle columnText({Color? color}) =>
+      TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: color);
+  static const TASK_TITLE_TEXT = TextStyle(
     fontSize: 17,
     fontFamily: Fonts.RUBIK,
     fontWeight: FontWeight.w600,
     color: Colours.BACK,
   );
-  static const TASK_DESCRIPTION = TextStyle(
+  static const TASK_DESCRIPTION_TEXT = TextStyle(
     height: 1.4,
     fontSize: 13,
     fontFamily: Fonts.RUBIK,
     fontWeight: FontWeight.w500,
     color: Colours.BACK_GLOW,
   );
-  static const TASK_NOTES = TextStyle(
+  static const TASK_NOTES_TEXT = TextStyle(
     height: 1.4,
     fontSize: 11,
     fontFamily: Fonts.RUBIK,
     fontWeight: FontWeight.w500,
     fontStyle: FontStyle.italic,
-    color: Colours.BACK_GLOW,
+    color: Colours.FRONT,
   );
-  static TextStyle columnText({Color? color}) =>
-      TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.w600);
+  static TextStyle cardLabelText({double? fontSize, FontWeight? fontWeight}) =>
+      TextStyle(
+        fontSize: fontSize ?? 13,
+        fontWeight: fontWeight ?? FontWeight.w600,
+        color: Colours.UNTOP,
+      );
+  static TextStyle cardHintText({double? fontSize, FontWeight? fontWeight}) =>
+      TextStyle(
+        fontSize: fontSize ?? 15,
+        fontWeight: fontWeight ?? FontWeight.w600,
+        fontStyle: FontStyle.italic,
+        color: Colours.UNTOP,
+      );
 }
 
 /// decorations static const class - custom static const decorations
@@ -92,19 +105,21 @@ class Decorations {
     gradient: Gradients.SURFACE,
     borderRadius: BorderRadius.circular(15),
   );
-  static const CARD_INPUT = InputDecoration(
-    contentPadding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+  static InputDecoration cardInput({
+    required bool collapsed,
+    String? labelText,
+    String? hintText,
+  }) => InputDecoration(
+    contentPadding: collapsed
+        ? EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0)
+        : EdgeInsets.fromLTRB(20.0, 12.0, 10.0, 18.0),
     filled: true,
-    fillColor: Colours.TOP,
+    fillColor: Colours.o,
     hoverColor: Colours.CENTER,
+    labelText: labelText,
+    labelStyle: Styles.cardLabelText(),
+    hintText: hintText,
+    hintStyle: Styles.cardHintText(),
+    floatingLabelAlignment: FloatingLabelAlignment.center,
   );
-  static InputDecoration collapsedCardInput({String? labelText}) =>
-      InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20.0, 12.0, 10.0, 18.0),
-        filled: true,
-        fillColor: Colours.ACTOP,
-        hoverColor: Colours.CENTER,
-        labelText: labelText,
-        floatingLabelAlignment: FloatingLabelAlignment.center,
-      );
 }
