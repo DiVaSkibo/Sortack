@@ -127,20 +127,32 @@ class KanbanColumn {
   String status;
   final List<Task> tasks;
   Color? color;
-  final Function()? onChanged;
+  final Function(void Function()) setState;
+  final TextEditingController _statusController;
+  final FocusNode _statusFocus = FocusNode();
 
   KanbanColumn({
     required this.status,
     required this.tasks,
     this.color,
-    this.onChanged,
-  });
+    required this.setState,
+  }) : _statusController = TextEditingController(text: status) {
+    _statusFocus.addListener(() {
+      if (!_statusFocus.hasFocus)
+        setState(() {
+          status = _statusController.text;
+          debugPrint(
+            'Column status:\n"$status"\n\t("${_statusController.text}")',
+          );
+        });
+    });
+  }
 
   final _filter = {};
 
-  void setState(void Function() fn) {
-    fn();
-    if (onChanged != null) onChanged!();
+  void dispose() {
+    _statusController.dispose();
+    _statusFocus.dispose();
   }
 
   void push(Task what, {bool front = false}) {
@@ -195,7 +207,17 @@ class KanbanColumn {
     return DragAndDropList(
       verticalAlignment: CrossAxisAlignment.center,
       decoration: Decorations.SURFACE_BOX,
-      header: Text(status, style: Styles.columnText(color: color)),
+      header:
+          //Text(status, style: Styles.columnText(color: color)),
+          TextField(
+            controller: _statusController,
+            focusNode: _statusFocus,
+            textAlign: TextAlign.center,
+            onEditingComplete: () => _statusFocus.unfocus(),
+            onTapOutside: (event) => _statusFocus.unfocus(),
+            style: Styles.columnText(color: color),
+            decoration: Decorations.columnInput(),
+          ),
       contentsWhenEmpty: Icon(unicon(), size: 30),
       children: List.generate(
         filteredTasks.length,
@@ -217,6 +239,10 @@ class KanbanBoard extends StatefulWidget {
 
   final _KanbanBoardState _kanbanBoardState = _KanbanBoardState();
 
+  void push(KanbanColumn what) => _kanbanBoardState.push(what);
+  void pop(KanbanColumn what) => _kanbanBoardState.pop(what);
+  void insert(KanbanColumn what, int where) =>
+      _kanbanBoardState.insert(what, where);
   void newTask() => _kanbanBoardState.newTask();
   void sort({TaskParameters? by}) => _kanbanBoardState.sort(by: by);
   void filter({TaskParameters? by, dynamic from, dynamic to}) =>
@@ -244,7 +270,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           points: TaskPointsTShirt.L,
         ),
       ],
-      onChanged: () => setState(() {}),
+      setState: setState,
     ),
     KanbanColumn(
       status: 'In Progress',
@@ -256,7 +282,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           points: TaskPointsTShirt.S,
         ),
       ],
-      onChanged: () => setState(() {}),
+      setState: setState,
     ),
     KanbanColumn(
       status: 'Done',
@@ -274,7 +300,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           points: TaskPointsTShirt.XXL,
         ),
       ],
-      onChanged: () => setState(() {}),
+      setState: setState,
     ),
   ];
   final ScrollController _columnsScrollController = ScrollController();
@@ -282,7 +308,46 @@ class _KanbanBoardState extends State<KanbanBoard> {
   @override
   void dispose() {
     _columnsScrollController.dispose();
+    for (final KanbanColumn column in columns) column.dispose();
     super.dispose();
+  }
+
+  void push(KanbanColumn what, {bool front = false}) {
+    //debugPrint('${what.toString()} is pushed ${front ? 'front' : 'back'} to $this');
+    var column = KanbanColumn(
+      status: what.status,
+      tasks: [],
+      color: what.color,
+      setState: setState,
+    );
+    setState(() {
+      if (front)
+        columns.insert(0, column);
+      else
+        columns.add(column);
+    });
+  }
+
+  void pop(KanbanColumn what) {
+    //debugPrint('${what.toString()} is poped from $this');
+    setState(() {
+      columns.remove(what);
+    });
+    //debugPrint('$this: ${columns.map((column) => column.tasks).toString()}');
+  }
+
+  void insert(KanbanColumn what, int where) {
+    //debugPrint('${what.toString()} is inserted at $where');
+    var column = KanbanColumn(
+      status: what.status,
+      tasks: [],
+      color: what.color,
+      setState: setState,
+    );
+    setState(() {
+      columns.insert(where, column);
+    });
+    //debugPrint('$this: ${columns.map((column) => column.tasks).toString()}');
   }
 
   void swap(int oldListIndex, int newListIndex) {
@@ -320,8 +385,8 @@ class _KanbanBoardState extends State<KanbanBoard> {
         listWidth: MediaQuery.of(context).size.width / 3,
         listPadding: const EdgeInsets.all(8.0),
         lastItemTargetHeight: 200,
-        itemDragOnLongPress: false,
-        listDragOnLongPress: false,
+        // itemDragOnLongPress: false,
+        // listDragOnLongPress: false,
         scrollController: _columnsScrollController,
         children: columns.map((column) => column.build()).toList(),
         onItemReorder:

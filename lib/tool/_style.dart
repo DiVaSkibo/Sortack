@@ -105,6 +105,9 @@ class Decorations {
     gradient: Gradients.SURFACE,
     borderRadius: BorderRadius.circular(15),
   );
+  static InputDecoration columnInput() => InputDecoration(
+    contentPadding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
+  );
   static InputDecoration cardInput({
     required bool collapsed,
     String? labelText,

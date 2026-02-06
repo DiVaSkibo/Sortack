@@ -24,6 +24,17 @@ class _KanbanPageState extends State<KanbanPage> {
           icon: Icon(Icons.keyboard_return_rounded),
         ),
         actions: <Widget>[
+          IconButton(
+            onPressed: () => _kanbanBoard.push(
+              KanbanColumn(status: '...', tasks: [], setState: (_) {}),
+            ),
+            icon: Icon(Icons.add_box_outlined),
+          ),
+          IconButton(
+            onPressed: () => {},
+            //_kanbanBoard.pop(KanbanColumn(status: '...', tasks: [])),
+            icon: Icon(Icons.indeterminate_check_box_outlined),
+          ),
           PopupMenuButton<TaskParameters>(
             tooltip: 'sort',
             initialValue: _buf['sort'],
