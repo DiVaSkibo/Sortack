@@ -123,13 +123,16 @@ class _KanbanCardState extends State<KanbanCard> {
 }
 
 /// Kanban column class - list of tasks of a particular status
-class KanbanColumn {
+class KanbanColumn with Collecting<Task> {
   String status;
   final List<Task> tasks;
   Color? color;
   final Function(void Function()) setState;
   final TextEditingController _statusController;
   final FocusNode _statusFocus = FocusNode();
+
+  @override
+  get collection => tasks;
 
   KanbanColumn({
     required this.status,
@@ -153,33 +156,6 @@ class KanbanColumn {
   void dispose() {
     _statusController.dispose();
     _statusFocus.dispose();
-  }
-
-  void push(Task what, {bool front = false}) {
-    //debugPrint('${what.toString()} is pushed ${front ? 'front' : 'back'} to $status');
-    if (front)
-      tasks.insert(0, what);
-    else
-      tasks.add(what);
-  }
-
-  void pop(Task what) {
-    //debugPrint('${what.toString()} is poped from $status');
-    tasks.remove(what);
-    //debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
-  }
-
-  void insert(Task what, int where) {
-    //debugPrint('${what.toString()} is inserted at $where');
-    tasks.insert(where, what);
-    //debugPrint('$status: ${tasks.map((task) => task.title).toString()}');
-  }
-
-  void swap(int oldItemIndex, int newItemIndex) {
-    if (oldItemIndex == newItemIndex) return;
-    var temp = tasks[oldItemIndex];
-    tasks[oldItemIndex] = tasks[newItemIndex];
-    tasks[newItemIndex] = temp;
   }
 
   void sort({TaskParameters? by}) {
@@ -252,7 +228,8 @@ class KanbanBoard extends StatefulWidget {
   State<KanbanBoard> createState() => _kanbanBoardState;
 }
 
-class _KanbanBoardState extends State<KanbanBoard> {
+class _KanbanBoardState extends State<KanbanBoard>
+    with Collecting<KanbanColumn> {
   late final List<KanbanColumn> columns = <KanbanColumn>[
     KanbanColumn(
       status: 'To Do',
@@ -306,13 +283,17 @@ class _KanbanBoardState extends State<KanbanBoard> {
   final ScrollController _columnsScrollController = ScrollController();
 
   @override
+  get collection => columns;
+
+  @override
   void dispose() {
     _columnsScrollController.dispose();
     for (final KanbanColumn column in columns) column.dispose();
     super.dispose();
   }
 
-  void push(KanbanColumn what, {bool front = false}) {
+  @override
+  void push(what, {bool front = false}) {
     //debugPrint('${what.toString()} is pushed ${front ? 'front' : 'back'} to $this');
     var column = KanbanColumn(
       status: what.status,
@@ -328,14 +309,16 @@ class _KanbanBoardState extends State<KanbanBoard> {
     });
   }
 
-  void pop(KanbanColumn what) {
-    //debugPrint('${what.toString()} is poped from $this');
-    setState(() {
-      columns.remove(what);
-    });
-    //debugPrint('$this: ${columns.map((column) => column.tasks).toString()}');
-  }
+  // @override
+  // void pop(KanbanColumn what) {
+  //   //debugPrint('${what.toString()} is poped from $this');
+  //   setState(() {
+  //     columns.remove(what);
+  //   });
+  //   //debugPrint('$this: ${columns.map((column) => column.tasks).toString()}');
+  // }
 
+  @override
   void insert(KanbanColumn what, int where) {
     //debugPrint('${what.toString()} is inserted at $where');
     var column = KanbanColumn(
@@ -348,13 +331,6 @@ class _KanbanBoardState extends State<KanbanBoard> {
       columns.insert(where, column);
     });
     //debugPrint('$this: ${columns.map((column) => column.tasks).toString()}');
-  }
-
-  void swap(int oldListIndex, int newListIndex) {
-    if (oldListIndex == newListIndex) return;
-    var temp = columns[oldListIndex];
-    columns[oldListIndex] = columns[newListIndex];
-    columns[newListIndex] = temp;
   }
 
   void newTask() {
@@ -393,7 +369,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
             (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
               if (oldListIndex == newListIndex) {
                 setState(() {
-                  columns[newListIndex].swap(oldItemIndex, newItemIndex);
+                  columns[newListIndex].move(oldItemIndex, newItemIndex);
                 });
               } else {
                 var task = columns[oldListIndex].tasks.elementAt(oldItemIndex);
@@ -405,7 +381,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
             },
         onListReorder: (oldListIndex, newListIndex) {
           setState(() {
-            swap(oldListIndex, newListIndex);
+            move(oldListIndex, newListIndex);
           });
         },
       ),
