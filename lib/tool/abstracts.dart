@@ -1,3 +1,5 @@
+//import 'package:sortack/tool/style.dart';
+
 mixin ComparableEnum<T> implements Comparable<ComparableEnum> {
   int get index;
 
@@ -12,7 +14,12 @@ mixin TaskPointing implements Comparable<TaskPointing> {
   int compareTo(other) => value - other.value;
 }
 
-mixin Collecting<T> {
+abstract interface class Parameters {
+  Type type();
+  List parameterValues();
+}
+
+abstract class Collector<T> {
   List<T> get collection;
 
   bool isEmpty() => collection.isEmpty;

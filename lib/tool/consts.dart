@@ -91,7 +91,7 @@ enum TaskRoles with ComparableEnum { Design, Development, QA }
 /// task parameters enum - parameters of a task class
 ///
 /// [id, title, description, status, priority, points, role, assignee, notes]
-enum TaskParameters {
+enum TaskParameters implements Parameters {
   id,
   title,
   description,
@@ -102,6 +102,7 @@ enum TaskParameters {
   assignee,
   notes;
 
+  @override
   Type type() => switch (this) {
     id => int,
     title => String,
@@ -113,7 +114,7 @@ enum TaskParameters {
     assignee => String,
     notes => String,
   };
-
+  @override
   List parameterValues() => switch (this) {
     TaskParameters.id => [],
     TaskParameters.title => [],
