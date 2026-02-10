@@ -2,7 +2,7 @@ import 'package:sortack/_tools.dart';
 
 /// immutable task class
 @immutable
-class Task {
+class Task with Parameterizable<TaskParameters> {
   final int id;
   String title;
   String description;
@@ -25,21 +25,21 @@ class Task {
     this.notes = '',
   }) : id = id ?? DateTime.now().millisecondsSinceEpoch;
 
-  dynamic getParameter(TaskParameters parameter, {bool comparable = false}) =>
-      switch (parameter) {
-        TaskParameters.id => id,
-        TaskParameters.title => title,
-        TaskParameters.description => description,
-        TaskParameters.status => comparable ? status.index : status,
-        TaskParameters.priority =>
-          comparable ? (priority != null ? priority!.index : -1) : priority,
-        TaskParameters.points =>
-          comparable ? (points != null ? points!.index : -1) : points,
-        TaskParameters.role =>
-          role, //comparable ? (role != null ? role!.index : -1) : role,
-        TaskParameters.assignee => assignee,
-        TaskParameters.notes => notes,
-      };
+  @override
+  dynamic getParameter(parameter, {comparable = false}) => switch (parameter) {
+    TaskParameters.id => id,
+    TaskParameters.title => title,
+    TaskParameters.description => description,
+    TaskParameters.status => comparable ? status.index : status,
+    TaskParameters.priority =>
+      comparable ? (priority != null ? priority!.index : -1) : priority,
+    TaskParameters.points =>
+      comparable ? (points != null ? points!.index : -1) : points,
+    TaskParameters.role =>
+      role, //comparable ? (role != null ? role!.index : -1) : role,
+    TaskParameters.assignee => assignee,
+    TaskParameters.notes => notes,
+  };
 
   Task copyWith({
     String? title,
@@ -61,14 +61,6 @@ class Task {
     assignee: assignee ?? this.assignee,
     notes: notes ?? this.notes,
   );
-
-  int compareTo(Task other, {TaskParameters by = TaskParameters.id}) {
-    final dynamic aValue = getParameter(by, comparable: true);
-    final dynamic bValue = other.getParameter(by, comparable: true);
-    if (aValue == null) return 0;
-    if (bValue == null) return 1;
-    return aValue.compareTo(bValue);
-  }
 
   bool testInterval<T extends Comparable>({
     required TaskParameters by,

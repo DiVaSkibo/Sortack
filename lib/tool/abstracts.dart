@@ -7,6 +7,25 @@ mixin ComparableEnum<T> implements Comparable<ComparableEnum> {
   int compareTo(other) => index - other.index;
 }
 
+final class FromTo<T extends Comparable> {
+  final T from;
+  final T to;
+
+  const FromTo({required this.from, required this.to});
+
+  bool check(T value) {
+    //if (value == null) return false;
+    //if (value is Comparable && from is Comparable && to is Comparable)
+    //  return from.compareTo(to) <= 0
+    //      ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
+    //      : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
+    //return value == from;
+    return from.compareTo(to) <= 0
+        ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
+        : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
+  }
+}
+
 mixin TaskPointing implements Comparable<TaskPointing> {
   int get value;
 
@@ -17,6 +36,17 @@ mixin TaskPointing implements Comparable<TaskPointing> {
 abstract interface class Parameters {
   Type type();
   List parameterValues();
+}
+
+abstract mixin class Parameterizable<T extends Parameters> {
+  dynamic getParameter(T parameter, {bool comparable = false});
+  int compareTo(Parameterizable other, T by) {
+    final dynamic aValue = getParameter(by, comparable: true);
+    final dynamic bValue = other.getParameter(by, comparable: true);
+    if (aValue == null) return 0;
+    if (bValue == null) return 1;
+    return aValue.compareTo(bValue);
+  }
 }
 
 abstract class Collector<T> {
