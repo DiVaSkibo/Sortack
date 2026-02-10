@@ -144,4 +144,22 @@ class TaskController extends ChangeNotifier {
       }
     });
   }
+
+  void updateStatus(TaskStatus status) {
+    if (_task.status == status) return;
+    _task.copyWith(status: status);
+    notifyListeners();
+  }
+
+  void updatePriority(TaskPriority priority) {
+    if (_task.priority == priority) return;
+    _task.copyWith(priority: priority);
+    notifyListeners();
+  }
+
+  void updatePoints(TaskPointsTShirt points) {
+    if (_task.points == points) return;
+    _task.copyWith(points: points);
+    notifyListeners();
+  }
 }

@@ -1,4 +1,4 @@
 export 'dart:math';
-export 'package:sortack/tool/abstracts.dart';
-export 'package:sortack/tool/style.dart';
-export 'package:sortack/tool/consts.dart';
+export 'tool/style.dart';
+export 'tool/abstracts.dart';
+export 'tool/consts.dart';

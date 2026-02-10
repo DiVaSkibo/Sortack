@@ -1,31 +1,27 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:sortack/tool/consts.dart';
-import 'package:sortack/tool/_oop.dart';
-import 'package:sortack/widget/_base.dart';
+import 'package:sortack/_tools.dart';
+import 'package:sortack/_logics.dart';
+import 'package:sortack/widget/basic.dart';
 
 /// Kanban card widget - card with a task info
 class KanbanCard extends StatefulWidget {
   final Task task;
-  final void Function(Task what)? onDelete;
+  final VoidCallback onDelete;
 
-  const KanbanCard({super.key, required this.task, this.onDelete});
-
-  KanbanCard.from({
-    super.key,
-    required String title,
-    String? description,
-    TaskPointsTShirt? points,
-    this.onDelete,
-  }) : task = Task(title: title, description: description, points: points);
+  const KanbanCard({super.key, required this.task, required this.onDelete});
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
 }
 
 class _KanbanCardState extends State<KanbanCard> {
-  late Task task = widget.task;
-  late final void Function(Task what)? onDelete = widget.onDelete;
-  late final _taskController = TaskController(task, setState: setState);
+  late final TaskController _taskController;
+
+  @override
+  void initState() {
+    super.initState();
+    _taskController = TaskController(widget.task);
+  }
 
   @override
   void dispose() {
@@ -59,14 +55,18 @@ class _KanbanCardState extends State<KanbanCard> {
   );
   PopupMenuButton buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
     tooltip: 'points',
-    initialValue: task.points,
-    child: Text(task.points != null ? task.points!.name.toString() : '?'),
+    initialValue: _taskController.task.points,
+    child: Text(
+      _taskController.task.points != null
+          ? _taskController.task.points!.name.toString()
+          : '?',
+    ),
     itemBuilder: (context) => TaskPointsTShirt.values
         .map((value) => PopupMenuItem(value: value, child: Text(value.name)))
         .toList(),
     onSelected: (TaskPointsTShirt value) {
       setState(() {
-        task.points = value;
+        _taskController.updatePoints(value);
       });
     },
   );
@@ -83,41 +83,44 @@ class _KanbanCardState extends State<KanbanCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      maintainState: true,
-      expandedCrossAxisAlignment: CrossAxisAlignment.center,
-      collapsedShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(34),
-        side: BorderSide.none,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(34),
-        side: BorderSide.none,
-      ),
-      leading: const Icon(Icons.task_rounded),
-      title: buildTitleField(),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AcceptDialog(
-                message: 'Do you realy want to delete this task?...',
-                onCancel: Navigator.of(context).pop,
-                onAccept: () {
-                  if (onDelete != null) onDelete!(task);
-                  Navigator.of(context).pop();
-                },
-                icon: Icons.remove_rounded,
+    return ListenableBuilder(
+      listenable: _taskController,
+      builder: (context, child) => ExpansionTile(
+        maintainState: true,
+        expandedCrossAxisAlignment: CrossAxisAlignment.center,
+        collapsedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(34),
+          side: BorderSide.none,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(34),
+          side: BorderSide.none,
+        ),
+        leading: const Icon(Icons.task_rounded),
+        title: buildTitleField(),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => AcceptDialog(
+                  message: 'Do you realy want to delete this task?...',
+                  onCancel: Navigator.of(context).pop,
+                  onAccept: () {
+                    Navigator.of(context).pop();
+                    widget.onDelete;
+                  },
+                  icon: Icons.remove_rounded,
+                ),
               ),
+              icon: Icon(Icons.remove_rounded),
             ),
-            icon: Icon(Icons.remove_rounded),
-          ),
-        ],
+          ],
+        ),
+        trailing: buildPointsField(),
+        children: [buildDescriptionField(), buildNotesField()],
       ),
-      trailing: buildPointsField(),
-      children: [buildDescriptionField(), buildNotesField()],
     );
   }
 }
