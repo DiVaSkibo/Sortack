@@ -15,6 +15,6 @@ abstract class TaskCollector extends Collector<Task>
 
   @override
   void sort({by = TaskParameters.id}) {
-    tasks.sort((a, b) => a.compareTo(b, by: by));
+    tasks.sort((a, b) => a.compareTo(b, by));
   }
 }

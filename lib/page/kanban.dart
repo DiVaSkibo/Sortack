@@ -1,5 +1,5 @@
 import 'package:sortack/tool/consts.dart';
-import 'package:sortack/widget/basic.dart';
+import 'package:sortack/widget/basics.dart';
 import 'package:sortack/widget/kanban.dart';
 
 class KanbanPage extends StatefulWidget {

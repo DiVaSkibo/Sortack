@@ -1,7 +1,7 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
-import 'package:sortack/widget/basic.dart';
+import 'package:sortack/widget/basics.dart';
 
 /// Kanban card widget - card with a task info
 class KanbanCard extends StatefulWidget {

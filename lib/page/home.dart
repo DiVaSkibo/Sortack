@@ -1,6 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sortack/tool/consts.dart';
-import 'package:sortack/widget/basic.dart';
+import 'package:sortack/widget/basics.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
