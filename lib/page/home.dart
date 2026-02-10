@@ -1,5 +1,5 @@
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sortack/tool/_consts.dart';
+import 'package:sortack/tool/consts.dart';
 import 'package:sortack/widget/_base.dart';
 
 class MyHomePage extends StatefulWidget {

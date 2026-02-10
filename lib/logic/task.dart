@@ -1,0 +1,147 @@
+import 'package:sortack/_tools.dart';
+
+/// immutable task class
+@immutable
+class Task {
+  final int id;
+  String title;
+  String description;
+  TaskStatus status;
+  TaskPriority? priority;
+  TaskPointsTShirt? points;
+  String? role;
+  String? assignee;
+  String notes;
+
+  Task({
+    int? id,
+    this.title = '',
+    this.description = '',
+    this.status = TaskStatus.toDo,
+    this.priority,
+    this.points,
+    this.role,
+    this.assignee,
+    this.notes = '',
+  }) : id = id ?? DateTime.now().millisecondsSinceEpoch;
+
+  dynamic getParameter(TaskParameters parameter, {bool comparable = false}) =>
+      switch (parameter) {
+        TaskParameters.id => id,
+        TaskParameters.title => title,
+        TaskParameters.description => description,
+        TaskParameters.status => comparable ? status.index : status,
+        TaskParameters.priority =>
+          comparable ? (priority != null ? priority!.index : -1) : priority,
+        TaskParameters.points =>
+          comparable ? (points != null ? points!.index : -1) : points,
+        TaskParameters.role =>
+          role, //comparable ? (role != null ? role!.index : -1) : role,
+        TaskParameters.assignee => assignee,
+        TaskParameters.notes => notes,
+      };
+
+  Task copyWith({
+    String? title,
+    String? description,
+    TaskStatus? status,
+    TaskPriority? priority,
+    TaskPointsTShirt? points,
+    String? role,
+    String? assignee,
+    String? notes,
+  }) => Task(
+    id: id,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    status: status ?? this.status,
+    priority: priority ?? this.priority,
+    points: points ?? this.points,
+    role: role ?? this.role,
+    assignee: assignee ?? this.assignee,
+    notes: notes ?? this.notes,
+  );
+
+  int compareTo(Task other, {TaskParameters by = TaskParameters.id}) {
+    final dynamic aValue = getParameter(by, comparable: true);
+    final dynamic bValue = other.getParameter(by, comparable: true);
+    if (aValue == null) return 0;
+    if (bValue == null) return 1;
+    return aValue.compareTo(bValue);
+  }
+
+  bool testInterval<T extends Comparable>({
+    required TaskParameters by,
+    required T from,
+    required T to,
+  }) {
+    dynamic value = getParameter(by);
+    if (value == null) return false;
+    if (from == to) return value.compareTo(from) == 0;
+    return from.compareTo(to) <= 0
+        ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
+        : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
+  }
+
+  @override
+  String toString() =>
+      '[$id]\n"$title": "$description"\n $status ^$priority .$points\n @"$role" %"$assignee"\n"$notes"';
+}
+
+/// task controller - control task parameters
+class TaskController extends ChangeNotifier {
+  Task _task;
+  Task get task => _task;
+
+  late final TextEditingController titleController;
+  late final TextEditingController descriptionController;
+  late final TextEditingController notesController;
+  final FocusNode titleFocus = FocusNode();
+  final FocusNode descriptionFocus = FocusNode();
+  final FocusNode notesFocus = FocusNode();
+
+  TaskController(Task initialTask) : _task = initialTask {
+    _initializeControllers();
+    _setupFocusListeners();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    notesController.dispose();
+    titleFocus.dispose();
+    descriptionFocus.dispose();
+    notesFocus.dispose();
+    super.dispose();
+  }
+
+  void _initializeControllers() {
+    titleController = TextEditingController(text: _task.title);
+    descriptionController = TextEditingController(text: _task.description);
+    notesController = TextEditingController(text: _task.notes);
+  }
+
+  void _setupFocusListeners() {
+    titleFocus.addListener(() {
+      if (!titleFocus.hasFocus && titleController.text != _task.title) {
+        debugPrint("Saving Title: ${titleController.text}");
+        _task = _task.copyWith(title: titleController.text);
+        notifyListeners();
+      }
+    });
+    descriptionFocus.addListener(() {
+      if (!descriptionFocus.hasFocus &&
+          descriptionController.text != _task.description) {
+        _task = _task.copyWith(description: descriptionController.text);
+        notifyListeners();
+      }
+    });
+    notesFocus.addListener(() {
+      if (!notesFocus.hasFocus && notesController.text != _task.notes) {
+        _task = _task.copyWith(notes: notesController.text);
+        notifyListeners();
+      }
+    });
+  }
+}

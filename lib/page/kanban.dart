@@ -1,4 +1,4 @@
-import 'package:sortack/tool/_consts.dart';
+import 'package:sortack/tool/consts.dart';
 import 'package:sortack/widget/_base.dart';
 import 'package:sortack/widget/kanban.dart';
 

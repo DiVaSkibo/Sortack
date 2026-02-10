@@ -1,5 +1,4 @@
-import 'package:sortack/tool/_consts.dart';
-import 'package:sortack/tool/_oop.dart';
+import 'package:sortack/_tools.dart';
 
 /// ground widget - filled page background
 class Ground extends StatelessWidget {
@@ -15,60 +14,6 @@ class Ground extends StatelessWidget {
       decoration: Decorations.GROUND_BOX,
       child: child,
     );
-  }
-}
-
-/// task controller - control task parameters
-class TaskController {
-  final Task task;
-  final TextEditingController titleController;
-  final TextEditingController descriptionController;
-  final TextEditingController notesController;
-  final FocusNode titleFocus = FocusNode();
-  final FocusNode descriptionFocus = FocusNode();
-  final FocusNode notesFocus = FocusNode();
-  void Function(void Function()) setState;
-
-  TaskController(this.task, {required this.setState})
-    : titleController = TextEditingController(text: task.title),
-      descriptionController = TextEditingController(text: task.description),
-      notesController = TextEditingController(text: task.notes) {
-    titleFocus.addListener(() {
-      if (!titleFocus.hasFocus)
-        setState(() {
-          task.title = titleController.text;
-          debugPrint(
-            'Task title:\n"${task.title}"\n\t("${titleController.text}")',
-          );
-        });
-    });
-    descriptionFocus.addListener(() {
-      if (!descriptionFocus.hasFocus)
-        setState(() {
-          task.description = descriptionController.text;
-          debugPrint(
-            'Task description:\n"${task.description}"\n\t("${descriptionController.text}")',
-          );
-        });
-    });
-    notesFocus.addListener(() {
-      if (!notesFocus.hasFocus)
-        setState(() {
-          task.notes = notesController.text;
-          debugPrint(
-            'Task notes:\n"${task.notes}"\n\t("${notesController.text}")',
-          );
-        });
-    });
-  }
-
-  void dispose() {
-    titleController.dispose();
-    descriptionController.dispose();
-    notesController.dispose();
-    titleFocus.dispose();
-    descriptionFocus.dispose();
-    notesFocus.dispose();
   }
 }
 

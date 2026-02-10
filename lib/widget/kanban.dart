@@ -1,5 +1,5 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:sortack/tool/_consts.dart';
+import 'package:sortack/tool/consts.dart';
 import 'package:sortack/tool/_oop.dart';
 import 'package:sortack/widget/_base.dart';
 

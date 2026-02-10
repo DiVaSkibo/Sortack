@@ -1,9 +1,6 @@
 import 'dart:math';
-export 'dart:math';
-import 'package:sortack/tool/_abstracts.dart';
-export 'package:sortack/tool/_abstracts.dart';
-import 'package:sortack/tool/_style.dart';
-export 'package:sortack/tool/_style.dart';
+import 'package:sortack/tool/abstracts.dart';
+import 'package:sortack/tool/style.dart';
 
 /// task status enum - task statuses
 ///
