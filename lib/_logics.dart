@@ -1,2 +1,2 @@
-export 'logic/task.dart';
-export 'logic/task_collector.dart';
+export 'package:sortack/logic/task.dart';
+export 'package:sortack/logic/task_collectors.dart';
