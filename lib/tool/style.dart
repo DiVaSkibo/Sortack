@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 export 'package:flutter/material.dart';
 
 /// fonts static const class - custom static const fonts
-class Fonts {
+final class Fonts {
   static const RUBIK = 'Rubik';
   static const RUBIK_ONE = 'Rubik One';
   static const RUBIK_MONO_ONE = 'Rubik Mono One';
 }
 
 /// colours static const class - custom static const colours
-class Colours {
+final class Colours {
   static const o = Colors.transparent;
   static const W = Color(0xFF_FFFFFF);
   static const B = Color(0xFF_000000);
@@ -41,7 +41,7 @@ class Colours {
 }
 
 /// gradients static const class - custom static const gradients
-class Gradients {
+final class Gradients {
   static const GROUND = RadialGradient(
     center: Alignment.bottomCenter,
     radius: 1.0,
@@ -55,7 +55,7 @@ class Gradients {
 }
 
 /// styles static const class - custom static const styles
-class Styles {
+final class Styles {
   static const LARGE_TEXT = TextStyle(
     fontFamily: Fonts.RUBIK_MONO_ONE,
     fontSize: 60,
@@ -99,7 +99,7 @@ class Styles {
 }
 
 /// decorations static const class - custom static const decorations
-class Decorations {
+final class Decorations {
   static const GROUND_BOX = BoxDecoration(gradient: Gradients.GROUND);
   static final SURFACE_BOX = BoxDecoration(
     gradient: Gradients.SURFACE,
