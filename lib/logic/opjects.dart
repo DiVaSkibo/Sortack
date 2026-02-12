@@ -1,5 +1,49 @@
 import 'package:sortack/_tools.dart';
 
+final class ColoredTitleController extends ChangeNotifier {
+  String _title;
+  Color _color;
+  String get title => _title;
+  Color get color => _color;
+
+  late final TextEditingController titleController;
+  final FocusNode titleFocus = FocusNode();
+
+  ColoredTitleController({String? initialTitle, Color? initialColor})
+    : _title = initialTitle ?? '',
+      _color = initialColor ?? Colours.BOTTOM {
+    _initializeControllers();
+    _setupFocusListeners();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    titleFocus.dispose();
+    super.dispose();
+  }
+
+  void _initializeControllers() {
+    titleController = TextEditingController(text: _title);
+  }
+
+  void _setupFocusListeners() {
+    titleFocus.addListener(() {
+      if (!titleFocus.hasFocus && titleController.text != _title) {
+        _title = titleController.text;
+        notifyListeners();
+      }
+    });
+  }
+
+  void updateColor(Color value) {
+    if (_color == value) return;
+    _color = value;
+    notifyListeners();
+  }
+}
+
+/// base filter criteria class
 base class FilterCriteria<T extends Parameters> {
   final Map<T, dynamic> _criteria;
 
@@ -28,10 +72,13 @@ base class FilterCriteria<T extends Parameters> {
   }
 }
 
+/// sortable mixin
 mixin Sortable<T extends Parameterizable, F extends Parameters>
     on Collector<T> {
   void sort({F by});
 }
+
+/// filterable mixin
 mixin Filterable<T extends Parameterizable, F extends Parameters>
     on Collector<T> {
   final FilterCriteria filterCriterias = FilterCriteria();

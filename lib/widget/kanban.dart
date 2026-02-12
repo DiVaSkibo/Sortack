@@ -1,12 +1,13 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
+import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/widget/basics.dart';
 
-/// Kanban card widget - card with a task info
+/// Kanban card widget - task view
 class KanbanCard extends StatefulWidget {
   final Task task;
-  final VoidCallback onDelete;
+  final Function(Task) onDelete;
 
   const KanbanCard({super.key, required this.task, required this.onDelete});
 
@@ -16,6 +17,7 @@ class KanbanCard extends StatefulWidget {
 
 class _KanbanCardState extends State<KanbanCard> {
   late final TaskController _taskController;
+  Task get task => _taskController.task;
 
   @override
   void initState() {
@@ -55,12 +57,8 @@ class _KanbanCardState extends State<KanbanCard> {
   );
   PopupMenuButton buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
     tooltip: 'points',
-    initialValue: _taskController.task.points,
-    child: Text(
-      _taskController.task.points != null
-          ? _taskController.task.points!.name.toString()
-          : '?',
-    ),
+    initialValue: task.points,
+    child: Text(task.points != null ? task.points!.name.toString() : '?'),
     itemBuilder: (context) => TaskPointsTShirt.values
         .map((value) => PopupMenuItem(value: value, child: Text(value.name)))
         .toList(),
@@ -109,7 +107,7 @@ class _KanbanCardState extends State<KanbanCard> {
                   onCancel: Navigator.of(context).pop,
                   onAccept: () {
                     Navigator.of(context).pop();
-                    widget.onDelete;
+                    widget.onDelete(task);
                   },
                   icon: Icons.remove_rounded,
                 ),
@@ -125,86 +123,55 @@ class _KanbanCardState extends State<KanbanCard> {
   }
 }
 
-/// Kanban column class - list of tasks of a particular status
-class KanbanColumn with Collecting<Task> {
-  String status;
-  final List<Task> tasks;
-  Color? color;
-  final Function(void Function()) setState;
-  final TextEditingController _statusController;
-  final FocusNode _statusFocus = FocusNode();
+/// Kanban column class - titled task collector view
+final class KanbanColumn {
+  final TitledTaskCollector tasks;
+  final VoidCallback onChanged;
+  final VoidCallback onDelete;
 
-  @override
-  get collection => tasks;
+  List<Task> get visibleTasks => tasks.visibleTasks;
+  final ColoredTitleController _coloredTitleController;
 
   KanbanColumn({
-    required this.status,
-    required this.tasks,
-    this.color,
-    required this.setState,
-  }) : _statusController = TextEditingController(text: status) {
-    _statusFocus.addListener(() {
-      if (!_statusFocus.hasFocus)
-        setState(() {
-          status = _statusController.text;
-          debugPrint(
-            'Column status:\n"$status"\n\t("${_statusController.text}")',
-          );
-        });
-    });
-  }
-
-  final _filter = {};
+    String? title,
+    Color? color,
+    TitledTaskCollector? tasks,
+    required this.onChanged,
+    required this.onDelete,
+  }) : tasks = tasks ?? TitledTaskCollector(),
+       _coloredTitleController = ColoredTitleController(
+         initialTitle: title,
+         initialColor: color,
+       );
 
   void dispose() {
-    _statusController.dispose();
-    _statusFocus.dispose();
-  }
-
-  void sort({TaskParameters? by}) {
-    by != null ? tasks.sort((a, b) => a.compareTo(b, by: by)) : tasks.sort();
-  }
-
-  void filter({TaskParameters? by, dynamic from, dynamic to}) {
-    _filter['by'] = by;
-    _filter['from'] = from;
-    _filter['to'] = to;
+    _coloredTitleController.dispose();
   }
 
   DragAndDropList build() {
-    var filteredTasks = _filter['by'] != null
-        ? tasks
-              .where(
-                (x) => x.testInterval(
-                  by: _filter['by'],
-                  from: _filter['from'],
-                  to: _filter['to'],
-                ),
-              )
-              .toList()
-        : tasks;
     return DragAndDropList(
       verticalAlignment: CrossAxisAlignment.center,
       decoration: Decorations.SURFACE_BOX,
-      header:
-          //Text(status, style: Styles.columnText(color: color)),
-          TextField(
-            controller: _statusController,
-            focusNode: _statusFocus,
-            textAlign: TextAlign.center,
-            onEditingComplete: () => _statusFocus.unfocus(),
-            onTapOutside: (event) => _statusFocus.unfocus(),
-            style: Styles.columnText(color: color),
-            decoration: Decorations.columnInput(),
-          ),
+      header: ListenableBuilder(
+        listenable: _coloredTitleController,
+        builder: (context, child) => TextField(
+          controller: _coloredTitleController.titleController,
+          focusNode: _coloredTitleController.titleFocus,
+          textAlign: TextAlign.center,
+          onEditingComplete: () => _coloredTitleController.titleFocus.unfocus(),
+          onTapOutside: (event) => _coloredTitleController.titleFocus.unfocus(),
+          style: Styles.columnText(color: _coloredTitleController.color),
+          decoration: Decorations.columnInput(),
+        ),
+      ),
       contentsWhenEmpty: Icon(unicon(), size: 30),
       children: List.generate(
-        filteredTasks.length,
+        visibleTasks.length,
         (index) => DragAndDropItem(
           child: KanbanCard(
-            key: ValueKey(filteredTasks[index].title),
-            task: filteredTasks[index],
-            onDelete: (what) => setState(() => pop(what)),
+            key: ValueKey(visibleTasks[index].title),
+            task: visibleTasks[index],
+            onDelete: (what) => tasks.pop(what),
           ),
         ),
       ),

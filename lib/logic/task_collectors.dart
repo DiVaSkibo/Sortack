@@ -8,9 +8,9 @@ sealed class TaskCollector extends Collector<Task>
     with Sortable<Task, TaskParameters>, Filterable<Task, TaskParameters> {
   final List<Task> tasks;
 
-  TaskCollector(List<Task>? tasks) : tasks = tasks ?? [];
+  TaskCollector({List<Task>? tasks}) : tasks = tasks ?? [];
 
-  List<Task> get tasksFinal => filter();
+  List<Task> get visibleTasks => filter();
   @override
   List<Task> get collection => tasks;
 
@@ -20,14 +20,14 @@ sealed class TaskCollector extends Collector<Task>
   }
 }
 
-/// statused task collector - collection of tasks of a particular status
-class StatusedTaskCollector extends TaskCollector {
-  String status;
+/// titled task collector - collection of tasks of a particular title
+class TitledTaskCollector extends TaskCollector {
+  String title;
   Color color;
 
-  StatusedTaskCollector(
-    super.tasks, {
-    this.status = '',
+  TitledTaskCollector({
+    super.tasks,
+    this.title = '',
     this.color = Colours.BOTTOM,
   });
 }

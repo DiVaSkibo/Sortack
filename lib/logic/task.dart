@@ -117,7 +117,6 @@ class TaskController extends ChangeNotifier {
   void _setupFocusListeners() {
     titleFocus.addListener(() {
       if (!titleFocus.hasFocus && titleController.text != _task.title) {
-        debugPrint("Saving Title: ${titleController.text}");
         _task = _task.copyWith(title: titleController.text);
         notifyListeners();
       }
