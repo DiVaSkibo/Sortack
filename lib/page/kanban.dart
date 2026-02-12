@@ -12,10 +12,12 @@ class KanbanPage extends StatefulWidget {
 class _KanbanPageState extends State<KanbanPage> {
   final TaskBoard board = TaskBoard(
     name: 'My Board',
+    listenable: true,
     planks: [
       TitledTaskPlank(
         title: 'To Do',
         color: Colours.NOTOK,
+        listenable: true,
         blocks: [
           TaskBlock(
             title: 'Database',
@@ -33,6 +35,7 @@ class _KanbanPageState extends State<KanbanPage> {
       TitledTaskPlank(
         title: 'In Progress',
         color: Colours.INOK,
+        listenable: true,
         blocks: [
           TaskBlock(
             title: 'Sign In page',
@@ -44,6 +47,7 @@ class _KanbanPageState extends State<KanbanPage> {
       TitledTaskPlank(
         title: 'Done',
         color: Colours.OK,
+        listenable: true,
         blocks: [
           TaskBlock(
             title: 'Sign In page design',

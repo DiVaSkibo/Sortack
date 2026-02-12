@@ -1,6 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sortack/_tools.dart';
-import 'package:sortack/_logics.dart';
+//import 'package:sortack/_logics.dart';
 import 'package:sortack/_widgets.dart';
 
 class MyHomePage extends StatefulWidget {

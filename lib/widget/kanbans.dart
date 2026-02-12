@@ -9,7 +9,8 @@ class KanbanCard extends StatefulWidget {
   final TaskBlock task;
   final Function(TaskBlock) onDelete;
 
-  const KanbanCard({super.key, required this.task, required this.onDelete});
+  KanbanCard({Key? key, required this.task, required this.onDelete})
+    : super(key: key ?? ObjectKey(task));
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
@@ -126,22 +127,15 @@ class _KanbanCardState extends State<KanbanCard> {
 /// Kanban column class - titled task plank view with Kanban card children
 final class KanbanColumn {
   final TitledTaskPlank tasks;
-  final VoidCallback onChanged;
-  final VoidCallback onDelete;
 
   List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
   final ColoredTitleController _coloredTitleController;
 
-  KanbanColumn({
-    String? title,
-    Color? color,
-    required this.tasks,
-    required this.onChanged,
-    required this.onDelete,
-  }) : _coloredTitleController = ColoredTitleController(
-         initialTitle: title,
-         initialColor: color,
-       );
+  KanbanColumn({required this.tasks})
+    : _coloredTitleController = ColoredTitleController(
+        initialTitle: tasks.title,
+        initialColor: tasks.color,
+      );
 
   void dispose() {
     _coloredTitleController.dispose();
@@ -174,10 +168,20 @@ final class KanbanColumn {
         visibleTasks.length,
         (index) => DragAndDropItem(
           child: KanbanCard(
-            key: ValueKey(visibleTasks[index].title),
             task: visibleTasks[index],
-            onDelete: (what) => tasks.pop(what),
-          ),
+            onDelete: (what) {
+              tasks.pop(what);
+            },
+          ), // ListenableBuilder(
+          //   listenable: tasks,
+          //   builder: (context, child) => KanbanCard(
+          //     task: visibleTasks[index],
+          //     onDelete: (what) {
+          //       tasks.pop(what);
+          //       onTaskDelete(what);
+          //     },
+          //   ),
+          // ),
         ),
       ),
     );
@@ -209,44 +213,39 @@ class _KanbanBoardState extends State<KanbanBoard> {
     return Scrollbar(
       controller: _columnsScrollController,
       scrollbarOrientation: ScrollbarOrientation.top,
-      child: DragAndDropLists(
-        axis: Axis.horizontal,
-        listWidth: MediaQuery.of(context).size.width / 3,
-        listPadding: const EdgeInsets.all(8.0),
-        lastItemTargetHeight: 200,
-        // itemDragOnLongPress: false,
-        // listDragOnLongPress: false,
-        scrollController: _columnsScrollController,
-        children: board.planks
-            .map(
-              (plank) => KanbanColumn(
-                title: plank.title,
-                color: plank.color,
-                tasks: plank,
-                onChanged: () {},
-                onDelete: () {},
-              ).build(),
-            )
-            .toList(),
-        onItemReorder:
-            (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
-              if (oldListIndex == newListIndex) {
-                setState(() {
-                  board[newListIndex].move(oldItemIndex, newItemIndex);
-                });
-              } else {
-                var task = board[oldListIndex].blocks[oldItemIndex];
-                setState(() {
-                  board[oldListIndex].pop(task);
-                  board[newListIndex].insert(task, newItemIndex);
-                });
-              }
-            },
-        onListReorder: (oldListIndex, newListIndex) {
-          setState(() {
-            board.move(oldListIndex, newListIndex);
-          });
-        },
+      child: ListenableBuilder(
+        listenable: board,
+        builder: (context, child) => DragAndDropLists(
+          axis: Axis.horizontal,
+          listWidth: MediaQuery.of(context).size.width / 3,
+          listPadding: const EdgeInsets.all(8.0),
+          lastItemTargetHeight: 200,
+          // itemDragOnLongPress: false,
+          // listDragOnLongPress: false,
+          scrollController: _columnsScrollController,
+          children: board.planks
+              .map((plank) => KanbanColumn(tasks: plank).build())
+              .toList(),
+          onItemReorder:
+              (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
+                if (oldListIndex == newListIndex) {
+                  setState(() {
+                    board[newListIndex].move(oldItemIndex, newItemIndex);
+                  });
+                } else {
+                  var task = board[oldListIndex].blocks[oldItemIndex];
+                  setState(() {
+                    board[oldListIndex].pop(task);
+                    board[newListIndex].insert(task, newItemIndex);
+                  });
+                }
+              },
+          onListReorder: (oldListIndex, newListIndex) {
+            setState(() {
+              board.move(oldListIndex, newListIndex);
+            });
+          },
+        ),
       ),
     );
   }

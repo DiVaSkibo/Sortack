@@ -41,27 +41,6 @@ class TaskBlock with Parameterizable<TaskParameters> {
     TaskParameters.notes => notes,
   };
 
-  TaskBlock copyWith({
-    String? title,
-    String? description,
-    TaskStatus? status,
-    TaskPriority? priority,
-    TaskPointsTShirt? points,
-    String? role,
-    String? assignee,
-    String? notes,
-  }) => TaskBlock(
-    id: id,
-    title: title ?? this.title,
-    description: description ?? this.description,
-    status: status ?? this.status,
-    priority: priority ?? this.priority,
-    points: points ?? this.points,
-    role: role ?? this.role,
-    assignee: assignee ?? this.assignee,
-    notes: notes ?? this.notes,
-  );
-
   bool testInterval<T extends Comparable>({
     required TaskParameters by,
     required T from,
@@ -82,7 +61,7 @@ class TaskBlock with Parameterizable<TaskParameters> {
 
 /// task block controller - control task block parameters
 class TaskBlockController extends ChangeNotifier {
-  TaskBlock _task;
+  final TaskBlock _task;
   TaskBlock get task => _task;
 
   late final TextEditingController titleController;
@@ -117,20 +96,20 @@ class TaskBlockController extends ChangeNotifier {
   void _setupFocusListeners() {
     titleFocus.addListener(() {
       if (!titleFocus.hasFocus && titleController.text != _task.title) {
-        _task = _task.copyWith(title: titleController.text);
+        _task.title = titleController.text;
         notifyListeners();
       }
     });
     descriptionFocus.addListener(() {
       if (!descriptionFocus.hasFocus &&
           descriptionController.text != _task.description) {
-        _task = _task.copyWith(description: descriptionController.text);
+        _task.description = descriptionController.text;
         notifyListeners();
       }
     });
     notesFocus.addListener(() {
       if (!notesFocus.hasFocus && notesController.text != _task.notes) {
-        _task = _task.copyWith(notes: notesController.text);
+        _task.notes = notesController.text;
         notifyListeners();
       }
     });
@@ -138,19 +117,19 @@ class TaskBlockController extends ChangeNotifier {
 
   void updateStatus(TaskStatus status) {
     if (_task.status == status) return;
-    _task.copyWith(status: status);
+    _task.status = status;
     notifyListeners();
   }
 
   void updatePriority(TaskPriority priority) {
     if (_task.priority == priority) return;
-    _task.copyWith(priority: priority);
+    _task.priority = priority;
     notifyListeners();
   }
 
   void updatePoints(TaskPointsTShirt points) {
     if (_task.points == points) return;
-    _task.copyWith(points: points);
+    _task.points = points;
     notifyListeners();
   }
 }

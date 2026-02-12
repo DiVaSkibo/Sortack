@@ -7,7 +7,7 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T> {
   final List<T> planks;
   //final Map<String, T> planks;
 
-  TaskDeck({List<T>? planks}) : planks = planks ?? [];
+  TaskDeck({List<T>? planks, super.listenable}) : planks = planks ?? [];
   //TaskDeck({Map<String, T>? planks}) : planks = planks ?? {};
 
   @override
@@ -17,5 +17,5 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T> {
 class TaskBoard extends TaskDeck<TitledTaskPlank> {
   String name;
 
-  TaskBoard({super.planks, required this.name});
+  TaskBoard({required this.name, super.planks, super.listenable});
 }

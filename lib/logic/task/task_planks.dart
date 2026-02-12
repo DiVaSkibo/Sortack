@@ -10,7 +10,8 @@ sealed class TaskPlank extends Collector<TaskBlock>
         Filterable<TaskBlock, TaskParameters> {
   final List<TaskBlock> blocks;
 
-  TaskPlank({List<TaskBlock>? blocks}) : blocks = blocks ?? [];
+  TaskPlank({List<TaskBlock>? blocks, super.listenable})
+    : blocks = blocks ?? [];
 
   List<TaskBlock> get visibleBlocks => filter();
   @override
@@ -27,5 +28,10 @@ class TitledTaskPlank extends TaskPlank {
   String title;
   Color color;
 
-  TitledTaskPlank({super.blocks, this.title = '', this.color = Colours.BOTTOM});
+  TitledTaskPlank({
+    this.title = '',
+    this.color = Colours.BOTTOM,
+    super.blocks,
+    super.listenable,
+  });
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 //import 'package:sortack/tool/style.dart';
 
 mixin ComparableEnum<T> implements Comparable<ComparableEnum> {
@@ -49,8 +50,11 @@ abstract mixin class Parameterizable<T extends Parameters> {
   }
 }
 
-abstract class Collector<T> {
+abstract class Collector<T> with ChangeNotifier {
   List<T> get collection;
+  bool listenable;
+
+  Collector({this.listenable = false});
 
   bool isEmpty() => collection.isEmpty;
   bool isNotEmpty() => collection.isNotEmpty;
@@ -63,17 +67,21 @@ abstract class Collector<T> {
       collection.insert(0, what);
     else
       collection.add(what);
+    if (listenable) notifyListeners();
   }
 
   bool pop(T what) {
     //debugPrint('${what.toString()} is poped from $this');
-    return collection.remove(what);
+    var poped = collection.remove(what);
+    if (listenable) notifyListeners();
+    return poped;
   }
 
   void insert(T what, int where) {
     //debugPrint('${what.toString()} is inserted at $where');
     collection.insert(where, what);
     //debugPrint('$status: ${collection.map((task) => task.title).toString()}');
+    if (listenable) notifyListeners();
   }
 
   void move(int oldIndex, int newIndex) {
@@ -81,5 +89,6 @@ abstract class Collector<T> {
     var temp = collection[oldIndex];
     collection[oldIndex] = collection[newIndex];
     collection[newIndex] = temp;
+    if (listenable) notifyListeners();
   }
 }
