@@ -6,8 +6,8 @@ import 'package:sortack/widget/basics.dart';
 
 /// Kanban card widget - task view
 class KanbanCard extends StatefulWidget {
-  final Task task;
-  final Function(Task) onDelete;
+  final TaskBlock task;
+  final Function(TaskBlock) onDelete;
 
   const KanbanCard({super.key, required this.task, required this.onDelete});
 
@@ -16,13 +16,13 @@ class KanbanCard extends StatefulWidget {
 }
 
 class _KanbanCardState extends State<KanbanCard> {
-  late final TaskController _taskController;
-  Task get task => _taskController.task;
+  late final TaskBlockController _taskController;
+  TaskBlock get task => _taskController.task;
 
   @override
   void initState() {
     super.initState();
-    _taskController = TaskController(widget.task);
+    _taskController = TaskBlockController(widget.task);
   }
 
   @override
@@ -125,20 +125,20 @@ class _KanbanCardState extends State<KanbanCard> {
 
 /// Kanban column class - titled task collector view
 final class KanbanColumn {
-  final TitledTaskCollector tasks;
+  final TitledTaskPlank tasks;
   final VoidCallback onChanged;
   final VoidCallback onDelete;
 
-  List<Task> get visibleTasks => tasks.visibleTasks;
+  List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
   final ColoredTitleController _coloredTitleController;
 
   KanbanColumn({
     String? title,
     Color? color,
-    TitledTaskCollector? tasks,
+    TitledTaskPlank? tasks,
     required this.onChanged,
     required this.onDelete,
-  }) : tasks = tasks ?? TitledTaskCollector(),
+  }) : tasks = tasks ?? TitledTaskPlank(),
        _coloredTitleController = ColoredTitleController(
          initialTitle: title,
          initialColor: color,

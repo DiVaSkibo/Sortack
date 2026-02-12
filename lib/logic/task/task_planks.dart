@@ -12,7 +12,7 @@ sealed class TaskPlank extends Collector<TaskBlock>
 
   TaskPlank({List<TaskBlock>? blocks}) : blocks = blocks ?? [];
 
-  List<TaskBlock> get visibleblocks => filter();
+  List<TaskBlock> get visibleBlocks => filter();
   @override
   List<TaskBlock> get collection => blocks;
 
