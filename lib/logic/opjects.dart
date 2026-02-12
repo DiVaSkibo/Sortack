@@ -1,5 +1,6 @@
 import 'package:sortack/_tools.dart';
 
+/// colored title controller - control title and color parameters
 final class ColoredTitleController extends ChangeNotifier {
   String _title;
   Color _color;

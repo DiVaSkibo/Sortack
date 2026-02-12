@@ -1,8 +1,8 @@
 import 'package:sortack/_tools.dart';
 
-/// immutable task class
+/// immutable task block class
 @immutable
-class Task with Parameterizable<TaskParameters> {
+class TaskBlock with Parameterizable<TaskParameters> {
   final int id;
   String title;
   String description;
@@ -13,7 +13,7 @@ class Task with Parameterizable<TaskParameters> {
   String? assignee;
   String notes;
 
-  Task({
+  TaskBlock({
     int? id,
     this.title = '',
     this.description = '',
@@ -41,7 +41,7 @@ class Task with Parameterizable<TaskParameters> {
     TaskParameters.notes => notes,
   };
 
-  Task copyWith({
+  TaskBlock copyWith({
     String? title,
     String? description,
     TaskStatus? status,
@@ -50,7 +50,7 @@ class Task with Parameterizable<TaskParameters> {
     String? role,
     String? assignee,
     String? notes,
-  }) => Task(
+  }) => TaskBlock(
     id: id,
     title: title ?? this.title,
     description: description ?? this.description,
@@ -80,10 +80,10 @@ class Task with Parameterizable<TaskParameters> {
       '[$id]\n"$title": "$description"\n $status ^$priority .$points\n @"$role" %"$assignee"\n"$notes"';
 }
 
-/// task controller - control task parameters
-class TaskController extends ChangeNotifier {
-  Task _task;
-  Task get task => _task;
+/// task block controller - control task block parameters
+class TaskBlockController extends ChangeNotifier {
+  TaskBlock _task;
+  TaskBlock get task => _task;
 
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
@@ -92,7 +92,7 @@ class TaskController extends ChangeNotifier {
   final FocusNode descriptionFocus = FocusNode();
   final FocusNode notesFocus = FocusNode();
 
-  TaskController(Task initialTask) : _task = initialTask {
+  TaskBlockController(TaskBlock initialTask) : _task = initialTask {
     _initializeControllers();
     _setupFocusListeners();
   }
