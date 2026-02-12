@@ -55,6 +55,8 @@ abstract class Collector<T> {
   bool isEmpty() => collection.isEmpty;
   bool isNotEmpty() => collection.isNotEmpty;
 
+  T operator [](int index) => collection.elementAt(index);
+
   void push(T what, {bool front = false}) {
     //debugPrint('${what.toString()} is pushed ${front ? 'front' : 'back'} to $this');
     if (front)

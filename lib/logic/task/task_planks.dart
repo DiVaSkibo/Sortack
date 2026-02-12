@@ -3,7 +3,7 @@ import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/task/task_blocks.dart';
 export 'package:sortack/logic/task/task_blocks.dart';
 
-/// abstract task plank class - collection of task blocks
+/// sealed task plank class - collection of task blocks
 sealed class TaskPlank extends Collector<TaskBlock>
     with
         Sortable<TaskBlock, TaskParameters>,

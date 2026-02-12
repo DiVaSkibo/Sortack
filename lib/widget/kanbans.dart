@@ -4,7 +4,7 @@ import 'package:sortack/_logics.dart';
 import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/widget/basics.dart';
 
-/// Kanban card widget - task view
+/// Kanban card widget - task block view
 class KanbanCard extends StatefulWidget {
   final TaskBlock task;
   final Function(TaskBlock) onDelete;
@@ -123,7 +123,7 @@ class _KanbanCardState extends State<KanbanCard> {
   }
 }
 
-/// Kanban column class - titled task collector view
+/// Kanban column class - titled task plank view with Kanban card children
 final class KanbanColumn {
   final TitledTaskPlank tasks;
   final VoidCallback onChanged;
@@ -135,11 +135,10 @@ final class KanbanColumn {
   KanbanColumn({
     String? title,
     Color? color,
-    TitledTaskPlank? tasks,
+    required this.tasks,
     required this.onChanged,
     required this.onDelete,
-  }) : tasks = tasks ?? TitledTaskPlank(),
-       _coloredTitleController = ColoredTitleController(
+  }) : _coloredTitleController = ColoredTitleController(
          initialTitle: title,
          initialColor: color,
        );
@@ -158,8 +157,14 @@ final class KanbanColumn {
           controller: _coloredTitleController.titleController,
           focusNode: _coloredTitleController.titleFocus,
           textAlign: TextAlign.center,
-          onEditingComplete: () => _coloredTitleController.titleFocus.unfocus(),
-          onTapOutside: (event) => _coloredTitleController.titleFocus.unfocus(),
+          onEditingComplete: () {
+            _coloredTitleController.titleFocus.unfocus();
+            tasks.title = _coloredTitleController.title;
+          },
+          onTapOutside: (event) {
+            _coloredTitleController.titleFocus.unfocus();
+            tasks.title = _coloredTitleController.title;
+          },
           style: Styles.columnText(color: _coloredTitleController.color),
           decoration: Decorations.columnInput(),
         ),
@@ -179,146 +184,24 @@ final class KanbanColumn {
   }
 }
 
-/// Kanban board widget - list of columns
+/// Kanban board widget - task board view with Kanban column children
 class KanbanBoard extends StatefulWidget {
-  KanbanBoard({super.key});
+  final TaskBoard columns;
 
-  final _KanbanBoardState _kanbanBoardState = _KanbanBoardState();
-
-  void push(KanbanColumn what) => _kanbanBoardState.push(what);
-  void pop(KanbanColumn what) => _kanbanBoardState.pop(what);
-  void insert(KanbanColumn what, int where) =>
-      _kanbanBoardState.insert(what, where);
-  void newTask() => _kanbanBoardState.newTask();
-  void sort({TaskParameters? by}) => _kanbanBoardState.sort(by: by);
-  void filter({TaskParameters? by, dynamic from, dynamic to}) =>
-      _kanbanBoardState.filter(by: by, from: from, to: to);
+  const KanbanBoard({super.key, required this.columns});
 
   @override
-  State<KanbanBoard> createState() => _kanbanBoardState;
+  State<KanbanBoard> createState() => _KanbanBoardState();
 }
 
-class _KanbanBoardState extends State<KanbanBoard>
-    with Collecting<KanbanColumn> {
-  late final List<KanbanColumn> columns = <KanbanColumn>[
-    KanbanColumn(
-      status: 'To Do',
-      color: Colours.NOTOK,
-      tasks: <Task>[
-        Task(
-          title: 'Database',
-          description: 'Architecture and build database using Firebase',
-          points: TaskPointsTShirt.XL,
-        ),
-        Task(
-          title: 'Search system',
-          description:
-              'Search for available libraries for search system\nIf nothing, make by ourself',
-          points: TaskPointsTShirt.L,
-        ),
-      ],
-      setState: setState,
-    ),
-    KanbanColumn(
-      status: 'In Progress',
-      color: Colours.INOK,
-      tasks: <Task>[
-        Task(
-          title: 'Sign In page',
-          description: 'Create sign in page according to design in Figma',
-          points: TaskPointsTShirt.S,
-        ),
-      ],
-      setState: setState,
-    ),
-    KanbanColumn(
-      status: 'Done',
-      color: Colours.OK,
-      tasks: <Task>[
-        Task(
-          title: 'Sign In page design',
-          description: 'Design sign in page using Figma',
-          points: TaskPointsTShirt.L,
-        ),
-        Task(title: 'What', description: 'What actually do'),
-        Task(
-          title: 'Who',
-          description: 'Who actually do',
-          points: TaskPointsTShirt.XXL,
-        ),
-      ],
-      setState: setState,
-    ),
-  ];
+class _KanbanBoardState extends State<KanbanBoard> {
+  late final TaskBoard board = widget.columns;
   final ScrollController _columnsScrollController = ScrollController();
-
-  @override
-  get collection => columns;
 
   @override
   void dispose() {
     _columnsScrollController.dispose();
-    for (final KanbanColumn column in columns) column.dispose();
     super.dispose();
-  }
-
-  @override
-  void push(what, {bool front = false}) {
-    //debugPrint('${what.toString()} is pushed ${front ? 'front' : 'back'} to $this');
-    var column = KanbanColumn(
-      status: what.status,
-      tasks: [],
-      color: what.color,
-      setState: setState,
-    );
-    setState(() {
-      if (front)
-        columns.insert(0, column);
-      else
-        columns.add(column);
-    });
-  }
-
-  // @override
-  // void pop(KanbanColumn what) {
-  //   //debugPrint('${what.toString()} is poped from $this');
-  //   setState(() {
-  //     columns.remove(what);
-  //   });
-  //   //debugPrint('$this: ${columns.map((column) => column.tasks).toString()}');
-  // }
-
-  @override
-  void insert(KanbanColumn what, int where) {
-    //debugPrint('${what.toString()} is inserted at $where');
-    var column = KanbanColumn(
-      status: what.status,
-      tasks: [],
-      color: what.color,
-      setState: setState,
-    );
-    setState(() {
-      columns.insert(where, column);
-    });
-    //debugPrint('$this: ${columns.map((column) => column.tasks).toString()}');
-  }
-
-  void newTask() {
-    setState(() {
-      columns.first.push(Task(), front: true);
-    });
-  }
-
-  void sort({TaskParameters? by}) {
-    setState(() {
-      for (var column in columns) column.sort(by: by);
-    });
-  }
-
-  void filter({TaskParameters? by, dynamic from, dynamic to}) {
-    setState(() {
-      for (var column in columns) column.filter(by: by, from: from, to: to);
-    });
   }
 
   @override
@@ -334,24 +217,34 @@ class _KanbanBoardState extends State<KanbanBoard>
         // itemDragOnLongPress: false,
         // listDragOnLongPress: false,
         scrollController: _columnsScrollController,
-        children: columns.map((column) => column.build()).toList(),
+        children: board.planks
+            .map(
+              (plank) => KanbanColumn(
+                title: plank.title,
+                color: plank.color,
+                tasks: plank,
+                onChanged: () {},
+                onDelete: () {},
+              ).build(),
+            )
+            .toList(),
         onItemReorder:
             (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
               if (oldListIndex == newListIndex) {
                 setState(() {
-                  columns[newListIndex].move(oldItemIndex, newItemIndex);
+                  board[newListIndex].move(oldItemIndex, newItemIndex);
                 });
               } else {
-                var task = columns[oldListIndex].tasks.elementAt(oldItemIndex);
+                var task = board[oldListIndex].blocks[oldItemIndex];
                 setState(() {
-                  columns[oldListIndex].pop(task);
-                  columns[newListIndex].insert(task, newItemIndex);
+                  board[oldListIndex].pop(task);
+                  board[newListIndex].insert(task, newItemIndex);
                 });
               }
             },
         onListReorder: (oldListIndex, newListIndex) {
           setState(() {
-            move(oldListIndex, newListIndex);
+            board.move(oldListIndex, newListIndex);
           });
         },
       ),

@@ -11,7 +11,7 @@ final class ColoredTitleController extends ChangeNotifier {
   final FocusNode titleFocus = FocusNode();
 
   ColoredTitleController({String? initialTitle, Color? initialColor})
-    : _title = initialTitle ?? '',
+    : _title = initialTitle ?? '...',
       _color = initialColor ?? Colours.BOTTOM {
     _initializeControllers();
     _setupFocusListeners();
