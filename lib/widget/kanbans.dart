@@ -129,16 +129,21 @@ final class KanbanColumn {
   final TitledTaskPlank tasks;
 
   List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
-  final ColoredTitleController _coloredTitleController;
+  final TextEditingController _titleController;
+  final FocusNode _titleFocus = FocusNode();
 
   KanbanColumn({required this.tasks})
-    : _coloredTitleController = ColoredTitleController(
-        initialTitle: tasks.title,
-        initialColor: tasks.color,
-      );
+    : _titleController = TextEditingController(text: tasks.title) {
+    _titleFocus.addListener(() {
+      if (!_titleFocus.hasFocus && _titleController.text != tasks.title) {
+        tasks.title = _titleController.text;
+      }
+    });
+  }
 
   void dispose() {
-    _coloredTitleController.dispose();
+    _titleController.dispose();
+    _titleFocus.dispose();
   }
 
   DragAndDropList build() {
@@ -146,20 +151,18 @@ final class KanbanColumn {
       verticalAlignment: CrossAxisAlignment.center,
       decoration: Decorations.SURFACE_BOX,
       header: ListenableBuilder(
-        listenable: _coloredTitleController,
+        listenable: _titleController,
         builder: (context, child) => TextField(
-          controller: _coloredTitleController.titleController,
-          focusNode: _coloredTitleController.titleFocus,
+          controller: _titleController,
+          focusNode: _titleFocus,
           textAlign: TextAlign.center,
           onEditingComplete: () {
-            _coloredTitleController.titleFocus.unfocus();
-            tasks.title = _coloredTitleController.title;
+            _titleFocus.unfocus();
           },
           onTapOutside: (event) {
-            _coloredTitleController.titleFocus.unfocus();
-            tasks.title = _coloredTitleController.title;
+            _titleFocus.unfocus();
           },
-          style: Styles.columnText(color: _coloredTitleController.color),
+          style: Styles.columnText(color: tasks.color),
           decoration: Decorations.columnInput(),
         ),
       ),
@@ -172,16 +175,7 @@ final class KanbanColumn {
             onDelete: (what) {
               tasks.pop(what);
             },
-          ), // ListenableBuilder(
-          //   listenable: tasks,
-          //   builder: (context, child) => KanbanCard(
-          //     task: visibleTasks[index],
-          //     onDelete: (what) {
-          //       tasks.pop(what);
-          //       onTaskDelete(what);
-          //     },
-          //   ),
-          // ),
+          ),
         ),
       ),
     );

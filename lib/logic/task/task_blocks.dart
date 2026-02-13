@@ -71,7 +71,7 @@ class TaskBlockController extends ChangeNotifier {
   final FocusNode descriptionFocus = FocusNode();
   final FocusNode notesFocus = FocusNode();
 
-  TaskBlockController(TaskBlock initialTask) : _task = initialTask {
+  TaskBlockController(this._task) {
     _initializeControllers();
     _setupFocusListeners();
   }

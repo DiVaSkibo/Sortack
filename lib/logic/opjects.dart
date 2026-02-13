@@ -1,49 +1,5 @@
 import 'package:sortack/_tools.dart';
 
-/// colored title controller - control title and color parameters
-final class ColoredTitleController extends ChangeNotifier {
-  String _title;
-  Color _color;
-  String get title => _title;
-  Color get color => _color;
-
-  late final TextEditingController titleController;
-  final FocusNode titleFocus = FocusNode();
-
-  ColoredTitleController({String? initialTitle, Color? initialColor})
-    : _title = initialTitle ?? '...',
-      _color = initialColor ?? Colours.BOTTOM {
-    _initializeControllers();
-    _setupFocusListeners();
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    titleFocus.dispose();
-    super.dispose();
-  }
-
-  void _initializeControllers() {
-    titleController = TextEditingController(text: _title);
-  }
-
-  void _setupFocusListeners() {
-    titleFocus.addListener(() {
-      if (!titleFocus.hasFocus && titleController.text != _title) {
-        _title = titleController.text;
-        notifyListeners();
-      }
-    });
-  }
-
-  void updateColor(Color value) {
-    if (_color == value) return;
-    _color = value;
-    notifyListeners();
-  }
-}
-
 /// base filter criteria class
 base class FilterCriteria<T extends Parameters> {
   final Map<T, dynamic> _criteria;
