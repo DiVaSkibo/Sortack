@@ -74,14 +74,12 @@ base class FilterCriteria<T extends Parameters> {
 }
 
 /// sortable mixin
-mixin Sortable<T extends Parameterizable, F extends Parameters>
-    on Collector<T> {
+mixin Sortable<T, F extends Parameters> on Collector<T> {
   void sort({F by});
 }
 
 /// filterable mixin
-mixin Filterable<T extends Parameterizable, F extends Parameters>
-    on Collector<T> {
+mixin Filterable<T, F extends Parameters> on Collector<T> {
   final FilterCriteria filterCriterias = FilterCriteria();
 
   List<T> filter() =>

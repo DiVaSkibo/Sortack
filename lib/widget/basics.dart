@@ -70,7 +70,7 @@ class FilterDialog extends StatelessWidget {
         values.length,
         (index) => DropdownMenuItem(
           value: values[index],
-          child: Text(values[index].name),
+          child: Text(values[index].label),
         ),
       ),
       initialValue: from,
@@ -84,7 +84,7 @@ class FilterDialog extends StatelessWidget {
         values.length,
         (index) => DropdownMenuItem(
           value: values[index],
-          child: Text(values[index].name),
+          child: Text(values[index].label),
         ),
       ),
       initialValue: to,

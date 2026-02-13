@@ -5,10 +5,17 @@ import 'package:sortack/tool/style.dart';
 /// task status enum - task statuses
 ///
 /// [to do, in progress, done]
-enum TaskStatus with ComparableEnum<TaskStatus> {
+enum TaskStatus with Labeling, ComparableEnum<TaskStatus> {
   toDo,
   inProgress,
   done;
+
+  @override
+  String get label => switch (this) {
+    toDo => 'To Do',
+    inProgress => 'In Progress',
+    done => 'Done',
+  };
 
   Color colour() => switch (this) {
     toDo => Colours.NOTOK,
@@ -20,13 +27,23 @@ enum TaskStatus with ComparableEnum<TaskStatus> {
 /// task priority enum - task priority levels
 ///
 /// [critical, very high, high, medium, low, very low]
-enum TaskPriority with ComparableEnum<TaskPriority> {
+enum TaskPriority with Labeling, ComparableEnum<TaskPriority> {
   critical,
   very_high,
   high,
   medium,
   low,
   very_low;
+
+  @override
+  String get label => switch (this) {
+    critical => 'critical',
+    very_high => 'very high',
+    high => 'high',
+    medium => 'medium',
+    low => 'low',
+    very_low => 'very low',
+  };
 
   Color colour() => switch (this) {
     critical => Colours.NOTOK,
@@ -41,7 +58,7 @@ enum TaskPriority with ComparableEnum<TaskPriority> {
 /// task fibonacci points enum - task points using fibonacci system
 ///
 /// [0, 1, 2, 3, 5, 8, 13, 20, 40, 100]
-enum TaskPointsFibonacci with TaskPointing {
+enum TaskPointsFibonacci with Labeling, TaskPointing {
   X0(0),
   X1(1),
   X2(2),
@@ -57,6 +74,8 @@ enum TaskPointsFibonacci with TaskPointing {
 
   @override
   int get value => _value;
+  @override
+  String get label => _value.toString();
 
   const TaskPointsFibonacci(this._value);
 }
@@ -64,7 +83,7 @@ enum TaskPointsFibonacci with TaskPointing {
 /// task tshirt points enum - task points using tshirt system
 ///
 /// [XS, S, M, L, XL, XXL]
-enum TaskPointsTShirt with TaskPointing {
+enum TaskPointsTShirt with Labeling, TaskPointing {
   XS,
   S,
   M,
@@ -81,12 +100,21 @@ enum TaskPointsTShirt with TaskPointing {
     XL => 20,
     XXL => 40,
   };
+  @override
+  String get label => name;
 }
 
 /// task roles enum - task roles
 ///
-/// [XS, S, M, L, XL, XXL]
-enum TaskRoles with ComparableEnum { Design, Development, QA }
+/// [Design, Development, QA]
+enum TaskRoles with Labeling, ComparableEnum<TaskRoles> {
+  Design,
+  Development,
+  QA;
+
+  @override
+  String get label => name;
+}
 
 /// task parameters enum - parameters of a task class
 ///
@@ -109,22 +137,22 @@ enum TaskParameters implements Parameters {
     description => String,
     status => TaskStatus,
     priority => TaskPriority,
-    points => TaskPointsTShirt,
+    points => TaskPointing,
     role => String,
     assignee => String,
     notes => String,
   };
   @override
   List parameterValues() => switch (this) {
-    TaskParameters.id => [],
-    TaskParameters.title => [],
-    TaskParameters.description => [],
-    TaskParameters.status => TaskStatus.values,
-    TaskParameters.priority => TaskPriority.values,
-    TaskParameters.points => TaskPointsTShirt.values,
-    TaskParameters.role => [],
-    TaskParameters.assignee => [],
-    TaskParameters.notes => [],
+    id => [],
+    title => [],
+    description => [],
+    status => TaskStatus.values,
+    priority => TaskPriority.values,
+    points => TaskPointsTShirt.values,
+    role => [],
+    assignee => [],
+    notes => [],
   };
 
   IconData icon() => switch (this) {

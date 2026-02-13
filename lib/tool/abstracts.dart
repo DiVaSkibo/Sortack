@@ -1,33 +1,15 @@
 import 'package:flutter/material.dart';
-//import 'package:sortack/tool/style.dart';
 
-mixin ComparableEnum<T> implements Comparable<ComparableEnum> {
-  int get index;
+mixin Labeling {
+  String get label;
+}
 
+mixin ComparableEnum<T> on Enum implements Comparable<ComparableEnum> {
   @override
   int compareTo(other) => index - other.index;
 }
 
-final class FromTo<T extends Comparable> {
-  final T from;
-  final T to;
-
-  const FromTo({required this.from, required this.to});
-
-  bool check(T value) {
-    //if (value == null) return false;
-    //if (value is Comparable && from is Comparable && to is Comparable)
-    //  return from.compareTo(to) <= 0
-    //      ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
-    //      : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
-    //return value == from;
-    return from.compareTo(to) <= 0
-        ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
-        : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
-  }
-}
-
-mixin TaskPointing implements Comparable<TaskPointing> {
+mixin TaskPointing on Enum implements Comparable<TaskPointing> {
   int get value;
 
   @override
@@ -47,6 +29,25 @@ abstract mixin class Parameterizable<T extends Parameters> {
     if (aValue == null) return 0;
     if (bValue == null) return 1;
     return aValue.compareTo(bValue);
+  }
+}
+
+final class FromTo<T extends Comparable> {
+  final T from;
+  final T to;
+
+  const FromTo({required this.from, required this.to});
+
+  bool check(T value) {
+    //if (value == null) return false;
+    //if (value is Comparable && from is Comparable && to is Comparable)
+    //  return from.compareTo(to) <= 0
+    //      ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
+    //      : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
+    //return value == from;
+    return from.compareTo(to) <= 0
+        ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
+        : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
   }
 }
 

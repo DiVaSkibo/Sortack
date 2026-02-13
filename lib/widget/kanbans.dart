@@ -59,9 +59,9 @@ class _KanbanCardState extends State<KanbanCard> {
   PopupMenuButton buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
     tooltip: 'points',
     initialValue: task.points,
-    child: Text(task.points != null ? task.points!.name.toString() : '?'),
+    child: Text(task.points != null ? task.points!.label : '?'),
     itemBuilder: (context) => TaskPointsTShirt.values
-        .map((value) => PopupMenuItem(value: value, child: Text(value.name)))
+        .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
         .toList(),
     onSelected: (TaskPointsTShirt value) {
       setState(() {
