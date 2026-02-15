@@ -1,7 +1,7 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
-import 'package:sortack/logic/opjects.dart';
+//import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/widget/basics.dart';
 
 /// Kanban card widget - task block view
@@ -127,12 +127,13 @@ class _KanbanCardState extends State<KanbanCard> {
 /// Kanban column class - titled task plank view with Kanban card children
 final class KanbanColumn {
   final TitledTaskPlank tasks;
+  final VoidCallback onChanged;
 
   List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
   final TextEditingController _titleController;
   final FocusNode _titleFocus = FocusNode();
 
-  KanbanColumn({required this.tasks})
+  KanbanColumn({required this.tasks, required this.onChanged})
     : _titleController = TextEditingController(text: tasks.title) {
     _titleFocus.addListener(() {
       if (!_titleFocus.hasFocus && _titleController.text != tasks.title) {
@@ -174,6 +175,7 @@ final class KanbanColumn {
             task: visibleTasks[index],
             onDelete: (what) {
               tasks.pop(what);
+              onChanged();
             },
           ),
         ),
@@ -218,7 +220,14 @@ class _KanbanBoardState extends State<KanbanBoard> {
           // listDragOnLongPress: false,
           scrollController: _columnsScrollController,
           children: board.planks
-              .map((plank) => KanbanColumn(tasks: plank).build())
+              .map(
+                (plank) => KanbanColumn(
+                  tasks: plank,
+                  onChanged: () {
+                    setState(() {});
+                  },
+                ).build(),
+              )
               .toList(),
           onItemReorder:
               (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {

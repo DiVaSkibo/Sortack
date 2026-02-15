@@ -7,10 +7,8 @@ export 'package:sortack/logic/task/task_planks.dart';
 sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
     with Sortable<T, TaskParameters>, Filterable<T, TaskParameters> {
   final List<T> planks;
-  //final Map<String, T> planks;
 
   TaskDeck({List<T>? planks, super.listenable}) : planks = planks ?? [];
-  //TaskDeck({Map<String, T>? planks}) : planks = planks ?? {};
 
   @override
   List<T> get collection => planks;
@@ -33,6 +31,7 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
   }
 }
 
+/// task board - task deck for a board
 class TaskBoard extends TaskDeck<TitledTaskPlank> {
   String name;
 
