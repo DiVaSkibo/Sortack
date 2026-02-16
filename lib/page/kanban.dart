@@ -110,62 +110,31 @@ class _KanbanPageState extends State<KanbanPage> {
               });
             },
           ),
-          PopupMenuButton<TaskParameters>(
-            tooltip: 'filter',
-            initialValue: _buf['filter'],
-            icon: const Icon(Icons.filter_list_rounded),
-            itemBuilder: (context) => TaskParameters.values
-                .map(
-                  (value) =>
-                      PopupMenuItem(value: value, child: Icon(value.icon())),
-                )
-                .toList(),
-            onSelected: (TaskParameters value) {
-              setState(() => _buf['filter'] = value);
-              showDialog(
-                context: context,
-                builder: (context) => switch (value) {
-                  TaskParameters.id => FilterDialog.numbers(
-                    from: _buf['from'],
-                    to: _buf['to'],
-                    onCancel: Navigator.of(context).pop,
-                    onAccept: (from, to) {
-                      setState(() {
-                        _buf['from'] = from;
-                        _buf['to'] = to;
-                        board.updateFilterCriterion(
-                          parameter: value,
-                          criterion: FromTo(from: from, to: to),
-                        );
-                      });
-                      Navigator.of(context).pop();
-                    },
-                    icon: Icons.numbers_rounded,
-                  ),
-                  //
-                  //TaskParameters.role, TaskParameters.assignee => ...,
-                  //
-                  _ => FilterDialog(
-                    values: value.parameterValues(),
-                    from: _buf['from'],
-                    to: _buf['to'],
-                    onCancel: Navigator.of(context).pop,
-                    onAccept: (from, to) {
-                      setState(() {
-                        _buf['from'] = from;
-                        _buf['to'] = to;
-                        board.updateFilterCriterion(
-                          parameter: value,
-                          criterion: FromTo(from: from, to: to),
-                        );
-                      });
-                      Navigator.of(context).pop();
-                    },
-                    icon: Icons.numbers_rounded,
-                  ),
+          IconButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => TaskFilterDialog(
+                onCancel: Navigator.of(context).pop,
+                onAccept: (filter) {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    board.filter(filter);
+                  });
                 },
-              );
-            },
+                // (from, to) {
+                //   setState(() {
+                //     _buf['from'] = from;
+                //     _buf['to'] = to;
+                //     board.updateFilterCriterion(
+                //       parameter: value,
+                //       criterion: FromTo(from: from, to: to),
+                //     );
+                //   });
+                //   Navigator.of(context).pop();
+                // },
+              ),
+            ),
+            icon: const Icon(Icons.filter_list_rounded),
           ),
           Builder(
             builder: (context) => IconButton(

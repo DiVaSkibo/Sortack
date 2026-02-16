@@ -23,10 +23,10 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
   }
 
   @override
-  void updateFilterCriterion({required TaskParameters parameter, criterion}) {
-    super.updateFilterCriterion(parameter: parameter, criterion: criterion);
+  void filter(FilterCriteria<TaskParameters> criteria) {
+    super.filter(criteria);
     for (final plank in planks) {
-      plank.updateFilterCriterion(parameter: parameter, criterion: criterion);
+      plank.filter(criteria);
     }
   }
 }

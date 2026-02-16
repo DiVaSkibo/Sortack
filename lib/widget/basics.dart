@@ -1,4 +1,5 @@
 import 'package:sortack/_tools.dart';
+import 'package:sortack/logic/opjects.dart';
 
 /// ground widget - filled page background
 class Ground extends StatelessWidget {
@@ -20,8 +21,8 @@ class Ground extends StatelessWidget {
 /// accept dialog widget - dialog for accept action
 class AcceptDialog extends StatelessWidget {
   final String? message;
-  final Function()? onCancel;
-  final Function()? onAccept;
+  final Function() onCancel;
+  final Function() onAccept;
   final IconData? icon;
 
   const AcceptDialog({
@@ -46,98 +47,113 @@ class AcceptDialog extends StatelessWidget {
 }
 
 /// filter dialog widget - dialog for tasks filtering by parameter
-class FilterDialog extends StatelessWidget {
-  final List values;
-  dynamic from;
-  dynamic to;
-  final Function()? onCancel;
-  final Function(dynamic, dynamic)? onAccept;
-  final IconData? icon;
-  late Widget fromField;
-  late Widget toField;
+class TaskFilterDialog extends StatefulWidget {
+  final FilterCriteria<TaskParameters>? initialFilter;
+  final Function() onCancel;
+  final Function(FilterCriteria<TaskParameters>) onAccept;
 
-  FilterDialog({
+  const TaskFilterDialog({
     super.key,
-    required this.values,
-    this.from,
-    this.to,
-    this.onCancel,
-    this.onAccept,
-    this.icon,
-  }) {
-    fromField = DropdownButtonFormField(
-      items: List<DropdownMenuItem>.generate(
-        values.length,
-        (index) => DropdownMenuItem(
-          value: values[index],
-          child: Text(values[index].label),
-        ),
-      ),
-      initialValue: from,
-      onChanged: (value) {
-        from = value;
-      },
-      decoration: InputDecoration(labelText: 'from'),
-    );
-    toField = DropdownButtonFormField(
-      items: List<DropdownMenuItem>.generate(
-        values.length,
-        (index) => DropdownMenuItem(
-          value: values[index],
-          child: Text(values[index].label),
-        ),
-      ),
-      initialValue: to,
-      onChanged: (value) {
-        to = value;
-      },
-    );
-  }
+    this.initialFilter,
+    required this.onCancel,
+    required this.onAccept,
+  });
 
-  FilterDialog.numbers({
-    super.key,
-    this.from,
-    this.to,
-    this.onCancel,
-    this.onAccept,
-    this.icon,
-  }) : values = [] {
-    fromField = TextField(
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
-      controller: TextEditingController(text: from),
-      onChanged: (value) {
-        from = value;
-      },
-      decoration: InputDecoration(labelText: 'from'),
-    );
-    toField = TextField(
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
-      controller: TextEditingController(text: to),
-      onChanged: (value) {
-        to = value;
-      },
-      decoration: InputDecoration(labelText: 'from'),
-    );
-  }
+  @override
+  State<TaskFilterDialog> createState() => _TaskFilterDialogState();
+}
+
+class _TaskFilterDialogState extends State<TaskFilterDialog> {
+  late final filter = widget.initialFilter ?? FilterCriteria<TaskParameters>();
+  //   fromField = TextField(
+  //     keyboardType: TextInputType.numberWithOptions(decimal: true),
+  //     controller: TextEditingController(text: from),
+  //     onChanged: (value) {
+  //       from = value;
+  //     },
+  //     decoration: InputDecoration(labelText: 'from'),
+  //   );
+  //   toField = TextField(
+  //     keyboardType: TextInputType.numberWithOptions(decimal: true),
+  //     controller: TextEditingController(text: to),
+  //     onChanged: (value) {
+  //       to = value;
+  //     },
+  //     decoration: InputDecoration(labelText: 'from'),
+  //   );
+
+  SizedBox _buildPriorityFilter() => SizedBox(
+    child: Wrap(
+      children: TaskPriority.values
+          .map(
+            (value) => FilterChip(
+              selected: filter.selected(TaskParameters.priority, value),
+              label: Text(value.label),
+              onSelected: (selected) {
+                setState(() {
+                  filter.update(TaskParameters.priority, value, selected);
+                });
+              },
+            ),
+          )
+          .toList(),
+    ),
+  );
+  SizedBox _buildPointsFilter() => SizedBox(
+    child: Wrap(
+      children: TaskPointsTShirt.values
+          .map(
+            (value) => FilterChip(
+              selected: filter.selected(TaskParameters.points, value),
+              label: Text(value.label),
+              onSelected: (selected) {
+                setState(() {
+                  filter.update(TaskParameters.points, value, selected);
+                });
+              },
+            ),
+          )
+          .toList(),
+    ),
+  );
+  SizedBox _buildRolesFilter() => SizedBox(
+    child: Wrap(
+      children: TaskRoles.values
+          .map(
+            (value) => FilterChip(
+              selected: filter.selected(TaskParameters.role, value),
+              label: Text(value.label),
+              onSelected: (selected) {
+                setState(() {
+                  filter.update(TaskParameters.role, value, selected);
+                });
+              },
+            ),
+          )
+          .toList(),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      icon: icon != null ? Icon(icon, size: 40) : null,
+      icon: const Icon(Icons.filter_list_rounded, size: 40),
       content: SizedBox(
         width: 450,
         child: Wrap(
           spacing: 25,
           runSpacing: 25,
-          children: [fromField, Text('< x <'), toField],
+          children: [
+            _buildPriorityFilter(),
+            _buildPointsFilter(),
+            _buildRolesFilter(),
+          ],
         ),
       ),
       actions: [
-        IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
+        IconButton(onPressed: widget.onCancel, icon: Icon(Icons.close_rounded)),
         IconButton(
-          onPressed: () => from != null && to != null
-              ? onAccept!(from, to)
-              : debugPrint('\n! INTERVAL VALUES ARE NULLS !\n'),
+          onPressed: () => widget.onAccept(filter),
           icon: Icon(Icons.check_rounded),
         ),
       ],

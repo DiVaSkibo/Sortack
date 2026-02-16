@@ -32,7 +32,7 @@ class _KanbanCardState extends State<KanbanCard> {
     super.dispose();
   }
 
-  TextField buildTitleField() => TextField(
+  TextField _buildTitleField() => TextField(
     controller: _taskController.titleController,
     focusNode: _taskController.titleFocus,
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
@@ -43,7 +43,7 @@ class _KanbanCardState extends State<KanbanCard> {
       hintText: 'I have to do ...',
     ),
   );
-  TextFormField buildDescriptionField() => TextFormField(
+  TextFormField _buildDescriptionField() => TextFormField(
     controller: _taskController.descriptionController,
     focusNode: _taskController.descriptionFocus,
     keyboardType: TextInputType.multiline,
@@ -56,7 +56,7 @@ class _KanbanCardState extends State<KanbanCard> {
       labelText: 'Description',
     ),
   );
-  PopupMenuButton buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
+  PopupMenuButton _buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
     tooltip: 'points',
     initialValue: task.points,
     child: Text(task.points != null ? task.points!.label : '?'),
@@ -69,7 +69,7 @@ class _KanbanCardState extends State<KanbanCard> {
       });
     },
   );
-  TextFormField buildNotesField() => TextFormField(
+  TextFormField _buildNotesField() => TextFormField(
     controller: _taskController.notesController,
     focusNode: _taskController.notesFocus,
     keyboardType: TextInputType.multiline,
@@ -96,7 +96,7 @@ class _KanbanCardState extends State<KanbanCard> {
           side: BorderSide.none,
         ),
         leading: const Icon(Icons.task_rounded),
-        title: buildTitleField(),
+        title: _buildTitleField(),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -117,8 +117,8 @@ class _KanbanCardState extends State<KanbanCard> {
             ),
           ],
         ),
-        trailing: buildPointsField(),
-        children: [buildDescriptionField(), buildNotesField()],
+        trailing: _buildPointsField(),
+        children: [_buildDescriptionField(), _buildNotesField()],
       ),
     );
   }

@@ -32,25 +32,6 @@ abstract mixin class Parameterizable<T extends Parameters> {
   }
 }
 
-final class FromTo<T extends Comparable> {
-  final T from;
-  final T to;
-
-  const FromTo({required this.from, required this.to});
-
-  bool check(T value) {
-    //if (value == null) return false;
-    //if (value is Comparable && from is Comparable && to is Comparable)
-    //  return from.compareTo(to) <= 0
-    //      ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
-    //      : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
-    //return value == from;
-    return from.compareTo(to) <= 0
-        ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
-        : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
-  }
-}
-
 abstract class Collector<T> with ChangeNotifier {
   List<T> get collection;
   bool listenable;

@@ -1,29 +1,46 @@
 import 'package:sortack/_tools.dart';
 
 /// base filter criteria class
+///
+/// criterion = { key : value } entry
+///
+/// deep criterion = { key : { subkey : value } } entry
 base class FilterCriteria<T extends Parameters> {
-  final Map<T, dynamic> _criteria;
+  final Map<T, Set> _criteria;
 
-  FilterCriteria({Map<T, dynamic>? criterias}) : _criteria = criterias ?? {};
+  FilterCriteria({Map<T, Set>? criterias}) : _criteria = criterias ?? {};
 
   bool isEmpty() => _criteria.isEmpty;
   bool isNotEmpty() => _criteria.isNotEmpty;
 
+  Set criterion(T key) =>
+      _criteria.containsKey(key) ? _criteria[key] ?? {} : {};
+  bool selected(T key, dynamic value) => criterion(key).contains(value);
+
   void clear() => _criteria.clear;
-  void update(T key, dynamic value) {
-    if (value == null)
-      _criteria.remove(key);
-    else
-      _criteria[key] = value;
+  void replace(FilterCriteria<T> newFilter) {
+    if (_criteria == newFilter._criteria) return;
+    _criteria.clear();
+    _criteria.addAll(newFilter._criteria);
+  }
+
+  void update(T key, dynamic value, bool selected) {
+    if (_criteria.containsKey(key)) {
+      if (selected)
+        _criteria[key]?.add(value).toString();
+      else
+        _criteria[key]?.remove(value);
+    } else {
+      _criteria[key] = {value};
+    }
   }
 
   bool matches(dynamic object) {
     for (final criterion in _criteria.entries) {
       final key = criterion.key;
-      final value = criterion.value;
-      final parameter = object.getParameter(key);
-      if (value is FromTo) if (value.check(parameter)) return false;
-      if (parameter != value) return false;
+      final set = criterion.value;
+      final value = object.getParameter(key);
+      if (!set.contains(value)) return false;
     }
     return true;
   }
@@ -38,9 +55,8 @@ mixin Sortable<T, F extends Parameters> on Collector<T> {
 mixin Filterable<T, F extends Parameters> on Collector<T> {
   final FilterCriteria filterCriterias = FilterCriteria();
 
-  List<T> filter() =>
+  List<T> get filtered =>
       List<T>.of(collection.where((task) => filterCriterias.matches(task)));
 
-  void updateFilterCriterion({required F parameter, dynamic criterion}) =>
-      filterCriterias.update(parameter, criterion);
+  void filter(FilterCriteria<F> criteria) => filterCriterias.replace(criteria);
 }
