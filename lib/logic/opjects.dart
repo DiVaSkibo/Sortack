@@ -10,8 +10,12 @@ base class FilterCriteria<T extends Parameters> {
 
   FilterCriteria({Map<T, Set>? criterias}) : _criteria = criterias ?? {};
 
-  bool isEmpty() => _criteria.isEmpty;
-  bool isNotEmpty() => _criteria.isNotEmpty;
+  bool isEmpty() => !isNotEmpty();
+  bool isNotEmpty() {
+    if (_criteria.isEmpty) return false;
+    for (final set in _criteria.values) if (set.isNotEmpty) return true;
+    return false;
+  }
 
   Set criterion(T key) =>
       _criteria.containsKey(key) ? _criteria[key] ?? {} : {};
@@ -39,6 +43,7 @@ base class FilterCriteria<T extends Parameters> {
     for (final criterion in _criteria.entries) {
       final key = criterion.key;
       final set = criterion.value;
+      if (set.isEmpty) continue;
       final value = object.getParameter(key);
       if (!set.contains(value)) return false;
     }
@@ -53,10 +58,13 @@ mixin Sortable<T, F extends Parameters> on Collector<T> {
 
 /// filterable mixin
 mixin Filterable<T, F extends Parameters> on Collector<T> {
-  final FilterCriteria filterCriterias = FilterCriteria();
+  final FilterCriteria<F> filterCriterias = FilterCriteria<F>();
 
-  List<T> get filtered =>
-      List<T>.of(collection.where((task) => filterCriterias.matches(task)));
+  List<T> get filtered => List<T>.of(
+    filterCriterias.isEmpty()
+        ? collection
+        : collection.where((task) => filterCriterias.matches(task)),
+  );
 
   void filter(FilterCriteria<F> criteria) => filterCriterias.replace(criteria);
 }

@@ -114,6 +114,7 @@ class _KanbanPageState extends State<KanbanPage> {
             onPressed: () => showDialog(
               context: context,
               builder: (context) => TaskFilterDialog(
+                initialFilter: board.filterCriterias,
                 onCancel: Navigator.of(context).pop,
                 onAccept: (filter) {
                   Navigator.of(context).pop();

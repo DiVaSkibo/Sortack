@@ -82,55 +82,85 @@ class _TaskFilterDialogState extends State<TaskFilterDialog> {
   //     decoration: InputDecoration(labelText: 'from'),
   //   );
 
-  SizedBox _buildPriorityFilter() => SizedBox(
-    child: Wrap(
-      children: TaskPriority.values
-          .map(
-            (value) => FilterChip(
-              selected: filter.selected(TaskParameters.priority, value),
-              label: Text(value.label),
-              onSelected: (selected) {
-                setState(() {
-                  filter.update(TaskParameters.priority, value, selected);
-                });
-              },
-            ),
-          )
-          .toList(),
+  SizedBox _buildPrioritiesFilter() => SizedBox(
+    child: Center(
+      child: Column(
+        spacing: 12.5,
+        children: [
+          Text('Priorities:'),
+          Wrap(
+            spacing: 11.0,
+            runSpacing: 9.0,
+            children: TaskPriority.values
+                .map(
+                  (value) => ChoiceChip(
+                    selected: filter.selected(TaskParameters.priority, value),
+                    label: Text(value.label),
+                    onSelected: (selected) {
+                      setState(() {
+                        filter.update(TaskParameters.priority, value, selected);
+                      });
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
     ),
   );
   SizedBox _buildPointsFilter() => SizedBox(
-    child: Wrap(
-      children: TaskPointsTShirt.values
-          .map(
-            (value) => FilterChip(
-              selected: filter.selected(TaskParameters.points, value),
-              label: Text(value.label),
-              onSelected: (selected) {
-                setState(() {
-                  filter.update(TaskParameters.points, value, selected);
-                });
-              },
-            ),
-          )
-          .toList(),
+    child: Center(
+      child: Column(
+        spacing: 12.5,
+        children: [
+          Text('Points:'),
+          Wrap(
+            spacing: 11.0,
+            runSpacing: 9.0,
+            children: TaskPointsTShirt.values
+                .map(
+                  (value) => ChoiceChip(
+                    selected: filter.selected(TaskParameters.points, value),
+                    label: Text(value.label),
+                    onSelected: (selected) {
+                      setState(() {
+                        filter.update(TaskParameters.points, value, selected);
+                      });
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
     ),
   );
   SizedBox _buildRolesFilter() => SizedBox(
-    child: Wrap(
-      children: TaskRoles.values
-          .map(
-            (value) => FilterChip(
-              selected: filter.selected(TaskParameters.role, value),
-              label: Text(value.label),
-              onSelected: (selected) {
-                setState(() {
-                  filter.update(TaskParameters.role, value, selected);
-                });
-              },
-            ),
-          )
-          .toList(),
+    child: Center(
+      child: Column(
+        spacing: 12.5,
+        children: [
+          Text('Roles:'),
+          Wrap(
+            spacing: 11.0,
+            runSpacing: 9.0,
+            children: TaskRoles.values
+                .map(
+                  (value) => ChoiceChip(
+                    selected: filter.selected(TaskParameters.role, value),
+                    label: Text(value.label),
+                    onSelected: (selected) {
+                      setState(() {
+                        filter.update(TaskParameters.role, value, selected);
+                      });
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
     ),
   );
 
@@ -139,12 +169,11 @@ class _TaskFilterDialogState extends State<TaskFilterDialog> {
     return AlertDialog(
       icon: const Icon(Icons.filter_list_rounded, size: 40),
       content: SizedBox(
-        width: 450,
-        child: Wrap(
+        width: 250,
+        child: Column(
           spacing: 25,
-          runSpacing: 25,
           children: [
-            _buildPriorityFilter(),
+            _buildPrioritiesFilter(),
             _buildPointsFilter(),
             _buildRolesFilter(),
           ],
