@@ -64,6 +64,8 @@ class _KanbanPageState extends State<KanbanPage> {
       ),
     ],
   );
+  final SwitchDrawersController _switchDrawersController =
+      SwitchDrawersController();
   final _buf = {};
 
   @override
@@ -110,90 +112,34 @@ class _KanbanPageState extends State<KanbanPage> {
               });
             },
           ),
-          IconButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => TaskFilterDialog(
-                initialFilter: board.filterCriterias,
-                onCancel: Navigator.of(context).pop,
-                onAccept: (filter) {
-                  Navigator.of(context).pop();
-                  setState(() {
-                    board.filter(filter);
-                  });
-                },
-                // (from, to) {
-                //   setState(() {
-                //     _buf['from'] = from;
-                //     _buf['to'] = to;
-                //     board.updateFilterCriterion(
-                //       parameter: value,
-                //       criterion: FromTo(from: from, to: to),
-                //     );
-                //   });
-                //   Navigator.of(context).pop();
-                // },
-              ),
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () =>
+                  _switchDrawersController.show(context, Drawers.filter),
+              icon: const Icon(Icons.filter_list_rounded),
             ),
-            icon: const Icon(Icons.filter_list_rounded),
           ),
           Builder(
             builder: (context) => IconButton(
-              onPressed: Scaffold.of(context).openEndDrawer,
+              onPressed: () =>
+                  _switchDrawersController.show(context, Drawers.help),
               icon: const Icon(Icons.blur_on_rounded),
             ),
           ),
         ],
       ),
-      endDrawer: Container(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.centerRight,
-            radius: 1,
-            colors: [Colours.FRONT, Colours.BACK],
+      endDrawer: ValueListenableBuilder(
+        valueListenable: _switchDrawersController,
+        builder: (context, drawer, child) => switch (drawer) {
+          Drawers.help => HelpDrawer(),
+          Drawers.filter => TaskFilterDrawer(
+            initialFilter: board.filterCriterias,
+            onChanged: (filter) => setState(() {
+              board.filter(filter);
+            }),
           ),
-        ),
-        child: Drawer(
-          child: ListView(
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    radius: 1,
-                    colors: [Colours.BACK, Colours.UNFRONT],
-                  ),
-                ),
-                padding: EdgeInsetsGeometry.all(0),
-                child: Icon(Icons.blur_on_rounded, size: 75),
-              ),
-              TextButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.explore_rounded),
-                label: const Text('Explore'),
-              ),
-              TextButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.fort_rounded),
-                label: const Text('Fort'),
-              ),
-              TextButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.format_paint_rounded),
-                label: const Text('Format paint'),
-              ),
-              TextButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.airplane_ticket_rounded),
-                label: const Text('Airplane ticket'),
-              ),
-              TextButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.church_rounded),
-                label: const Text('Church'),
-              ),
-            ],
-          ),
-        ),
+          _ => Drawer(),
+        },
       ),
       body: Ground(child: KanbanBoard(columns: board)),
       floatingActionButton: FloatingActionButton(

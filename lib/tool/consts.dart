@@ -168,6 +168,11 @@ enum TaskParameters implements Parameters {
   };
 }
 
+/// drawers enum
+///
+/// [help, info, control, filter]
+enum Drawers { help, info, control, filter }
+
 /// useless icons, just for fun :P
 const List<IconData> Unicons = [
   Icons.outlined_flag_rounded,

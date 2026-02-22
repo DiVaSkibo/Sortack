@@ -150,7 +150,7 @@ final class KanbanColumn {
   DragAndDropList build() {
     return DragAndDropList(
       verticalAlignment: CrossAxisAlignment.center,
-      decoration: Decorations.SURFACE_BOX,
+      decoration: Decorations.PLANK_BOX,
       header: ListenableBuilder(
         listenable: _titleController,
         builder: (context, child) => TextField(

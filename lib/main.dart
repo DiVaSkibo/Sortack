@@ -215,8 +215,8 @@ class MyApp extends StatelessWidget {
         ),
         dialogTheme: const DialogThemeData(
           alignment: Alignment.bottomRight,
-          backgroundColor: Colours.BACK,
-          surfaceTintColor: Colours.ACBOTTOM,
+          backgroundColor: Colours.WARNING,
+          surfaceTintColor: Colours.WARNING,
           barrierColor: Colours.SHADOW,
           iconColor: Colours.FRONT,
         ),

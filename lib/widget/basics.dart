@@ -1,5 +1,5 @@
 import 'package:sortack/_tools.dart';
-import 'package:sortack/logic/opjects.dart';
+//import 'package:sortack/_logics.dart';
 
 /// ground widget - filled page background
 class Ground extends StatelessWidget {
@@ -12,7 +12,24 @@ class Ground extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: Decorations.GROUND_BOX,
+      decoration: Decorations.DECK_BOX,
+      child: child,
+    );
+  }
+}
+
+/// surface widget - filled dialog background
+class Surface extends StatelessWidget {
+  final Widget child;
+
+  const Surface({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 250,
+      //height: double.infinity,
+      decoration: Decorations.SURFACE_BOX,
       child: child,
     );
   }
@@ -41,150 +58,6 @@ class AcceptDialog extends StatelessWidget {
       actions: [
         IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
         IconButton(onPressed: onAccept, icon: Icon(Icons.check_rounded)),
-      ],
-    );
-  }
-}
-
-/// filter dialog widget - dialog for tasks filtering by parameter
-class TaskFilterDialog extends StatefulWidget {
-  final FilterCriteria<TaskParameters>? initialFilter;
-  final Function() onCancel;
-  final Function(FilterCriteria<TaskParameters>) onAccept;
-
-  const TaskFilterDialog({
-    super.key,
-    this.initialFilter,
-    required this.onCancel,
-    required this.onAccept,
-  });
-
-  @override
-  State<TaskFilterDialog> createState() => _TaskFilterDialogState();
-}
-
-class _TaskFilterDialogState extends State<TaskFilterDialog> {
-  late final filter = widget.initialFilter ?? FilterCriteria<TaskParameters>();
-  //   fromField = TextField(
-  //     keyboardType: TextInputType.numberWithOptions(decimal: true),
-  //     controller: TextEditingController(text: from),
-  //     onChanged: (value) {
-  //       from = value;
-  //     },
-  //     decoration: InputDecoration(labelText: 'from'),
-  //   );
-  //   toField = TextField(
-  //     keyboardType: TextInputType.numberWithOptions(decimal: true),
-  //     controller: TextEditingController(text: to),
-  //     onChanged: (value) {
-  //       to = value;
-  //     },
-  //     decoration: InputDecoration(labelText: 'from'),
-  //   );
-
-  SizedBox _buildPrioritiesFilter() => SizedBox(
-    child: Center(
-      child: Column(
-        spacing: 12.5,
-        children: [
-          Text('Priorities:'),
-          Wrap(
-            spacing: 11.0,
-            runSpacing: 9.0,
-            children: TaskPriority.values
-                .map(
-                  (value) => ChoiceChip(
-                    selected: filter.selected(TaskParameters.priority, value),
-                    label: Text(value.label),
-                    onSelected: (selected) {
-                      setState(() {
-                        filter.update(TaskParameters.priority, value, selected);
-                      });
-                    },
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
-    ),
-  );
-  SizedBox _buildPointsFilter() => SizedBox(
-    child: Center(
-      child: Column(
-        spacing: 12.5,
-        children: [
-          Text('Points:'),
-          Wrap(
-            spacing: 11.0,
-            runSpacing: 9.0,
-            children: TaskPointsTShirt.values
-                .map(
-                  (value) => ChoiceChip(
-                    selected: filter.selected(TaskParameters.points, value),
-                    label: Text(value.label),
-                    onSelected: (selected) {
-                      setState(() {
-                        filter.update(TaskParameters.points, value, selected);
-                      });
-                    },
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
-    ),
-  );
-  SizedBox _buildRolesFilter() => SizedBox(
-    child: Center(
-      child: Column(
-        spacing: 12.5,
-        children: [
-          Text('Roles:'),
-          Wrap(
-            spacing: 11.0,
-            runSpacing: 9.0,
-            children: TaskRoles.values
-                .map(
-                  (value) => ChoiceChip(
-                    selected: filter.selected(TaskParameters.role, value),
-                    label: Text(value.label),
-                    onSelected: (selected) {
-                      setState(() {
-                        filter.update(TaskParameters.role, value, selected);
-                      });
-                    },
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
-    ),
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      icon: const Icon(Icons.filter_list_rounded, size: 40),
-      content: SizedBox(
-        width: 250,
-        child: Column(
-          spacing: 25,
-          children: [
-            _buildPrioritiesFilter(),
-            _buildPointsFilter(),
-            _buildRolesFilter(),
-          ],
-        ),
-      ),
-      actions: [
-        IconButton(onPressed: widget.onCancel, icon: Icon(Icons.close_rounded)),
-        IconButton(
-          onPressed: () => widget.onAccept(filter),
-          icon: Icon(Icons.check_rounded),
-        ),
       ],
     );
   }

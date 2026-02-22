@@ -42,12 +42,17 @@ final class Colours {
 
 /// gradients static const class - custom static const gradients
 final class Gradients {
-  static const GROUND = RadialGradient(
+  static const DECK = RadialGradient(
     center: Alignment.bottomCenter,
     radius: 1.0,
     colors: [Colours.BACK_GLOW, Colours.UNBACK],
   );
   static const SURFACE = RadialGradient(
+    center: Alignment.centerRight,
+    radius: 1.25,
+    colors: [Colours.BACK_GLOW, Colours.BACK],
+  );
+  static const PLANK = RadialGradient(
     center: Alignment.topLeft,
     radius: 1.5,
     colors: [Colours.BACK_GLOW, Colours.BACK],
@@ -100,9 +105,10 @@ final class Styles {
 
 /// decorations static const class - custom static const decorations
 final class Decorations {
-  static const GROUND_BOX = BoxDecoration(gradient: Gradients.GROUND);
-  static final SURFACE_BOX = BoxDecoration(
-    gradient: Gradients.SURFACE,
+  static const DECK_BOX = BoxDecoration(gradient: Gradients.DECK);
+  static const SURFACE_BOX = BoxDecoration(gradient: Gradients.SURFACE);
+  static final PLANK_BOX = BoxDecoration(
+    gradient: Gradients.PLANK,
     borderRadius: BorderRadius.circular(15),
   );
   static InputDecoration columnInput() => InputDecoration(
