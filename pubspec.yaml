@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   drag_and_drop_lists: ^0.4.2
   firebase_core: ^4.4.0
+  firebase_auth: ^6.1.4
+  cloud_firestore: ^6.1.2
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:
