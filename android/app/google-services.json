@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "441522416299",
+    "project_id": "sortack-xai304-345a",
+    "storage_bucket": "sortack-xai304-345a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441522416299:android:d18aa248a957a2dc6b25ee",
+        "android_client_info": {
+          "package_name": "com.example.sortack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ9ELfE9CzLQvPjCRukep634aquYnNkCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

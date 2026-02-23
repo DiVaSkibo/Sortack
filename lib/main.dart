@@ -1,10 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:sortack/_tools.dart';
 //import 'package:sortack/_logics.dart';
 //import 'package:sortack/_widgets.dart';
 import 'page/home.dart';
 import 'page/kanban.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
