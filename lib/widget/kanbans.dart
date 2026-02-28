@@ -2,7 +2,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 //import 'package:sortack/logic/opjects.dart';
-import 'package:sortack/widget/basics.dart';
+import 'package:sortack/widget/dialogs.dart';
 
 /// Kanban card widget - task block view
 class KanbanCard extends StatefulWidget {

@@ -1,16 +1,6 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/task/task_blocks.dart';
 
-/// switch drawers controller - control drawers value changes
-class SwitchDrawersController extends ValueNotifier<Drawers> {
-  SwitchDrawersController() : super(Drawers.help);
-
-  void show(BuildContext context, Drawers drawer) {
-    value = drawer;
-    Scaffold.of(context).openEndDrawer();
-  }
-}
-
 /// task block controller - control task block parameters
 class TaskBlockController extends ChangeNotifier {
   final TaskBlock _task;
@@ -83,5 +73,64 @@ class TaskBlockController extends ChangeNotifier {
     if (_task.points == points) return;
     _task.points = points;
     notifyListeners();
+  }
+}
+
+class AuthController extends ChangeNotifier {
+  String _email;
+  String _password;
+
+  String get email => _email;
+  String get password => _password;
+
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+
+  AuthController({String? email, String? password})
+    : _email = email ?? '',
+      _password = password ?? '' {
+    _initializeControllers();
+    _setupFocusListeners();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    emailFocus.dispose();
+    passwordFocus.dispose();
+    super.dispose();
+  }
+
+  void _initializeControllers() {
+    emailController = TextEditingController(text: _email);
+    passwordController = TextEditingController(text: _password);
+  }
+
+  void _setupFocusListeners() {
+    emailFocus.addListener(() {
+      if (!emailFocus.hasFocus && emailController.text != _email) {
+        _email = emailController.text;
+        notifyListeners();
+      }
+    });
+    passwordFocus.addListener(() {
+      if (!passwordFocus.hasFocus && passwordController.text != _password) {
+        _password = passwordController.text;
+        notifyListeners();
+      }
+    });
+  }
+}
+
+/// switch drawers controller - control drawers value changes
+class SwitchDrawersController extends ValueNotifier<Drawers> {
+  SwitchDrawersController() : super(Drawers.help);
+
+  void show(BuildContext context, Drawers drawer) {
+    value = drawer;
+    Scaffold.of(context).openEndDrawer();
   }
 }

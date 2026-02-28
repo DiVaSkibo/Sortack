@@ -63,7 +63,13 @@ final class Gradients {
 final class Styles {
   static const LARGE_TEXT = TextStyle(
     fontFamily: Fonts.RUBIK_MONO_ONE,
-    fontSize: 60,
+    fontSize: 44,
+  );
+  static TextStyle AUTH_TEXT = TextStyle(
+    fontSize: 17,
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w600,
+    color: Colours.BACK,
   );
   static TextStyle columnText({Color? color}) =>
       TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: color);
@@ -106,7 +112,10 @@ final class Styles {
 /// decorations static const class - custom static const decorations
 final class Decorations {
   static const DECK_BOX = BoxDecoration(gradient: Gradients.DECK);
-  static const SURFACE_BOX = BoxDecoration(gradient: Gradients.SURFACE);
+  static const SURFACE_BOX = BoxDecoration(
+    gradient: Gradients.SURFACE,
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+  );
   static final PLANK_BOX = BoxDecoration(
     gradient: Gradients.PLANK,
     borderRadius: BorderRadius.circular(15),

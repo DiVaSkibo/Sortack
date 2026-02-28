@@ -3,3 +3,4 @@ export 'package:sortack/logic/controllers.dart';
 export 'package:sortack/logic/task/task_blocks.dart';
 export 'package:sortack/logic/task/task_planks.dart';
 export 'package:sortack/logic/task/task_decks.dart';
+export 'package:sortack/logic/firebase/authentications.dart';

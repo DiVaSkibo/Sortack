@@ -15,12 +15,23 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Ground(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 60,
-          children: <Widget>[
-            SvgPicture.asset('assets/icon/Sortack.svg'),
-            Text('Sortack welcomes!', style: Styles.LARGE_TEXT),
+        scrollable: true,
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          runAlignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 99,
+          runSpacing: 111,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 60,
+              children: [
+                SvgPicture.asset('assets/icon/Sortack.svg'),
+                Text('Sortack welcomes!', style: Styles.LARGE_TEXT),
+              ],
+            ),
+            AuthView(),
             FilledButton(
               onPressed: () => Navigator.pushNamed(context, 'kanban'),
               child: Text('Join it'),
