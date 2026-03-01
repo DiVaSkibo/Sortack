@@ -1,5 +1,5 @@
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:ui';
-
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 
@@ -110,16 +110,16 @@ class _AuthViewState extends State<AuthView> {
           ),
           FilledButton(
             onPressed: () async {
-              dynamic user = await _auth.register(
+              dynamic user = await _auth.signUp(
                 email: _authController.email,
                 password: _authController.password,
               );
               if (user == null)
-                debugPrint('! error with registering user...');
+                debugPrint('! error with signing up user...');
               else
-                debugPrint('registered user: $user');
+                debugPrint('signed up user: $user');
             },
-            child: Text('Register'),
+            child: Text('Sign up'),
           ),
           FilledButton(
             onPressed: () async {
@@ -132,7 +132,29 @@ class _AuthViewState extends State<AuthView> {
               else
                 debugPrint('signed in user: $user');
             },
-            child: Text('Sign In'),
+            child: Text('Sign in'),
+          ),
+          OutlinedButton.icon(
+            iconAlignment: IconAlignment.end,
+            onPressed: () async {
+              try {
+                dynamic user = await _auth.signInWithGoogle();
+                if (user == null)
+                  debugPrint('! error with signing in user...');
+                else {
+                  debugPrint('signed in user: $user');
+                }
+              } catch (exc) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('ERROR: $exc')));
+              }
+            },
+            label: Text('Use'),
+            icon: SvgPicture.asset(
+              'assets/icon/foreign/Google.svg',
+              height: 16,
+            ),
           ),
         ],
       ),

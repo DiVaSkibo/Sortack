@@ -1,10 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:sortack/_tools.dart';
-//import 'package:sortack/_logics.dart';
-//import 'package:sortack/_widgets.dart';
-import 'page/home.dart';
-import 'page/kanban.dart';
+import '_tools.dart';
+import '_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -132,15 +129,31 @@ class MyApp extends StatelessWidget {
             overlayColor: Colours.UNTOP,
             iconAlignment: IconAlignment.end,
             iconSize: 16,
-            iconColor: Colours.CENTER,
+            iconColor: Colours.BOTTOM,
           ),
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
             shadowColor: Colours.o,
-            foregroundColor: Colours.CENTER,
+            foregroundColor: Colours.B,
             backgroundColor: Colours.TOP,
             overlayColor: Colours.UNTOP,
+            textStyle: const TextStyle(
+              fontSize: 15,
+              fontFamily: Fonts.RUBIK,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(width: 2, strokeAlign: 0.1, color: Colours.TOP),
+            shadowColor: Colours.o,
+            foregroundColor: Colours.ACTOP,
+            backgroundColor: Colours.UNBACK,
+            overlayColor: Colours.UNTOP,
+            iconSize: 16,
+            iconColor: Colours.BOTTOM,
             textStyle: const TextStyle(
               fontSize: 15,
               fontFamily: Fonts.RUBIK,
