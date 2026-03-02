@@ -145,9 +145,7 @@ class _AuthViewState extends State<AuthView> {
                   debugPrint('signed in user: $user');
                 }
               } catch (exc) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('ERROR: $exc')));
+                debugPrint('ERROR: $exc');
               }
             },
             label: Text('Use'),

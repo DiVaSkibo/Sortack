@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import '_tools.dart';
-import '_pages.dart';
+import 'root.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -315,11 +315,7 @@ class MyApp extends StatelessWidget {
           actionsIconTheme: IconThemeData(color: Colours.TOP),
         ),
       ),
-      initialRoute: 'home',
-      routes: {
-        'home': (context) => const MyHomePage(),
-        'kanban': (context) => const KanbanPage(),
-      },
+      home: Rooter(),
     );
   }
 }
