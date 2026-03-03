@@ -1,5 +1,5 @@
 import 'package:sortack/_tools.dart';
-import 'package:sortack/logic/task/task_blocks.dart';
+import 'package:sortack/logic/task/blocks.dart';
 
 /// task block controller - control task block parameters
 class TaskBlockController extends ChangeNotifier {

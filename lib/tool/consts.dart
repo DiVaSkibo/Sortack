@@ -2,6 +2,17 @@ import 'dart:math';
 import 'package:sortack/tool/abstracts.dart';
 import 'package:sortack/tool/style.dart';
 
+/// methodologies enum
+///
+/// [kanban, scrum]
+enum Methodology with Labeling {
+  Kanban,
+  Scrum;
+
+  @override
+  String get label => name;
+}
+
 /// task status enum - task statuses
 ///
 /// [to do, in progress, done]

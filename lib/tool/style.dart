@@ -6,6 +6,7 @@ final class Fonts {
   static const RUBIK = 'Rubik';
   static const RUBIK_ONE = 'Rubik One';
   static const RUBIK_MONO_ONE = 'Rubik Mono One';
+  static const RUBIK_MARKER_HATCH = 'Rubik Marker Hatch';
 }
 
 /// colours static const class - custom static const colours
@@ -62,7 +63,7 @@ final class Gradients {
 /// styles static const class - custom static const styles
 final class Styles {
   static const LARGE_TEXT = TextStyle(
-    fontFamily: Fonts.RUBIK_MONO_ONE,
+    fontFamily: Fonts.RUBIK_MARKER_HATCH,
     fontSize: 44,
   );
   static TextStyle AUTH_TEXT = TextStyle(

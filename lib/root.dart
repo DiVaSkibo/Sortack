@@ -13,7 +13,7 @@ class Rooter extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting)
           return Icon(Icons.timelapse_rounded);
         else if (snapshot.hasData)
-          return KanbanPage();
+          return MenuPage();
         else
           return MyHomePage();
       },

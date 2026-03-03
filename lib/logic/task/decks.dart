@@ -1,7 +1,7 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/opjects.dart';
-import 'package:sortack/logic/task/task_planks.dart';
-export 'package:sortack/logic/task/task_planks.dart';
+import 'package:sortack/logic/task/blocks.dart';
+import 'package:sortack/logic/task/planks.dart';
 
 /// sealed task deck class - collection of task planks
 sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
@@ -31,9 +31,29 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
   }
 }
 
-/// task board - task deck for a board
-class TaskBoard extends TaskDeck<TitledTaskPlank> {
+/// sealed deck details class
+final class DeckDetails {
   String name;
+  String? description;
+  Methodology methodology;
+  DateTime created;
+  String owner;
+  List<String> members;
 
-  TaskBoard({required this.name, super.planks, super.listenable});
+  DeckDetails({
+    required this.name,
+    required this.methodology,
+    this.description = '',
+    required this.created,
+    required this.owner,
+    List<String>? members,
+  }) : members = members ?? [];
+}
+
+/// detailed task deck - task deck with details
+class DetailedTaskDeck extends TaskDeck<TitledTaskPlank> {
+  final DeckDetails? details;
+
+  DetailedTaskDeck({super.planks, super.listenable, required this.details})
+    : super();
 }

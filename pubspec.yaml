@@ -120,6 +120,9 @@ flutter:
     - family: Rubik One
       fonts:
         - asset: assets/font/Rubik One/RubikOne-Regular.ttf
+    - family: Rubik Marker Hatch
+      fonts:
+        - asset: assets/font/Rubik Marker Hatch/RubikMarkerHatch-Regular.ttf
     - family: Rubik Mono One
       fonts:
         - asset: assets/font/Rubik Mono One/RubikMonoOne-Regular.ttf

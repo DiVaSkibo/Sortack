@@ -10,8 +10,13 @@ class KanbanPage extends StatefulWidget {
 }
 
 class _KanbanPageState extends State<KanbanPage> {
-  final TaskBoard board = TaskBoard(
-    name: 'My Board',
+  final DetailedTaskDeck board = DetailedTaskDeck(
+    details: DeckDetails(
+      name: 'My Board',
+      methodology: Methodology.Kanban,
+      created: DateTime.now(),
+      owner: 'Me',
+    ),
     listenable: true,
     planks: [
       TitledTaskPlank(

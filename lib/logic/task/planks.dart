@@ -1,7 +1,6 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/opjects.dart';
-import 'package:sortack/logic/task/task_blocks.dart';
-export 'package:sortack/logic/task/task_blocks.dart';
+import 'package:sortack/logic/task/blocks.dart';
 
 /// sealed task plank class - collection of task blocks
 sealed class TaskPlank extends Collector<TaskBlock>
