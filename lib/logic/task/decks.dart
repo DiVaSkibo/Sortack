@@ -31,7 +31,7 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
   }
 }
 
-/// sealed deck details class
+/// final deck details class
 final class DeckDetails {
   String name;
   String? description;

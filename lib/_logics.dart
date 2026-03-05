@@ -4,3 +4,4 @@ export 'package:sortack/logic/task/blocks.dart';
 export 'package:sortack/logic/task/planks.dart';
 export 'package:sortack/logic/task/decks.dart';
 export 'package:sortack/logic/firebase/authentications.dart';
+export 'package:sortack/logic/firebase/firestore_datas.dart';

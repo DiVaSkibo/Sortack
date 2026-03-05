@@ -1,5 +1,56 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/task/blocks.dart';
+import 'package:sortack/logic/task/decks.dart';
+
+/// auth controller - control email and password
+class AuthController extends ChangeNotifier {
+  String _email;
+  String _password;
+
+  String get email => _email;
+  String get password => _password;
+
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+
+  AuthController({String? email, String? password})
+    : _email = email ?? '',
+      _password = password ?? '' {
+    _initializeControllers();
+    _setupFocusListeners();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    emailFocus.dispose();
+    passwordFocus.dispose();
+    super.dispose();
+  }
+
+  void _initializeControllers() {
+    emailController = TextEditingController(text: _email);
+    passwordController = TextEditingController(text: _password);
+  }
+
+  void _setupFocusListeners() {
+    emailFocus.addListener(() {
+      if (!emailFocus.hasFocus && emailController.text != _email) {
+        _email = emailController.text;
+        notifyListeners();
+      }
+    });
+    passwordFocus.addListener(() {
+      if (!passwordFocus.hasFocus && passwordController.text != _password) {
+        _password = passwordController.text;
+        notifyListeners();
+      }
+    });
+  }
+}
 
 /// task block controller - control task block parameters
 class TaskBlockController extends ChangeNotifier {
@@ -76,52 +127,78 @@ class TaskBlockController extends ChangeNotifier {
   }
 }
 
-class AuthController extends ChangeNotifier {
-  String _email;
-  String _password;
+/// deck details controller - control deck details parameters
+class DeckDetailsController extends ChangeNotifier {
+  final DeckDetails _project;
+  DeckDetails get project => _project;
 
-  String get email => _email;
-  String get password => _password;
+  late final TextEditingController nameController;
+  late final TextEditingController descriptionController;
+  late final TextEditingController ownerController;
+  final FocusNode nameFocus = FocusNode();
+  final FocusNode descriptionFocus = FocusNode();
+  final FocusNode ownerFocus = FocusNode();
 
-  late final TextEditingController emailController;
-  late final TextEditingController passwordController;
-  final FocusNode emailFocus = FocusNode();
-  final FocusNode passwordFocus = FocusNode();
-
-  AuthController({String? email, String? password})
-    : _email = email ?? '',
-      _password = password ?? '' {
+  DeckDetailsController(this._project) {
     _initializeControllers();
     _setupFocusListeners();
   }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    emailFocus.dispose();
-    passwordFocus.dispose();
+    nameController.dispose();
+    descriptionController.dispose();
+    ownerController.dispose();
+    nameFocus.dispose();
+    descriptionFocus.dispose();
+    ownerFocus.dispose();
     super.dispose();
   }
 
   void _initializeControllers() {
-    emailController = TextEditingController(text: _email);
-    passwordController = TextEditingController(text: _password);
+    nameController = TextEditingController(text: _project.name);
+    descriptionController = TextEditingController(text: _project.description);
+    ownerController = TextEditingController(text: _project.owner);
   }
 
   void _setupFocusListeners() {
-    emailFocus.addListener(() {
-      if (!emailFocus.hasFocus && emailController.text != _email) {
-        _email = emailController.text;
+    nameFocus.addListener(() {
+      if (!nameFocus.hasFocus && nameController.text != _project.name) {
+        _project.name = nameController.text;
         notifyListeners();
       }
     });
-    passwordFocus.addListener(() {
-      if (!passwordFocus.hasFocus && passwordController.text != _password) {
-        _password = passwordController.text;
+    descriptionFocus.addListener(() {
+      if (!descriptionFocus.hasFocus &&
+          descriptionController.text != _project.description) {
+        _project.description = descriptionController.text;
         notifyListeners();
       }
     });
+    ownerFocus.addListener(() {
+      if (!ownerFocus.hasFocus && ownerController.text != _project.owner) {
+        _project.owner = ownerController.text;
+        notifyListeners();
+      }
+    });
+  }
+
+  void updateMethodology(Methodology methodology) {
+    if (_project.methodology == methodology) return;
+    _project.methodology = methodology;
+    notifyListeners();
+  }
+
+  void updateCreated(DateTime created) {
+    if (_project.created == created) return;
+    _project.created = created;
+    notifyListeners();
+  }
+
+  void updateMembers(List<String> members) {
+    if (_project.members == members) return;
+    _project.members = members;
+    notifyListeners();
   }
 }
 

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_widgets.dart';
@@ -12,56 +14,55 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
-    return Ground(
-      scrollable: true,
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        runAlignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 50,
-        runSpacing: 100,
-        children: [
-          ProjectCard(
-            details: DeckDetails(
-              name: 'Deck',
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null)
+      return Center(child: Icon(Icons.error_outline_rounded));
+    return Scaffold(
+      body: Ground(
+        scrollable: true,
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('projects')
+              .where('members', arrayContains: currentUser.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return const Center(child: CircularProgressIndicator());
+            if (snapshot.hasError)
+              return Center(child: Icon(Icons.error_outline_rounded));
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
+              return Icon(Icons.cabin_rounded);
+            return Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 50,
+              runSpacing: 100,
+              children: snapshot.data!.docs
+                  .map(
+                    (doc) => ProjectCard(
+                      details: FirestoreResources.loadDeckDetails(doc),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => ProjectDialog(
+            project: DeckDetails(
+              name: '',
               methodology: Methodology.Kanban,
               created: DateTime.now(),
-              owner: 'Wood',
+              owner: '',
             ),
+            onAccept: (_) {},
+            onCancel: () {},
           ),
-          ProjectCard(
-            details: DeckDetails(
-              name: 'Project',
-              methodology: Methodology.Scrum,
-              created: DateTime.now(),
-              owner: 'Product Owner',
-            ),
-          ),
-          ProjectCard(
-            details: DeckDetails(
-              name: 'To do list',
-              methodology: Methodology.Kanban,
-              created: DateTime.now(),
-              owner: 'Mom',
-            ),
-          ),
-          ProjectCard(
-            details: DeckDetails(
-              name: '_',
-              methodology: Methodology.Scrum,
-              created: DateTime.now(),
-              owner: 'Me',
-            ),
-          ),
-          ProjectCard(
-            details: DeckDetails(
-              name: 'name',
-              methodology: Methodology.Kanban,
-              created: DateTime.now(),
-              owner: 'owner',
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
