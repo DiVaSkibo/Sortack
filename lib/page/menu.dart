@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_widgets.dart';
@@ -21,10 +19,7 @@ class _MenuPageState extends State<MenuPage> {
       body: Ground(
         scrollable: true,
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('projects')
-              .where('members', arrayContains: currentUser.uid)
-              .snapshots(),
+          stream: FirestoreResources.loadUserProjects(currentUser),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)
               return const Center(child: CircularProgressIndicator());
@@ -41,7 +36,7 @@ class _MenuPageState extends State<MenuPage> {
               children: snapshot.data!.docs
                   .map(
                     (doc) => ProjectCard(
-                      details: FirestoreResources.loadDeckDetails(doc),
+                      details: FirestoreResources.loadProject(doc),
                     ),
                   )
                   .toList(),

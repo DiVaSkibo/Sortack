@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 
@@ -31,7 +29,7 @@ class AcceptDialog extends StatelessWidget {
   }
 }
 
-/// ?
+/// project dialog widget - dialog for project settings
 class ProjectDialog extends StatefulWidget {
   final DeckDetails project;
   final Function(DeckDetails) onAccept;
@@ -69,26 +67,7 @@ class _ProjectDialogState extends State<ProjectDialog> {
     if (project.name.trim().isEmpty) return;
     setState(() => _isLoading = true);
     try {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser == null) throw Exception('User is not authorised...');
-      await FirebaseFirestore.instance.collection('projects').add({
-        'name': project.name.trim(),
-        'description': project.description,
-        'methodology': project.methodology.name,
-        'created': FieldValue.serverTimestamp(),
-        'owner': currentUser.uid,
-        'members': [currentUser.uid],
-      });
-      debugPrint(
-        {
-          'name': project.name.trim(),
-          'description': project.description,
-          'methodology': project.methodology.name,
-          'createdAt': FieldValue.serverTimestamp(),
-          'owner': currentUser.uid,
-          'members': [currentUser.uid],
-        }.toString(),
-      );
+      FirestoreResources.saveProject(project);
       if (mounted) Navigator.pop(context);
     } catch (exc) {
       debugPrint('! ERROR: $exc');

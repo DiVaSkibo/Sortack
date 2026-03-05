@@ -114,10 +114,7 @@ class _AuthViewState extends State<AuthView> {
                 email: _authController.email,
                 password: _authController.password,
               );
-              if (user == null)
-                debugPrint('! error with signing up user...');
-              else
-                debugPrint('signed up user: $user');
+              if (user == null) debugPrint('! error with signing up user...');
             },
             child: Text('Sign up'),
           ),
@@ -127,10 +124,7 @@ class _AuthViewState extends State<AuthView> {
                 email: _authController.email,
                 password: _authController.password,
               );
-              if (user == null)
-                debugPrint('! error with signing in user...');
-              else
-                debugPrint('signed in user: $user');
+              if (user == null) debugPrint('! error with signing in user...');
             },
             child: Text('Sign in'),
           ),
@@ -139,11 +133,7 @@ class _AuthViewState extends State<AuthView> {
             onPressed: () async {
               try {
                 dynamic user = await _auth.signInWithGoogle();
-                if (user == null)
-                  debugPrint('! error with signing in user...');
-                else {
-                  debugPrint('signed in user: $user');
-                }
+                if (user == null) debugPrint('! error with signing in user...');
               } catch (exc) {
                 debugPrint('ERROR: $exc');
               }
