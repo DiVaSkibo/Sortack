@@ -3,7 +3,7 @@ import 'package:sortack/_tools.dart';
 /// immutable task block class
 @immutable
 class TaskBlock with Parameterizable<TaskParameters> {
-  final int id;
+  final String id;
   String title;
   String description;
   TaskStatus status;
@@ -14,7 +14,7 @@ class TaskBlock with Parameterizable<TaskParameters> {
   String notes;
 
   TaskBlock({
-    int? id,
+    required this.id,
     this.title = '',
     this.description = '',
     this.status = TaskStatus.toDo,
@@ -23,7 +23,7 @@ class TaskBlock with Parameterizable<TaskParameters> {
     this.role,
     this.assignee,
     this.notes = '',
-  }) : id = id ?? DateTime.now().millisecondsSinceEpoch;
+  });
 
   @override
   dynamic getParameter(parameter, {comparable = false}) => switch (parameter) {

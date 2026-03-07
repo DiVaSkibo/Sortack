@@ -3,75 +3,43 @@ import 'package:sortack/_logics.dart';
 import 'package:sortack/_widgets.dart';
 
 class KanbanPage extends StatefulWidget {
-  const KanbanPage({super.key});
+  final String id;
+
+  const KanbanPage({super.key, required this.id});
 
   @override
   State<KanbanPage> createState() => _KanbanPageState();
 }
 
 class _KanbanPageState extends State<KanbanPage> {
-  final DetailedTaskDeck board = DetailedTaskDeck(
-    details: DeckDetails(
-      name: 'My Board',
-      methodology: Methodology.Kanban,
-      created: DateTime.now(),
-      owner: 'Me',
-    ),
-    listenable: true,
-    planks: [
-      TitledTaskPlank(
-        title: 'To Do',
-        color: Colours.NOTOK,
-        listenable: true,
-        blocks: [
-          TaskBlock(
-            title: 'Database',
-            description: 'Architecture and build database using Firebase',
-            points: TaskPointsTShirt.XL,
-          ),
-          TaskBlock(
-            title: 'Search system',
-            description:
-                'Search for available libraries for search system\nIf nothing, make by ourself',
-            points: TaskPointsTShirt.L,
-          ),
-        ],
-      ),
-      TitledTaskPlank(
-        title: 'In Progress',
-        color: Colours.INOK,
-        listenable: true,
-        blocks: [
-          TaskBlock(
-            title: 'Sign In page',
-            description: 'Create sign in page according to design in Figma',
-            points: TaskPointsTShirt.S,
-          ),
-        ],
-      ),
-      TitledTaskPlank(
-        title: 'Done',
-        color: Colours.OK,
-        listenable: true,
-        blocks: [
-          TaskBlock(
-            title: 'Sign In page design',
-            description: 'Design sign in page using Figma',
-            points: TaskPointsTShirt.L,
-          ),
-          TaskBlock(title: 'What', description: 'What actually do'),
-          TaskBlock(
-            title: 'Who',
-            description: 'Who actually do',
-            points: TaskPointsTShirt.XXL,
-          ),
-        ],
-      ),
-    ],
-  );
+  late String id = widget.id;
+  late final DetailedTaskDeck? board;
+  bool isLoading = true;
+
   final SwitchDrawersController _switchDrawersController =
       SwitchDrawersController();
   final _buf = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final loadedDeck = await FirestoreResources.loadDeck(id);
+      setState(() {
+        board = loadedDeck;
+        isLoading = false;
+      });
+    } catch (exc) {
+      debugPrint('! ERROR: loading deck; $exc');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +58,7 @@ class _KanbanPageState extends State<KanbanPage> {
           IconButton(
             onPressed: () {
               setState(() {
-                board.push(TitledTaskPlank());
+                board!.push(TitledTaskPlank(id: '#'));
               });
             },
             icon: const Icon(Icons.add_box_outlined),
@@ -113,7 +81,7 @@ class _KanbanPageState extends State<KanbanPage> {
             onSelected: (TaskParameters value) {
               setState(() {
                 _buf['sort'] = value;
-                board.sort(by: value);
+                board!.sort(by: value);
               });
             },
           ),
@@ -138,23 +106,42 @@ class _KanbanPageState extends State<KanbanPage> {
         builder: (context, drawer, child) => switch (drawer) {
           Drawers.help => HelpDrawer(),
           Drawers.filter => TaskFilterDrawer(
-            initialFilter: board.filterCriterias,
+            initialFilter: board!.filterCriterias,
             onChanged: (filter) => setState(() {
-              board.filter(filter);
+              board!.filter(filter);
             }),
           ),
           _ => Drawer(),
         },
       ),
-      body: Ground(child: KanbanBoard(columns: board)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            board.pushBlock(TaskBlock());
-          });
-        },
-        child: const Icon(Icons.add_task_rounded),
+      body: Ground(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : (board == null || board!.planks.isEmpty)
+            ? const Center(child: Icon(Icons.clear_rounded))
+            : KanbanBoard(id: id, columns: board!),
       ),
+      floatingActionButton: isLoading || board == null || board!.planks.isEmpty
+          ? null
+          : FloatingActionButton(
+              onPressed: () async {
+                final docRef = FirestoreResources.loadDeckBlocks(id);
+                final newBlock = TaskBlock(id: docRef.id, title: '...');
+                setState(() {
+                  board!.pushBlock(newBlock);
+                });
+                try {
+                  await FirestoreResources.saveBlock(
+                    id,
+                    board![0].id,
+                    newBlock,
+                  );
+                } catch (exc) {
+                  debugPrint('! ERROR: creating new task; $exc');
+                }
+              },
+              child: const Icon(Icons.add_task_rounded),
+            ),
     );
   }
 }

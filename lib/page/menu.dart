@@ -49,6 +49,7 @@ class _MenuPageState extends State<MenuPage> {
           context: context,
           builder: (context) => ProjectDialog(
             project: DeckDetails(
+              id: '#',
               name: '',
               methodology: Methodology.Kanban,
               created: DateTime.now(),

@@ -5,15 +5,17 @@ import 'package:sortack/widget/kanban/plank.dart';
 
 /// Kanban board widget - task board view with Kanban column children
 class KanbanBoard extends StatefulWidget {
+  final String id;
   final DetailedTaskDeck columns;
 
-  const KanbanBoard({super.key, required this.columns});
+  const KanbanBoard({super.key, required this.id, required this.columns});
 
   @override
   State<KanbanBoard> createState() => _KanbanBoardState();
 }
 
 class _KanbanBoardState extends State<KanbanBoard> {
+  late final String id = widget.id;
   late final DetailedTaskDeck board = widget.columns;
   final ScrollController _columnsScrollController = ScrollController();
 
@@ -49,7 +51,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
               )
               .toList(),
           onItemReorder:
-              (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
+              (oldItemIndex, oldListIndex, newItemIndex, newListIndex) async {
                 if (oldListIndex == newListIndex) {
                   setState(() {
                     board[newListIndex].move(oldItemIndex, newItemIndex);
@@ -61,11 +63,22 @@ class _KanbanBoardState extends State<KanbanBoard> {
                     board[newListIndex].insert(task, newItemIndex);
                   });
                 }
+                FirestoreResources.loadDeckBlocks(
+                  id,
+                ).update({'plankId': board[newListIndex].id});
               },
-          onListReorder: (oldListIndex, newListIndex) {
+          onListReorder: (oldListIndex, newListIndex) async {
             setState(() {
               board.move(oldListIndex, newListIndex);
             });
+            final batch = FirebaseFirestore.instance.batch();
+            final deckRef = FirestoreResources.loadProjectDeck(id);
+            for (int i = 0; i < board.planks.length; i++) {
+              final plankId = board.planks[i].id;
+              final plankRef = deckRef.collection('planks').doc(plankId);
+              batch.update(plankRef, {'order': i});
+            }
+            await batch.commit();
           },
         ),
       ),

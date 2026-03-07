@@ -1,5 +1,6 @@
 import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
+import 'package:sortack/page/kanban.dart';
 
 class ProjectCard extends StatefulWidget {
   final DeckDetails details;
@@ -19,18 +20,29 @@ class _ProjectCardState extends State<ProjectCard> {
       width: 200,
       height: 300,
       color: Colours.BOTTOM,
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 15,
-        children: [
-          Text(details.name, style: Styles.TASK_TITLE_TEXT),
-          Text(details.description ?? '', style: Styles.TASK_DESCRIPTION_TEXT),
-          Container(height: 125, color: Colours.CENTER),
-          Text(
-            '${details.methodology.label}\nby 0 ${details.owner}\nwith 0 ${details.members.toString()}\nin ${details.created}',
-            style: Styles.TASK_NOTES_TEXT,
-          ),
-        ],
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => KanbanPage(id: details.id)),
+          );
+        },
+        child: Wrap(
+          spacing: 10,
+          runSpacing: 15,
+          children: [
+            Text(details.name, style: Styles.TASK_TITLE_TEXT),
+            Text(
+              details.description ?? '',
+              style: Styles.TASK_DESCRIPTION_TEXT,
+            ),
+            Container(height: 125, color: Colours.CENTER),
+            Text(
+              '${details.methodology.label}\nby 0 ${details.owner}\nwith 0 ${details.members.toString()}\nin ${details.created}',
+              style: Styles.TASK_NOTES_TEXT,
+            ),
+          ],
+        ),
       ),
     );
   }

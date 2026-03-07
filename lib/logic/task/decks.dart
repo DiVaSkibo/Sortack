@@ -33,6 +33,7 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
 
 /// final deck details class
 final class DeckDetails {
+  final String id;
   String name;
   String? description;
   Methodology methodology;
@@ -41,6 +42,7 @@ final class DeckDetails {
   List<String> members;
 
   DeckDetails({
+    required this.id,
     required this.name,
     required this.methodology,
     this.description = '',
