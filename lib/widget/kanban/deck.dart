@@ -63,19 +63,18 @@ class _KanbanBoardState extends State<KanbanBoard> {
                     board[newListIndex].insert(task, newItemIndex);
                   });
                 }
-                FirestoreResources.loadDeckBlocks(
+                FireRources.getBlocks(
                   id,
-                ).update({'plankId': board[newListIndex].id});
+                ).doc().update({'plankId': board[newListIndex].id});
               },
           onListReorder: (oldListIndex, newListIndex) async {
             setState(() {
               board.move(oldListIndex, newListIndex);
             });
             final batch = FirebaseFirestore.instance.batch();
-            final deckRef = FirestoreResources.loadProjectDeck(id);
             for (int i = 0; i < board.planks.length; i++) {
               final plankId = board.planks[i].id;
-              final plankRef = deckRef.collection('planks').doc(plankId);
+              final plankRef = FireRources.getPlanks(id).doc(plankId);
               batch.update(plankRef, {'order': i});
             }
             await batch.commit();

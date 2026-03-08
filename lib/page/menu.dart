@@ -19,7 +19,7 @@ class _MenuPageState extends State<MenuPage> {
       body: Ground(
         scrollable: true,
         child: StreamBuilder(
-          stream: FirestoreResources.loadUserProjects(currentUser),
+          stream: FireRources.getUserDecks(currentUser),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)
               return const Center(child: CircularProgressIndicator());
@@ -35,9 +35,8 @@ class _MenuPageState extends State<MenuPage> {
               runSpacing: 100,
               children: snapshot.data!.docs
                   .map(
-                    (doc) => ProjectCard(
-                      details: FirestoreResources.loadProject(doc),
-                    ),
+                    (doc) =>
+                        ProjectCard(details: FireRources.loadDeckDetails(doc)),
                   )
                   .toList(),
             );

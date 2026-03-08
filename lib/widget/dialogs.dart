@@ -67,7 +67,7 @@ class _ProjectDialogState extends State<ProjectDialog> {
     if (project.name.trim().isEmpty) return;
     setState(() => _isLoading = true);
     try {
-      FirestoreResources.saveProject(project);
+      FireRources.saveProject(project);
       if (mounted) Navigator.pop(context);
     } catch (exc) {
       debugPrint('! ERROR: $exc');

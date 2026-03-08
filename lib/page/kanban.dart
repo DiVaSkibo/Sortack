@@ -28,7 +28,7 @@ class _KanbanPageState extends State<KanbanPage> {
 
   Future<void> _loadData() async {
     try {
-      final loadedDeck = await FirestoreResources.loadDeck(id);
+      final loadedDeck = await FireRources.loadDeck(id);
       setState(() {
         board = loadedDeck;
         isLoading = false;
@@ -125,17 +125,13 @@ class _KanbanPageState extends State<KanbanPage> {
           ? null
           : FloatingActionButton(
               onPressed: () async {
-                final docRef = FirestoreResources.loadDeckBlocks(id);
+                final docRef = FireRources.getBlocks(id).doc();
                 final newBlock = TaskBlock(id: docRef.id, title: '...');
                 setState(() {
                   board!.pushBlock(newBlock);
                 });
                 try {
-                  await FirestoreResources.saveBlock(
-                    id,
-                    board![0].id,
-                    newBlock,
-                  );
+                  await FireRources.saveBlock(id, board![0].id, newBlock);
                 } catch (exc) {
                   debugPrint('! ERROR: creating new task; $exc');
                 }
