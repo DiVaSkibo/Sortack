@@ -4,24 +4,40 @@ import 'package:sortack/widget/dialogs.dart';
 
 /// Kanban card widget - task block view
 class KanbanCard extends StatefulWidget {
+  final String deckId, plankId;
   final TaskBlock task;
   final Function(TaskBlock) onDelete;
 
-  KanbanCard({Key? key, required this.task, required this.onDelete})
-    : super(key: key ?? ObjectKey(task));
+  KanbanCard({
+    Key? key,
+    required this.deckId,
+    required this.plankId,
+    required this.task,
+    required this.onDelete,
+  }) : super(key: key ?? ObjectKey(task));
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
 }
 
 class _KanbanCardState extends State<KanbanCard> {
+  late final String deckId = widget.deckId, plankId = widget.plankId;
   late final TaskBlockController _taskController;
   TaskBlock get task => _taskController.task;
 
   @override
   void initState() {
     super.initState();
-    _taskController = TaskBlockController(widget.task);
+    _taskController = TaskBlockController(
+      widget.task,
+      onUnfocus: () async {
+        try {
+          await FireRources.saveBlock(deckId, plankId, task);
+        } catch (exc) {
+          debugPrint('? ERROR: saving task changes; $exc');
+        }
+      },
+    );
   }
 
   @override

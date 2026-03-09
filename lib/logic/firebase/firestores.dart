@@ -8,7 +8,6 @@ import 'package:sortack/logic/task/planks.dart';
 import 'package:sortack/logic/task/decks.dart';
 
 typedef Doc = Map<String, dynamic>;
-typedef DocRef = DocumentReference<Doc>;
 typedef ColRef = CollectionReference<Doc>;
 
 final class FireRources {

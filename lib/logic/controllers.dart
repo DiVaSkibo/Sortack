@@ -63,8 +63,9 @@ class TaskBlockController extends ChangeNotifier {
   final FocusNode titleFocus = FocusNode();
   final FocusNode descriptionFocus = FocusNode();
   final FocusNode notesFocus = FocusNode();
+  final Function()? onUnfocus;
 
-  TaskBlockController(this._task) {
+  TaskBlockController(this._task, {this.onUnfocus}) {
     _initializeControllers();
     _setupFocusListeners();
   }
@@ -88,21 +89,29 @@ class TaskBlockController extends ChangeNotifier {
 
   void _setupFocusListeners() {
     titleFocus.addListener(() {
-      if (!titleFocus.hasFocus && titleController.text != _task.title) {
+      if (!titleFocus.hasFocus &&
+          titleController.text.isNotEmpty &&
+          titleController.text != _task.title) {
         _task.title = titleController.text;
+        if (onUnfocus != null) onUnfocus!();
         notifyListeners();
       }
     });
     descriptionFocus.addListener(() {
       if (!descriptionFocus.hasFocus &&
+          descriptionController.text.isNotEmpty &&
           descriptionController.text != _task.description) {
         _task.description = descriptionController.text;
+        if (onUnfocus != null) onUnfocus!();
         notifyListeners();
       }
     });
     notesFocus.addListener(() {
-      if (!notesFocus.hasFocus && notesController.text != _task.notes) {
+      if (!notesFocus.hasFocus &&
+          notesController.text.isNotEmpty &&
+          notesController.text != _task.notes) {
         _task.notes = notesController.text;
+        if (onUnfocus != null) onUnfocus!();
         notifyListeners();
       }
     });
@@ -111,18 +120,21 @@ class TaskBlockController extends ChangeNotifier {
   void updateStatus(TaskStatus status) {
     if (_task.status == status) return;
     _task.status = status;
+    if (onUnfocus != null) onUnfocus!();
     notifyListeners();
   }
 
   void updatePriority(TaskPriority priority) {
     if (_task.priority == priority) return;
     _task.priority = priority;
+    if (onUnfocus != null) onUnfocus!();
     notifyListeners();
   }
 
   void updatePoints(TaskPointsTShirt points) {
     if (_task.points == points) return;
     _task.points = points;
+    if (onUnfocus != null) onUnfocus!();
     notifyListeners();
   }
 }

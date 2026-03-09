@@ -5,6 +5,7 @@ import 'package:sortack/widget/kanban/block.dart';
 
 /// Kanban column class - titled task plank view with Kanban card children
 final class KanbanColumn {
+  final String deckId;
   final TitledTaskPlank tasks;
   final VoidCallback onChanged;
 
@@ -12,8 +13,11 @@ final class KanbanColumn {
   final TextEditingController _titleController;
   final FocusNode _titleFocus = FocusNode();
 
-  KanbanColumn({required this.tasks, required this.onChanged})
-    : _titleController = TextEditingController(text: tasks.title) {
+  KanbanColumn({
+    required this.deckId,
+    required this.tasks,
+    required this.onChanged,
+  }) : _titleController = TextEditingController(text: tasks.title) {
     _titleFocus.addListener(() {
       if (!_titleFocus.hasFocus && _titleController.text != tasks.title) {
         tasks.title = _titleController.text;
@@ -51,6 +55,8 @@ final class KanbanColumn {
         visibleTasks.length,
         (index) => DragAndDropItem(
           child: KanbanCard(
+            deckId: deckId,
+            plankId: tasks.id,
             task: visibleTasks[index],
             onDelete: (what) {
               tasks.pop(what);

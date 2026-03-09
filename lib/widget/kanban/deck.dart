@@ -43,6 +43,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           children: board.planks
               .map(
                 (plank) => KanbanColumn(
+                  deckId: id,
                   tasks: plank,
                   onChanged: () {
                     setState(() {});
