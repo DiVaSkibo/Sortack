@@ -38,8 +38,10 @@ abstract class Collector<T> with ChangeNotifier {
 
   Collector({this.listenable = false});
 
+  int get length => collection.length;
   bool isEmpty() => collection.isEmpty;
   bool isNotEmpty() => collection.isNotEmpty;
+  T get first => collection.first;
 
   T operator [](int index) => collection.elementAt(index);
 

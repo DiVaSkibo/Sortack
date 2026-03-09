@@ -131,7 +131,12 @@ class _KanbanPageState extends State<KanbanPage> {
                   board!.pushBlock(newBlock);
                 });
                 try {
-                  await FireRources.saveBlock(id, board![0].id, newBlock);
+                  await FireRources.saveBlock(
+                    id,
+                    board!.first.id,
+                    newBlock,
+                    board!.first.length - 1,
+                  );
                 } catch (exc) {
                   debugPrint('! ERROR: creating new task; $exc');
                 }

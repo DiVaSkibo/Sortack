@@ -6,6 +6,7 @@ import 'package:sortack/widget/dialogs.dart';
 class KanbanCard extends StatefulWidget {
   final String deckId, plankId;
   final TaskBlock task;
+  final int order;
   final Function(TaskBlock) onDelete;
 
   KanbanCard({
@@ -13,6 +14,7 @@ class KanbanCard extends StatefulWidget {
     required this.deckId,
     required this.plankId,
     required this.task,
+    required this.order,
     required this.onDelete,
   }) : super(key: key ?? ObjectKey(task));
 
@@ -21,7 +23,6 @@ class KanbanCard extends StatefulWidget {
 }
 
 class _KanbanCardState extends State<KanbanCard> {
-  late final String deckId = widget.deckId, plankId = widget.plankId;
   late final TaskBlockController _taskController;
   TaskBlock get task => _taskController.task;
 
@@ -32,7 +33,12 @@ class _KanbanCardState extends State<KanbanCard> {
       widget.task,
       onUnfocus: () async {
         try {
-          await FireRources.saveBlock(deckId, plankId, task);
+          await FireRources.saveBlock(
+            widget.deckId,
+            widget.plankId,
+            task,
+            widget.order,
+          );
         } catch (exc) {
           debugPrint('? ERROR: saving task changes; $exc');
         }

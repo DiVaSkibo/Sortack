@@ -40,45 +40,39 @@ class _KanbanBoardState extends State<KanbanBoard> {
           // itemDragOnLongPress: false,
           // listDragOnLongPress: false,
           scrollController: _columnsScrollController,
-          children: board.planks
-              .map(
-                (plank) => KanbanColumn(
-                  deckId: id,
-                  tasks: plank,
-                  onChanged: () {
-                    setState(() {});
-                  },
-                ).build(),
-              )
-              .toList(),
+          children: List.generate(
+            board.length,
+            (index) => KanbanColumn(
+              deckId: id,
+              tasks: board[index],
+              order: index,
+              onChanged: () {
+                setState(() {});
+              },
+            ).build(),
+          ),
           onItemReorder:
               (oldItemIndex, oldListIndex, newItemIndex, newListIndex) async {
                 if (oldListIndex == newListIndex) {
                   setState(() {
                     board[newListIndex].move(oldItemIndex, newItemIndex);
                   });
+                  FireRources.updateBlocksOrder(id, board[newListIndex]);
                 } else {
                   var task = board[oldListIndex].blocks[oldItemIndex];
                   setState(() {
                     board[oldListIndex].pop(task);
                     board[newListIndex].insert(task, newItemIndex);
                   });
+                  FireRources.updateBlocksOrder(id, board[oldListIndex]);
+                  FireRources.updateBlocksOrder(id, board[newListIndex]);
                 }
-                FireRources.getBlocks(
-                  id,
-                ).doc().update({'plankId': board[newListIndex].id});
               },
           onListReorder: (oldListIndex, newListIndex) async {
             setState(() {
               board.move(oldListIndex, newListIndex);
             });
-            final batch = FirebaseFirestore.instance.batch();
-            for (int i = 0; i < board.planks.length; i++) {
-              final plankId = board.planks[i].id;
-              final plankRef = FireRources.getPlanks(id).doc(plankId);
-              batch.update(plankRef, {'order': i});
-            }
-            await batch.commit();
+            FireRources.updatePlanksOrder(id, board);
           },
         ),
       ),

@@ -7,6 +7,7 @@ import 'package:sortack/widget/kanban/block.dart';
 final class KanbanColumn {
   final String deckId;
   final TitledTaskPlank tasks;
+  final int order;
   final VoidCallback onChanged;
 
   List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
@@ -16,6 +17,7 @@ final class KanbanColumn {
   KanbanColumn({
     required this.deckId,
     required this.tasks,
+    required this.order,
     required this.onChanged,
   }) : _titleController = TextEditingController(text: tasks.title) {
     _titleFocus.addListener(() {
@@ -58,6 +60,7 @@ final class KanbanColumn {
             deckId: deckId,
             plankId: tasks.id,
             task: visibleTasks[index],
+            order: index,
             onDelete: (what) {
               tasks.pop(what);
               onChanged();

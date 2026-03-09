@@ -20,7 +20,7 @@ final class FireRources {
   static ColRef getPlanks(String id) => getDecks().doc(id).collection('planks');
   static ColRef getBlocks(String id) => getDecks().doc(id).collection('blocks');
 
-  /// LOAD
+  // LOAD
   static DeckDetails loadDeckDetails(DocumentSnapshot doc) {
     final data = doc.data() as Doc;
     return DeckDetails(
@@ -100,7 +100,7 @@ final class FireRources {
     );
   }
 
-  /// SAVE
+  // SAVE
   static Future<void> saveProject(DeckDetails deck) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) throw Exception('? User is not authorised...');
@@ -158,6 +158,7 @@ final class FireRources {
     String deckId,
     String plankId,
     TaskBlock block,
+    int order,
   ) async {
     await getBlocks(deckId).doc(block.id).set({
       'plankId': plankId,
@@ -169,6 +170,35 @@ final class FireRources {
       'role': block.role,
       'assignee': block.assignee,
       'notes': block.notes,
+      'order': order,
     }, SetOptions(merge: true));
+  }
+
+  // UPDATE
+  static Future<void> updatePlanksOrder(
+    String deckId,
+    DetailedTaskDeck deck,
+  ) async {
+    final batch = FirebaseFirestore.instance.batch();
+    for (int i = 0; i < deck.length; i++) {
+      final plank = deck[i];
+      batch.update(getPlanks(deckId).doc(plank.id), {'order': i});
+    }
+    await batch.commit();
+  }
+
+  static Future<void> updateBlocksOrder(
+    String deckId,
+    TitledTaskPlank plank,
+  ) async {
+    final batch = FirebaseFirestore.instance.batch();
+    for (int i = 0; i < plank.length; i++) {
+      final task = plank[i];
+      batch.update(getBlocks(deckId).doc(task.id), {
+        'plankId': plank.id,
+        'order': i,
+      });
+    }
+    await batch.commit();
   }
 }
