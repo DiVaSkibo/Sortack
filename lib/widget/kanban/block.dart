@@ -126,9 +126,10 @@ class _KanbanCardState extends State<KanbanCard> {
                 builder: (context) => AcceptDialog(
                   message: 'Do you realy want to delete this task?...',
                   onCancel: Navigator.of(context).pop,
-                  onAccept: () {
+                  onAccept: () async {
                     Navigator.of(context).pop();
                     widget.onDelete(task);
+                    await FireRources.deleteBlock(widget.deckId, task.id);
                   },
                   icon: Icons.remove_rounded,
                 ),

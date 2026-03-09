@@ -201,4 +201,23 @@ final class FireRources {
     }
     await batch.commit();
   }
+
+  // DELETE
+  static Future<void> deletePlank(String deckId, String id) async {
+    try {
+      await getPlanks(deckId).doc(id).delete();
+    } catch (exc) {
+      debugPrint('? ERROR: deleting plank; $exc');
+      rethrow;
+    }
+  }
+
+  static Future<void> deleteBlock(String deckId, String id) async {
+    try {
+      await getBlocks(deckId).doc(id).delete();
+    } catch (exc) {
+      debugPrint('? ERROR: deleting block; $exc');
+      rethrow;
+    }
+  }
 }
