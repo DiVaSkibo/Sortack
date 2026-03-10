@@ -9,6 +9,8 @@ final class KanbanColumn {
   final TitledTaskPlank tasks;
   final int order;
   final VoidCallback onChanged;
+  final Function()? onUnfocus;
+  final Function(TitledTaskPlank) onDelete;
 
   List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
   final TextEditingController _titleController;
@@ -19,11 +21,14 @@ final class KanbanColumn {
     required this.tasks,
     required this.order,
     required this.onChanged,
+    this.onUnfocus,
+    required this.onDelete,
   }) : _titleController = TextEditingController(text: tasks.title) {
-    _titleFocus.addListener(() {
+    _titleFocus.addListener(() async {
       if (!_titleFocus.hasFocus && _titleController.text != tasks.title) {
         tasks.title = _titleController.text;
       }
+      onUnfocus?.call();
     });
   }
 
@@ -36,6 +41,7 @@ final class KanbanColumn {
     return DragAndDropList(
       verticalAlignment: CrossAxisAlignment.center,
       decoration: Decorations.PLANK_BOX,
+      contentsWhenEmpty: Icon(unicon(), size: 30),
       header: ListenableBuilder(
         listenable: _titleController,
         builder: (context, child) => TextField(
@@ -52,7 +58,10 @@ final class KanbanColumn {
           decoration: Decorations.columnInput(),
         ),
       ),
-      contentsWhenEmpty: Icon(unicon(), size: 30),
+      footer: IconButton(
+        onPressed: () => onDelete(tasks),
+        icon: Icon(Icons.remove_rounded),
+      ),
       children: List.generate(
         visibleTasks.length,
         (index) => DragAndDropItem(

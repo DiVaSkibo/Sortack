@@ -2,6 +2,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/widget/kanban/plank.dart';
+import 'package:sortack/widget/dialogs.dart';
 
 /// Kanban board widget - task board view with Kanban column children
 class KanbanBoard extends StatefulWidget {
@@ -37,8 +38,8 @@ class _KanbanBoardState extends State<KanbanBoard> {
           listWidth: MediaQuery.of(context).size.width / 3,
           listPadding: const EdgeInsets.all(8.0),
           lastItemTargetHeight: 200,
-          // itemDragOnLongPress: false,
-          // listDragOnLongPress: false,
+          itemDragOnLongPress: false,
+          listDragOnLongPress: false,
           scrollController: _columnsScrollController,
           children: List.generate(
             board.length,
@@ -49,6 +50,28 @@ class _KanbanBoardState extends State<KanbanBoard> {
               onChanged: () {
                 setState(() {});
               },
+              onUnfocus: () async {
+                try {
+                  await FireRources.savePlank(id, board[index], index);
+                } catch (exc) {
+                  debugPrint('? ERROR: saving column changes; $exc');
+                }
+              },
+              onDelete: (plank) => showDialog(
+                context: context,
+                builder: (context) => AcceptDialog(
+                  message: 'Do you realy want to delete this task?...',
+                  onCancel: Navigator.of(context).pop,
+                  onAccept: () async {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      board.pop(plank);
+                    });
+                    await FireRources.deletePlank(id, plank.id);
+                  },
+                  icon: Icons.remove_rounded,
+                ),
+              ),
             ).build(),
           ),
           onItemReorder:

@@ -93,7 +93,7 @@ class TaskBlockController extends ChangeNotifier {
           titleController.text.isNotEmpty &&
           titleController.text != _task.title) {
         _task.title = titleController.text;
-        if (onUnfocus != null) onUnfocus!();
+        onUnfocus?.call();
         notifyListeners();
       }
     });
@@ -102,7 +102,7 @@ class TaskBlockController extends ChangeNotifier {
           descriptionController.text.isNotEmpty &&
           descriptionController.text != _task.description) {
         _task.description = descriptionController.text;
-        if (onUnfocus != null) onUnfocus!();
+        onUnfocus?.call();
         notifyListeners();
       }
     });
@@ -111,7 +111,7 @@ class TaskBlockController extends ChangeNotifier {
           notesController.text.isNotEmpty &&
           notesController.text != _task.notes) {
         _task.notes = notesController.text;
-        if (onUnfocus != null) onUnfocus!();
+        onUnfocus?.call();
         notifyListeners();
       }
     });
@@ -120,21 +120,21 @@ class TaskBlockController extends ChangeNotifier {
   void updateStatus(TaskStatus status) {
     if (_task.status == status) return;
     _task.status = status;
-    if (onUnfocus != null) onUnfocus!();
+    onUnfocus?.call();
     notifyListeners();
   }
 
   void updatePriority(TaskPriority priority) {
     if (_task.priority == priority) return;
     _task.priority = priority;
-    if (onUnfocus != null) onUnfocus!();
+    onUnfocus?.call();
     notifyListeners();
   }
 
   void updatePoints(TaskPointsTShirt points) {
     if (_task.points == points) return;
     _task.points = points;
-    if (onUnfocus != null) onUnfocus!();
+    onUnfocus?.call();
     notifyListeners();
   }
 }

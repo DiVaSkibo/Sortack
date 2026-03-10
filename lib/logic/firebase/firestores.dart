@@ -43,7 +43,7 @@ final class FireRources {
     final results = await Future.wait([
       deckRef.get(),
       deckRef.collection('planks').orderBy('order').get(),
-      deckRef.collection('blocks').get(),
+      deckRef.collection('blocks').orderBy('order').get(),
     ]);
     final deckDoc = results[0] as DocumentSnapshot;
     final planksSnapshot = results[1] as QuerySnapshot;
@@ -142,7 +142,7 @@ final class FireRources {
     await batch.commit();
   }
 
-  static Future<void> savePlanks(
+  static Future<void> savePlank(
     String deckId,
     TitledTaskPlank plank,
     int order,
