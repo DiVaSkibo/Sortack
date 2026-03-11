@@ -1,4 +1,5 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/widget/kanban/plank.dart';
@@ -34,13 +35,62 @@ class _KanbanBoardState extends State<KanbanBoard> {
       child: ListenableBuilder(
         listenable: board,
         builder: (context, child) => DragAndDropLists(
+          scrollController: _columnsScrollController,
           axis: Axis.horizontal,
-          listWidth: MediaQuery.of(context).size.width / 3,
-          listPadding: const EdgeInsets.all(8.0),
+          horizontalAlignment: MainAxisAlignment.center,
+          verticalAlignment: CrossAxisAlignment.center,
           lastItemTargetHeight: 200,
           itemDragOnLongPress: false,
           listDragOnLongPress: false,
-          scrollController: _columnsScrollController,
+          itemDragHandle: DragHandle(
+            onLeft: true,
+            verticalAlignment: DragHandleVerticalAlignment.top,
+            child: Container(
+              width: 44,
+              height: 58,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadiusGeometry.only(
+                  topLeft: Radius.circular(34.0),
+                ),
+              ),
+            ),
+          ),
+          itemGhostOpacity: 0.6,
+          itemGhost: const DottedBorder(
+            options: RoundedRectDottedBorderOptions(
+              strokeCap: StrokeCap.round,
+              radius: Radius.circular(36.0),
+              strokeWidth: 2,
+              dashPattern: <double>[18.0, 8.0],
+              color: Colours.CENTER,
+            ),
+            child: CircleAvatar(backgroundColor: Colours.o),
+          ),
+          listPadding: const EdgeInsets.all(8.0),
+          listWidth: MediaQuery.of(context).size.width / 3.3,
+          listDragHandle: DragHandle(
+            onLeft: true,
+            verticalAlignment: DragHandleVerticalAlignment.top,
+            child: Container(
+              width: 44,
+              height: 52,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadiusGeometry.only(
+                  topLeft: Radius.circular(16.0),
+                ),
+              ),
+            ),
+          ),
+          listGhostOpacity: 0.6,
+          listGhost: const DottedBorder(
+            options: RoundedRectDottedBorderOptions(
+              radius: Radius.circular(47.5),
+              strokeWidth: 2,
+              dashPattern: <double>[36.0, 16.0],
+              color: Colours.BOTTOM,
+            ),
+            child: CircleAvatar(radius: 47.5, backgroundColor: Colours.o),
+          ),
           children: List.generate(
             board.length,
             (index) => KanbanColumn(

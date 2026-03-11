@@ -65,6 +65,10 @@ final class KanbanColumn {
       children: List.generate(
         visibleTasks.length,
         (index) => DragAndDropItem(
+          feedbackWidget: CircleAvatar(
+            radius: 12.5,
+            backgroundColor: Colours.ACTOP,
+          ),
           child: KanbanCard(
             deckId: deckId,
             plankId: tasks.id,

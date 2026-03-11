@@ -113,13 +113,13 @@ final class Styles {
 /// decorations static const class - custom static const decorations
 final class Decorations {
   static const DECK_BOX = BoxDecoration(gradient: Gradients.DECK);
-  static const SURFACE_BOX = BoxDecoration(
-    gradient: Gradients.SURFACE,
-    borderRadius: BorderRadius.all(Radius.circular(20)),
-  );
   static final PLANK_BOX = BoxDecoration(
     gradient: Gradients.PLANK,
-    borderRadius: BorderRadius.circular(15),
+    borderRadius: BorderRadius.circular(15.0),
+  );
+  static const SURFACE_BOX = BoxDecoration(
+    gradient: Gradients.SURFACE,
+    borderRadius: BorderRadius.all(Radius.circular(20.0)),
   );
   static InputDecoration columnInput() => InputDecoration(
     contentPadding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
