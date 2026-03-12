@@ -8,17 +8,17 @@ import 'package:sortack/logic/task/planks.dart';
 import 'package:sortack/logic/task/decks.dart';
 
 typedef Doc = Map<String, dynamic>;
-typedef ColRef = CollectionReference<Doc>;
 
 final class FireRources {
-  static Stream<QuerySnapshot<Doc>> getUserDecks(User user) => FirebaseFirestore
-      .instance
+  static Query<Doc> getUserDecks(User user) => FirebaseFirestore.instance
       .collection('decks')
-      .where('members', arrayContains: user.uid)
-      .snapshots();
-  static ColRef getDecks() => FirebaseFirestore.instance.collection('decks');
-  static ColRef getPlanks(String id) => getDecks().doc(id).collection('planks');
-  static ColRef getBlocks(String id) => getDecks().doc(id).collection('blocks');
+      .where('members', arrayContains: user.uid);
+  static CollectionReference<Doc> getDecks() =>
+      FirebaseFirestore.instance.collection('decks');
+  static CollectionReference<Doc> getPlanks(String id) =>
+      getDecks().doc(id).collection('planks');
+  static CollectionReference<Doc> getBlocks(String id) =>
+      getDecks().doc(id).collection('blocks');
 
   // LOAD
   static DeckDetails loadDeckDetails(DocumentSnapshot doc) {
@@ -203,6 +203,22 @@ final class FireRources {
   }
 
   // DELETE
+  static Future<void> deleteDeck(String id) async {
+    final deckRef = getDecks().doc(id);
+    try {
+      final planksSnapshot = await getPlanks(id).get();
+      final blocksSnapshot = await getBlocks(id).get();
+      final batch = FirebaseFirestore.instance.batch();
+      for (final doc in planksSnapshot.docs) batch.delete(doc.reference);
+      for (final doc in blocksSnapshot.docs) batch.delete(doc.reference);
+      batch.delete(deckRef);
+      await batch.commit();
+    } catch (exc) {
+      debugPrint('? ERROR: deleting deck; $exc');
+      rethrow;
+    }
+  }
+
   static Future<void> deletePlank(String deckId, String id) async {
     try {
       await getPlanks(deckId).doc(id).delete();

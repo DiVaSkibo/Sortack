@@ -1,5 +1,6 @@
 import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
+import 'package:sortack/widget/dialogs.dart';
 import 'package:sortack/page/kanban.dart';
 
 class ProjectCard extends StatefulWidget {
@@ -40,6 +41,21 @@ class _ProjectCardState extends State<ProjectCard> {
             Text(
               '${details.methodology.label}\nby 0 ${details.owner}\nwith 0 ${details.members.toString()}\nin ${details.created}',
               style: Styles.TASK_NOTES_TEXT,
+            ),
+            IconButton(
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => AcceptDialog(
+                  message: 'Do you realy want to delete this project?...',
+                  onCancel: Navigator.of(context).pop,
+                  onAccept: () async {
+                    Navigator.of(context).pop();
+                    await FireRources.deleteDeck(details.id);
+                  },
+                  icon: Icons.remove_rounded,
+                ),
+              ),
+              icon: Icon(Icons.remove_rounded),
             ),
           ],
         ),
