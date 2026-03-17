@@ -2,6 +2,7 @@ import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/widget/dialogs.dart';
 import 'package:sortack/page/kanban.dart';
+import 'package:sortack/page/scrum.dart';
 
 class ProjectCard extends StatefulWidget {
   final DeckDetails details;
@@ -25,7 +26,12 @@ class _ProjectCardState extends State<ProjectCard> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => KanbanPage(id: details.id)),
+            MaterialPageRoute(
+              builder: (context) => switch (details.methodology) {
+                Methodology.Kanban => KanbanPage(id: details.id),
+                Methodology.Scrum => ScrumPage(id: details.id),
+              },
+            ),
           );
         },
         child: Wrap(

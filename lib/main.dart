@@ -264,6 +264,18 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        dataTableTheme: DataTableThemeData(
+          headingTextStyle: const TextStyle(
+            fontSize: 15,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w600,
+          ),
+          dataTextStyle: const TextStyle(
+            fontSize: 15,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         scrollbarTheme: ScrollbarThemeData(
           thumbVisibility: WidgetStateProperty.all(false),
           trackVisibility: WidgetStateProperty.all(false),

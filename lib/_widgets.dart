@@ -5,3 +5,6 @@ export 'package:sortack/widget/project/card.dart';
 export 'package:sortack/widget/kanban/block.dart';
 export 'package:sortack/widget/kanban/plank.dart';
 export 'package:sortack/widget/kanban/deck.dart';
+export 'package:sortack/widget/scrum/block.dart';
+export 'package:sortack/widget/scrum/plank.dart';
+export 'package:sortack/widget/scrum/deck.dart';
