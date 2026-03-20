@@ -2,20 +2,28 @@ import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/task/blocks.dart';
 
-/// sealed task plank class - collection of task blocks
-sealed class TaskPlank extends Collector<TaskBlock>
-    with
-        Sortable<TaskBlock, TaskParameters>,
-        Filterable<TaskBlock, TaskParameters> {
+/// advanced task plank - collection of advanced task blocks
+typedef AdvancedTaskPlank = TaskPlank<AdvancedTaskBlock>;
+
+/// task plank interface class - collection of task blocks
+interface class TaskPlank<T extends TaskBlock> extends Collector<T>
+    with Sortable<T, TaskParameters>, Filterable<T, TaskParameters> {
   final String id;
-  final List<TaskBlock> blocks;
+  final List<T> blocks;
+  String title;
+  Color color;
 
-  TaskPlank({required this.id, List<TaskBlock>? blocks, super.listenable})
-    : blocks = blocks ?? [];
+  TaskPlank({
+    required this.id,
+    this.title = '',
+    this.color = Colours.BOTTOM,
+    List<T>? blocks,
+    super.listenable,
+  }) : blocks = blocks ?? [];
 
-  List<TaskBlock> get visibleBlocks => filtered;
+  List<T> get visibleBlocks => filtered;
   @override
-  List<TaskBlock> get collection => blocks;
+  List<T> get collection => blocks;
 
   @override
   void sort({by = TaskParameters.id}) {
@@ -23,16 +31,16 @@ sealed class TaskPlank extends Collector<TaskBlock>
   }
 }
 
-/// titled task plank - collection of task blocks of a particular title
-class TitledTaskPlank extends TaskPlank {
-  String title;
-  Color color;
+// /// task plank interface class
+// interface class TitledTaskPlank extends TaskPlank {
+//   String title;
+//   Color color;
 
-  TitledTaskPlank({
-    required super.id,
-    this.title = '',
-    this.color = Colours.BOTTOM,
-    super.blocks,
-    super.listenable,
-  });
-}
+//   TitledTaskPlank({
+//     required super.id,
+//     this.title = '',
+//     this.color = Colours.BOTTOM,
+//     super.blocks,
+//     super.listenable,
+//   });
+// }

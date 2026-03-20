@@ -6,11 +6,11 @@ import 'package:sortack/widget/kanban/block.dart';
 /// Kanban column class - titled task plank view with Kanban card children
 final class KanbanColumn {
   final String deckId;
-  final TitledTaskPlank tasks;
+  final TaskPlank tasks;
   final int order;
   final VoidCallback onChanged;
   final Function()? onUnfocus;
-  final Function(TitledTaskPlank) onDelete;
+  final Function(TaskPlank) onDelete;
 
   List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
   final TextEditingController _titleController;

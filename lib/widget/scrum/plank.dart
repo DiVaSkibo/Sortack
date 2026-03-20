@@ -5,13 +5,13 @@ import 'package:sortack/widget/scrum/block.dart';
 /// Scrum table class - titled task plank view with Scrum row children
 class ScrumTable extends StatefulWidget {
   final String deckId;
-  final TitledTaskPlank tasks;
+  final TaskPlank<AdvancedTaskBlock> tasks;
   final int order;
   final VoidCallback onChanged;
   final Function()? onUnfocus;
-  final Function(TitledTaskPlank) onDelete;
+  final Function(TaskPlank<AdvancedTaskBlock>) onDelete;
 
-  List<TaskBlock> get visibleTasks => tasks.visibleBlocks;
+  List<AdvancedTaskBlock> get visibleTasks => tasks.visibleBlocks;
 
   ScrumTable({
     Key? key,
@@ -28,7 +28,7 @@ class ScrumTable extends StatefulWidget {
 }
 
 class _ScrumTableState extends State<ScrumTable> {
-  late final TitledTaskPlank tasks = widget.tasks;
+  late final TaskPlank<AdvancedTaskBlock> tasks = widget.tasks;
   late final int order = widget.order;
 
   @override

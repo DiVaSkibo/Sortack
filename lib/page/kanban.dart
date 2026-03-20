@@ -28,7 +28,7 @@ class _KanbanPageState extends State<KanbanPage> {
 
   Future<void> _loadData() async {
     try {
-      final loadedDeck = await FireRources.loadDeck(id);
+      final loadedDeck = await FireRources.loadDeck<DetailedTaskDeck>(id);
       setState(() {
         board = loadedDeck;
         isLoading = false;
@@ -58,7 +58,7 @@ class _KanbanPageState extends State<KanbanPage> {
           IconButton(
             onPressed: () {
               setState(() {
-                board!.push(TitledTaskPlank(id: '#'));
+                board!.push(TaskPlank(id: '#'));
               });
             },
             icon: const Icon(Icons.add_box_outlined),

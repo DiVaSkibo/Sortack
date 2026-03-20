@@ -3,8 +3,11 @@ import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/task/blocks.dart';
 import 'package:sortack/logic/task/planks.dart';
 
-/// sealed task deck class - collection of task planks
-sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
+/// advanced task deck - collection of advanced task planks
+typedef AdvancedTaskDeck = DetailedTaskDeck<AdvancedTaskPlank>;
+
+/// task deck interface class - collection of task planks
+interface class TaskDeck<T extends TaskPlank> extends Collector<T>
     with Sortable<T, TaskParameters>, Filterable<T, TaskParameters> {
   final List<T> planks;
 
@@ -31,6 +34,14 @@ sealed class TaskDeck<T extends TaskPlank> extends Collector<T>
   }
 }
 
+/// detailed task deck interface class - collection of task planks with details
+interface class DetailedTaskDeck<T extends TaskPlank> extends TaskDeck<T> {
+  final DeckDetails? details;
+
+  DetailedTaskDeck({super.planks, super.listenable, required this.details})
+    : super();
+}
+
 /// final deck details class
 final class DeckDetails {
   final String id;
@@ -50,12 +61,4 @@ final class DeckDetails {
     required this.owner,
     List<String>? members,
   }) : members = members ?? [];
-}
-
-/// detailed task deck - task deck with details
-class DetailedTaskDeck extends TaskDeck<TitledTaskPlank> {
-  final DeckDetails? details;
-
-  DetailedTaskDeck({super.planks, super.listenable, required this.details})
-    : super();
 }
