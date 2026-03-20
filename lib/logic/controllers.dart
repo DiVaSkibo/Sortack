@@ -59,10 +59,10 @@ class TaskBlockController extends ChangeNotifier {
 
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
-  late final TextEditingController notesController;
+  // late final TextEditingController notesController;
   final FocusNode titleFocus = FocusNode();
   final FocusNode descriptionFocus = FocusNode();
-  final FocusNode notesFocus = FocusNode();
+  // final FocusNode notesFocus = FocusNode();
   final Function()? onUnfocus;
 
   TaskBlockController(this._task, {this.onUnfocus}) {
@@ -74,17 +74,17 @@ class TaskBlockController extends ChangeNotifier {
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
-    notesController.dispose();
+    // notesController.dispose();
     titleFocus.dispose();
     descriptionFocus.dispose();
-    notesFocus.dispose();
+    // notesFocus.dispose();
     super.dispose();
   }
 
   void _initializeControllers() {
     titleController = TextEditingController(text: _task.title);
     descriptionController = TextEditingController(text: _task.description);
-    notesController = TextEditingController(text: _task.notes);
+    // notesController = TextEditingController(text: _task.notes);
   }
 
   void _setupFocusListeners() {
@@ -106,23 +106,23 @@ class TaskBlockController extends ChangeNotifier {
         notifyListeners();
       }
     });
-    notesFocus.addListener(() {
-      if (!notesFocus.hasFocus &&
-          notesController.text.isNotEmpty &&
-          notesController.text != _task.notes) {
-        _task.notes = notesController.text;
-        onUnfocus?.call();
-        notifyListeners();
-      }
-    });
+    // notesFocus.addListener(() {
+    //   if (!notesFocus.hasFocus &&
+    //       notesController.text.isNotEmpty &&
+    //       notesController.text != _task.notes) {
+    //     _task.notes = notesController.text;
+    //     onUnfocus?.call();
+    //     notifyListeners();
+    //   }
+    // });
   }
 
-  void updateStatus(TaskStatus status) {
-    if (_task.status == status) return;
-    _task.status = status;
-    onUnfocus?.call();
-    notifyListeners();
-  }
+  // void updateStatus(TaskStatus status) {
+  //   if (_task.status == status) return;
+  //   _task.status = status;
+  //   onUnfocus?.call();
+  //   notifyListeners();
+  // }
 
   void updatePriority(TaskPriority priority) {
     if (_task.priority == priority) return;
@@ -131,12 +131,12 @@ class TaskBlockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updatePoints(TaskPointsTShirt points) {
-    if (_task.points == points) return;
-    _task.points = points;
-    onUnfocus?.call();
-    notifyListeners();
-  }
+  // void updatePoints(TaskPointsTShirt points) {
+  //   if (_task.points == points) return;
+  //   _task.points = points;
+  //   onUnfocus?.call();
+  //   notifyListeners();
+  // }
 }
 
 /// deck details controller - control deck details parameters

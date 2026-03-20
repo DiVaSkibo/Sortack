@@ -83,20 +83,43 @@ final class FireRources {
 
   static TaskBlock loadBlock(DocumentSnapshot doc) {
     final data = doc.data() as Doc;
+    String title = data['title'] ?? '';
+    String description = data['description'] ?? '';
+    TaskPriority? priority = data['priority'] != null
+        ? TaskPriority.values.asNameMap()[data['priority']]
+        : null;
+    DateTime deadline = data['deadline'] != null
+        ? (data['deadline'] as Timestamp).toDate()
+        : DateTime.now();
+    String? assignee = data['assignee'];
+    if (data.containsKey('status')) {
+      TaskStatus status =
+          TaskStatus.values.asNameMap()[data['status']] ?? TaskStatus.toDo;
+      TaskPointsTShirt? points = data['points'] != null
+          ? TaskPointsTShirt.values.asNameMap()[data['points']]
+          : null;
+      String? role = data['role'];
+      String notes = data['notes'] ?? '';
+      return AdvancedTaskBlock(
+        id: doc.id,
+        title: title,
+        description: description,
+        status: status,
+        priority: priority,
+        points: points,
+        role: role,
+        deadline: deadline,
+        assignee: assignee,
+        notes: notes,
+      );
+    }
     return TaskBlock(
       id: doc.id,
-      title: data['title'] ?? '',
-      description: data['description'] ?? '',
-      status: TaskStatus.values.asNameMap()[data['status']] ?? TaskStatus.toDo,
-      priority: data['priority'] != null
-          ? TaskPriority.values.asNameMap()[data['priority']]
-          : null,
-      points: data['points'] != null
-          ? TaskPointsTShirt.values.asNameMap()[data['points']]
-          : null,
-      role: data['role'],
-      assignee: data['assignee'],
-      notes: data['notes'] ?? '',
+      title: title,
+      description: description,
+      priority: priority,
+      deadline: deadline,
+      assignee: assignee,
     );
   }
 
@@ -164,12 +187,13 @@ final class FireRources {
       'plankId': plankId,
       'title': block.title,
       'description': block.description,
-      'status': block.status.name,
       'priority': block.priority?.name,
-      'points': block.points?.name,
-      'role': block.role,
+      'deadline': block.deadline,
       'assignee': block.assignee,
-      'notes': block.notes,
+      if (block is AdvancedTaskBlock) 'status': block.status,
+      if (block is AdvancedTaskBlock) 'points': block.points?.name,
+      if (block is AdvancedTaskBlock) 'role': block.role,
+      if (block is AdvancedTaskBlock) 'notes': block.notes,
       'order': order,
     }, SetOptions(merge: true));
   }

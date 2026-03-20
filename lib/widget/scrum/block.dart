@@ -1,12 +1,12 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 
-/// Scrum row class - task block view for scrum methodology
+/// Scrum row class - advanced task block view for scrum methodology
 final class ScrumRow {
   final String deckId, plankId;
-  final TaskBlock task;
+  final AdvancedTaskBlock task;
   final int order;
-  final Function(TaskBlock) onDelete;
+  final Function(AdvancedTaskBlock) onDelete;
 
   ScrumRow({
     required this.deckId,
@@ -25,6 +25,7 @@ final class ScrumRow {
         DataCell(Text(task.priority != null ? task.priority!.label : '-')),
         DataCell(Text(task.points != null ? task.points!.label : '-')),
         DataCell(Text(task.role != null ? task.role! : '-')),
+        DataCell(Text(task.deadline != null ? task.deadline!.toString() : '-')),
         DataCell(Text(task.assignee != null ? task.assignee! : '-')),
         DataCell(Text(task.notes)),
       ],

@@ -76,29 +76,29 @@ class _KanbanCardState extends State<KanbanCard> {
       labelText: 'Description',
     ),
   );
-  PopupMenuButton _buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
-    tooltip: 'points',
-    initialValue: task.points,
-    child: Text(task.points != null ? task.points!.label : '?'),
-    itemBuilder: (context) => TaskPointsTShirt.values
-        .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
-        .toList(),
-    onSelected: (TaskPointsTShirt value) {
-      setState(() {
-        _taskController.updatePoints(value);
-      });
-    },
-  );
-  TextFormField _buildNotesField() => TextFormField(
-    controller: _taskController.notesController,
-    focusNode: _taskController.notesFocus,
-    keyboardType: TextInputType.multiline,
-    minLines: 1,
-    maxLines: 2,
-    onTapOutside: (event) => _taskController.notesFocus.unfocus(),
-    style: Styles.TASK_NOTES_TEXT,
-    decoration: Decorations.cardInput(collapsed: false, labelText: 'Notes'),
-  );
+  // PopupMenuButton _buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
+  //   tooltip: 'points',
+  //   initialValue: task.points,
+  //   child: Text(task.points != null ? task.points!.label : '?'),
+  //   itemBuilder: (context) => TaskPointsTShirt.values
+  //       .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
+  //       .toList(),
+  //   onSelected: (TaskPointsTShirt value) {
+  //     setState(() {
+  //       _taskController.updatePoints(value);
+  //     });
+  //   },
+  // );
+  // TextFormField _buildNotesField() => TextFormField(
+  //   controller: _taskController.notesController,
+  //   focusNode: _taskController.notesFocus,
+  //   keyboardType: TextInputType.multiline,
+  //   minLines: 1,
+  //   maxLines: 2,
+  //   onTapOutside: (event) => _taskController.notesFocus.unfocus(),
+  //   style: Styles.TASK_NOTES_TEXT,
+  //   decoration: Decorations.cardInput(collapsed: false, labelText: 'Notes'),
+  // );
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +138,11 @@ class _KanbanCardState extends State<KanbanCard> {
             ),
           ],
         ),
-        trailing: _buildPointsField(),
-        children: [_buildDescriptionField(), _buildNotesField()],
+        // trailing: _buildPointsField(),
+        children: [
+          _buildDescriptionField(),
+          // _buildNotesField()
+        ],
       ),
     );
   }
