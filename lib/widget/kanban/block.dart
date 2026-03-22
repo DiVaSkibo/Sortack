@@ -5,9 +5,9 @@ import 'package:sortack/widget/dialogs.dart';
 /// Kanban card widget - task block view
 class KanbanCard extends StatefulWidget {
   final String deckId, plankId;
-  final TaskBlock task;
+  final Block task;
   final int order;
-  final Function(TaskBlock) onDelete;
+  final Function(Block) onDelete;
 
   KanbanCard({
     Key? key,
@@ -23,13 +23,13 @@ class KanbanCard extends StatefulWidget {
 }
 
 class _KanbanCardState extends State<KanbanCard> {
-  late final TaskBlockController _taskController;
-  TaskBlock get task => _taskController.task;
+  late final BlockController _taskController;
+  Block get task => _taskController.task;
 
   @override
   void initState() {
     super.initState();
-    _taskController = TaskBlockController(
+    _taskController = BlockController(
       widget.task,
       onUnfocus: () async {
         try {

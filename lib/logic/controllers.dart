@@ -53,9 +53,9 @@ class AuthController extends ChangeNotifier {
 }
 
 /// task block controller - control task block parameters
-class TaskBlockController extends ChangeNotifier {
-  final TaskBlock _task;
-  TaskBlock get task => _task;
+class BlockController extends ChangeNotifier {
+  final Block _task;
+  Block get task => _task;
 
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
@@ -65,7 +65,7 @@ class TaskBlockController extends ChangeNotifier {
   // final FocusNode notesFocus = FocusNode();
   final Function()? onUnfocus;
 
-  TaskBlockController(this._task, {this.onUnfocus}) {
+  BlockController(this._task, {this.onUnfocus}) {
     _initializeControllers();
     _setupFocusListeners();
   }

@@ -49,7 +49,7 @@ final class FireRources {
   }
 
   /// load deck resource by deck id
-  static Future<T> loadDeck<T extends TaskDeck>(String deckId) async {
+  static Future<T> loadDeck<T extends Deck>(String deckId) async {
     final deckRef = getDecks().doc(deckId);
     final results = await Future.wait([
       deckRef.get(),
@@ -61,20 +61,20 @@ final class FireRources {
     final blocksSnapshot = results[2] as QuerySnapshot;
     if (!deckDoc.exists) throw Exception('? Deck is not found');
     final details = loadDeckDetails(deckDoc);
-    final Map<String, TaskPlank> planksMap = {};
-    final List<TaskPlank> planksList = [];
+    final Map<String, Plank> planksMap = {};
+    final List<Plank> planksList = [];
     for (var doc in planksSnapshot.docs) {
       final plank = switch (T) {
-        const (AdvancedTaskDeck) => loadPlank<AdvancedTaskPlank>(doc),
-        _ => loadPlank<TaskPlank>(doc),
+        const (AdvancedDeck) => loadPlank<AdvancedPlank>(doc),
+        _ => loadPlank<Plank>(doc),
       };
       planksMap[doc.id] = plank;
       planksList.add(plank);
     }
     for (var doc in blocksSnapshot.docs) {
       final block = switch (T) {
-        const (AdvancedTaskDeck) => loadBlock<AdvancedTaskBlock>(doc),
-        _ => loadBlock<TaskBlock>(doc),
+        const (AdvancedDeck) => loadBlock<AdvancedBlock>(doc),
+        _ => loadBlock<Block>(doc),
       };
       final data = doc.data() as Doc;
       final plankId = data['plankId'] as String?;
@@ -85,18 +85,18 @@ final class FireRources {
     }
 
     return switch (T) {
-      const (AdvancedTaskDeck) =>
-        AdvancedTaskDeck(
+      const (AdvancedDeck) =>
+        AdvancedDeck(
               details: details,
-              planks: planksList as List<AdvancedTaskPlank>,
+              planks: planksList as List<AdvancedPlank>,
             )
             as T,
-      _ => DetailedTaskDeck(details: details, planks: planksList) as T,
+      _ => DetailedDeck(details: details, planks: planksList) as T,
     };
   }
 
   /// load plank resource by doc
-  static TaskPlank loadPlank<T extends TaskPlank>(DocumentSnapshot doc) {
+  static Plank loadPlank<T extends Plank>(DocumentSnapshot doc) {
     final data = doc.data() as Doc;
     String title = data['title'] ?? '';
     Color color = data['color'] != null
@@ -104,18 +104,18 @@ final class FireRources {
         : Colours.W;
 
     return switch (T) {
-      const (AdvancedTaskPlank) => AdvancedTaskPlank(
+      const (AdvancedPlank) => AdvancedPlank(
         id: doc.id,
         title: title,
         color: color,
         blocks: [],
       ),
-      _ => TaskPlank(id: doc.id, title: title, color: color, blocks: []),
+      _ => Plank(id: doc.id, title: title, color: color, blocks: []),
     };
   }
 
   /// load block resource by doc
-  static TaskBlock loadBlock<T extends TaskBlock>(DocumentSnapshot doc) {
+  static Block loadBlock<T extends Block>(DocumentSnapshot doc) {
     final data = doc.data() as Doc;
     String title = data['title'] ?? '';
     String description = data['description'] ?? '';
@@ -128,7 +128,7 @@ final class FireRources {
     String? assignee = data['assignee'];
 
     return switch (T) {
-      const (AdvancedTaskBlock) => AdvancedTaskBlock(
+      const (AdvancedBlock) => AdvancedBlock(
         id: doc.id,
         title: title,
         description: description,
@@ -143,7 +143,7 @@ final class FireRources {
         assignee: assignee,
         notes: data['notes'] ?? '',
       ),
-      _ => TaskBlock(
+      _ => Block(
         id: doc.id,
         title: title,
         description: description,
@@ -198,11 +198,7 @@ final class FireRources {
   }
 
   /// save plank resource
-  static Future<void> savePlank(
-    String deckId,
-    TaskPlank plank,
-    int order,
-  ) async {
+  static Future<void> savePlank(String deckId, Plank plank, int order) async {
     await getPlanks(deckId).doc(plank.id).set({
       'title': plank.title,
       'color': plank.color.toHex(),
@@ -214,7 +210,7 @@ final class FireRources {
   static Future<void> saveBlock(
     String deckId,
     String plankId,
-    TaskBlock block,
+    Block block,
     int order,
   ) async {
     await getBlocks(deckId).doc(block.id).set({
@@ -224,10 +220,10 @@ final class FireRources {
       'priority': block.priority?.name,
       'deadline': block.deadline,
       'assignee': block.assignee,
-      if (block is AdvancedTaskBlock) 'status': block.status,
-      if (block is AdvancedTaskBlock) 'points': block.points?.name,
-      if (block is AdvancedTaskBlock) 'role': block.role,
-      if (block is AdvancedTaskBlock) 'notes': block.notes,
+      if (block is AdvancedBlock) 'status': block.status,
+      if (block is AdvancedBlock) 'points': block.points?.name,
+      if (block is AdvancedBlock) 'role': block.role,
+      if (block is AdvancedBlock) 'notes': block.notes,
       'order': order,
     }, SetOptions(merge: true));
   }
@@ -236,7 +232,7 @@ final class FireRources {
   /// update planks order by deck id
   static Future<void> updatePlanksOrder(
     String deckId,
-    DetailedTaskDeck deck,
+    DetailedDeck deck,
   ) async {
     final batch = FirebaseFirestore.instance.batch();
     for (int i = 0; i < deck.length; i++) {
@@ -247,7 +243,7 @@ final class FireRources {
   }
 
   /// update blocks order by deck, plank id
-  static Future<void> updateBlocksOrder(String deckId, TaskPlank plank) async {
+  static Future<void> updateBlocksOrder(String deckId, Plank plank) async {
     final batch = FirebaseFirestore.instance.batch();
     for (int i = 0; i < plank.length; i++) {
       final task = plank[i];

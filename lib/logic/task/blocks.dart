@@ -2,7 +2,7 @@ import 'package:sortack/_tools.dart';
 
 /// immutable task block interface class
 @immutable
-interface class TaskBlock with Parameterizable<TaskParameters> {
+interface class Block with Parameterizable<TaskParameters> {
   final String id;
   String title;
   String description;
@@ -10,7 +10,7 @@ interface class TaskBlock with Parameterizable<TaskParameters> {
   DateTime? deadline;
   String? assignee;
 
-  TaskBlock({
+  Block({
     required this.id,
     this.title = '',
     this.description = '',
@@ -56,13 +56,13 @@ interface class TaskBlock with Parameterizable<TaskParameters> {
 
 /// immutable advanced task block interface class
 @immutable
-interface class AdvancedTaskBlock extends TaskBlock {
+interface class AdvancedBlock extends Block {
   TaskStatus status;
   TaskPointsTShirt? points;
   String? role;
   String notes;
 
-  AdvancedTaskBlock({
+  AdvancedBlock({
     required super.id,
     super.title = '',
     super.description = '',

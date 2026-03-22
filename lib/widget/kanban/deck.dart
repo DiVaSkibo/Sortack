@@ -8,7 +8,7 @@ import 'package:sortack/widget/dialogs.dart';
 /// Kanban board widget - task board view with Kanban column children
 class KanbanBoard extends StatefulWidget {
   final String id;
-  final DetailedTaskDeck columns;
+  final DetailedDeck columns;
 
   const KanbanBoard({super.key, required this.id, required this.columns});
 
@@ -18,7 +18,7 @@ class KanbanBoard extends StatefulWidget {
 
 class _KanbanBoardState extends State<KanbanBoard> {
   late final String id = widget.id;
-  late final DetailedTaskDeck board = widget.columns;
+  late final DetailedDeck board = widget.columns;
   final ScrollController _columnsScrollController = ScrollController();
 
   @override

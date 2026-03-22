@@ -13,7 +13,7 @@ class ScrumPage extends StatefulWidget {
 
 class _ScrumPageState extends State<ScrumPage> {
   late String id = widget.id;
-  late final AdvancedTaskDeck? board;
+  late final AdvancedDeck? board;
   bool isLoading = true;
 
   final SwitchDrawersController _switchDrawersController =
@@ -29,8 +29,9 @@ class _ScrumPageState extends State<ScrumPage> {
 
   Future<void> _loadData() async {
     try {
-      final AdvancedTaskDeck loadedDeck =
-          await FireRources.loadDeck<AdvancedTaskDeck>(id);
+      final AdvancedDeck loadedDeck = await FireRources.loadDeck<AdvancedDeck>(
+        id,
+      );
       setState(() {
         board = loadedDeck;
         isLoading = false;
@@ -57,7 +58,7 @@ class _ScrumPageState extends State<ScrumPage> {
           IconButton(
             onPressed: () {
               setState(() {
-                board!.push(TaskPlank(id: '#'));
+                board!.push(Plank(id: '#'));
               });
             },
             icon: const Icon(Icons.add_box_outlined),
@@ -133,7 +134,7 @@ class _ScrumPageState extends State<ScrumPage> {
           : FloatingActionButton(
               onPressed: () async {
                 final docRef = FireRources.getBlocks(id).doc();
-                final newBlock = TaskBlock(id: docRef.id, title: '...');
+                final newBlock = Block(id: docRef.id, title: '...');
                 setState(() {
                   board!.pushBlock(newBlock);
                 });

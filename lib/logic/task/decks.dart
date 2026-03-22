@@ -4,19 +4,19 @@ import 'package:sortack/logic/task/blocks.dart';
 import 'package:sortack/logic/task/planks.dart';
 
 /// advanced task deck - collection of advanced task planks
-typedef AdvancedTaskDeck = DetailedTaskDeck<AdvancedTaskPlank>;
+typedef AdvancedDeck = DetailedDeck<AdvancedPlank>;
 
 /// task deck interface class - collection of task planks
-interface class TaskDeck<T extends TaskPlank> extends Collector<T>
+interface class Deck<T extends Plank> extends Collector<T>
     with Sortable<T, TaskParameters>, Filterable<T, TaskParameters> {
   final List<T> planks;
 
-  TaskDeck({List<T>? planks, super.listenable}) : planks = planks ?? [];
+  Deck({List<T>? planks, super.listenable}) : planks = planks ?? [];
 
   @override
   List<T> get collection => planks;
 
-  void pushBlock(TaskBlock block) => planks.first.push(block);
+  void pushBlock(Block block) => planks.first.push(block);
 
   @override
   void sort({TaskParameters by = TaskParameters.id}) {
@@ -35,10 +35,10 @@ interface class TaskDeck<T extends TaskPlank> extends Collector<T>
 }
 
 /// detailed task deck interface class - collection of task planks with details
-interface class DetailedTaskDeck<T extends TaskPlank> extends TaskDeck<T> {
+interface class DetailedDeck<T extends Plank> extends Deck<T> {
   final DeckDetails? details;
 
-  DetailedTaskDeck({super.planks, super.listenable, required this.details})
+  DetailedDeck({super.planks, super.listenable, required this.details})
     : super();
 }
 

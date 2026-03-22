@@ -3,17 +3,17 @@ import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/task/blocks.dart';
 
 /// advanced task plank - collection of advanced task blocks
-typedef AdvancedTaskPlank = TaskPlank<AdvancedTaskBlock>;
+typedef AdvancedPlank = Plank<AdvancedBlock>;
 
 /// task plank interface class - collection of task blocks
-interface class TaskPlank<T extends TaskBlock> extends Collector<T>
+interface class Plank<T extends Block> extends Collector<T>
     with Sortable<T, TaskParameters>, Filterable<T, TaskParameters> {
   final String id;
   final List<T> blocks;
   String title;
   Color color;
 
-  TaskPlank({
+  Plank({
     required this.id,
     this.title = '',
     this.color = Colours.BOTTOM,
@@ -32,11 +32,11 @@ interface class TaskPlank<T extends TaskBlock> extends Collector<T>
 }
 
 // /// task plank interface class
-// interface class TitledTaskPlank extends TaskPlank {
+// interface class TitledPlank extends Plank {
 //   String title;
 //   Color color;
 
-//   TitledTaskPlank({
+//   TitledPlank({
 //     required super.id,
 //     this.title = '',
 //     this.color = Colours.BOTTOM,

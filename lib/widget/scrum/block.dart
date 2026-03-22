@@ -4,9 +4,9 @@ import 'package:sortack/_logics.dart';
 /// Scrum row class - advanced task block view for scrum methodology
 final class ScrumRow {
   final String deckId, plankId;
-  final AdvancedTaskBlock task;
+  final AdvancedBlock task;
   final int order;
-  final Function(AdvancedTaskBlock) onDelete;
+  final Function(AdvancedBlock) onDelete;
 
   ScrumRow({
     required this.deckId,

@@ -13,7 +13,7 @@ class KanbanPage extends StatefulWidget {
 
 class _KanbanPageState extends State<KanbanPage> {
   late String id = widget.id;
-  late final DetailedTaskDeck? board;
+  late final DetailedDeck? board;
   bool isLoading = true;
 
   final SwitchDrawersController _switchDrawersController =
@@ -28,7 +28,7 @@ class _KanbanPageState extends State<KanbanPage> {
 
   Future<void> _loadData() async {
     try {
-      final loadedDeck = await FireRources.loadDeck<DetailedTaskDeck>(id);
+      final loadedDeck = await FireRources.loadDeck<DetailedDeck>(id);
       setState(() {
         board = loadedDeck;
         isLoading = false;
@@ -58,7 +58,7 @@ class _KanbanPageState extends State<KanbanPage> {
           IconButton(
             onPressed: () {
               setState(() {
-                board!.push(TaskPlank(id: '#'));
+                board!.push(Plank(id: '#'));
               });
             },
             icon: const Icon(Icons.add_box_outlined),
@@ -126,7 +126,7 @@ class _KanbanPageState extends State<KanbanPage> {
           : FloatingActionButton(
               onPressed: () async {
                 final docRef = FireRources.getBlocks(id).doc();
-                final newBlock = TaskBlock(id: docRef.id, title: '...');
+                final newBlock = Block(id: docRef.id, title: '...');
                 setState(() {
                   board!.pushBlock(newBlock);
                 });
