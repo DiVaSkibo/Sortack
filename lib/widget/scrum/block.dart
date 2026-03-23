@@ -4,22 +4,52 @@ import 'package:sortack/_logics.dart';
 /// Scrum row class - advanced task block view for scrum methodology
 final class ScrumRow {
   final String deckId, plankId;
-  final AdvancedBlock task;
   final int order;
+  final VoidCallback onChanged;
   final Function(AdvancedBlock) onDelete;
+  late final AdvancedBlockController _taskController;
+  AdvancedBlock get task => _taskController.task;
 
   ScrumRow({
     required this.deckId,
     required this.plankId,
-    required this.task,
+    required AdvancedBlock task,
     required this.order,
+    required this.onChanged,
     required this.onDelete,
-  });
+  }) : _taskController = AdvancedBlockController(
+         task,
+         onUnfocus: () async {
+           try {
+             await FireRources.saveBlock(deckId, plankId, task, order);
+             debugPrint('+ saving task changes');
+             onChanged();
+           } catch (exc) {
+             debugPrint('? ERROR: saving task changes');
+           }
+         },
+       );
+
+  void dispose() {
+    _taskController.dispose();
+  }
 
   DataRow build() {
     return DataRow(
       cells: [
-        DataCell(Text(task.title)),
+        DataCell(
+          TextField(
+            controller: _taskController.titleController,
+            focusNode: _taskController.titleFocus,
+            onEditingComplete: () => _taskController.titleFocus.unfocus(),
+            onTapOutside: (event) => _taskController.titleFocus.unfocus(),
+            style: Styles.TASK_TITLE_TEXT,
+            decoration: Decorations.cardInput(
+              collapsed: true,
+              hintText: 'I have to do ...',
+            ),
+          ),
+        ),
         DataCell(Text(task.description)),
         DataCell(Text(task.deadline != null ? task.deadline!.ddMMMyyyy : '-')),
         DataCell(Text(task.status.label)),

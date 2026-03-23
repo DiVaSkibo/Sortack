@@ -52,17 +52,15 @@ class AuthController extends ChangeNotifier {
   }
 }
 
-/// task block controller - control task block parameters
+/// block controller
 class BlockController extends ChangeNotifier {
   final Block _task;
   Block get task => _task;
 
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
-  // late final TextEditingController notesController;
   final FocusNode titleFocus = FocusNode();
   final FocusNode descriptionFocus = FocusNode();
-  // final FocusNode notesFocus = FocusNode();
   final Function()? onUnfocus;
 
   BlockController(this._task, {this.onUnfocus}) {
@@ -74,17 +72,14 @@ class BlockController extends ChangeNotifier {
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
-    // notesController.dispose();
     titleFocus.dispose();
     descriptionFocus.dispose();
-    // notesFocus.dispose();
     super.dispose();
   }
 
   void _initializeControllers() {
     titleController = TextEditingController(text: _task.title);
     descriptionController = TextEditingController(text: _task.description);
-    // notesController = TextEditingController(text: _task.notes);
   }
 
   void _setupFocusListeners() {
@@ -106,23 +101,94 @@ class BlockController extends ChangeNotifier {
         notifyListeners();
       }
     });
-    // notesFocus.addListener(() {
-    //   if (!notesFocus.hasFocus &&
-    //       notesController.text.isNotEmpty &&
-    //       notesController.text != _task.notes) {
-    //     _task.notes = notesController.text;
-    //     onUnfocus?.call();
-    //     notifyListeners();
-    //   }
-    // });
   }
 
-  // void updateStatus(TaskStatus status) {
-  //   if (_task.status == status) return;
-  //   _task.status = status;
-  //   onUnfocus?.call();
-  //   notifyListeners();
-  // }
+  void updatePriority(TaskPriority priority) {
+    if (_task.priority == priority) return;
+    _task.priority = priority;
+    onUnfocus?.call();
+    notifyListeners();
+  }
+}
+
+/// advanced block controller
+class AdvancedBlockController extends ChangeNotifier {
+  final AdvancedBlock _task;
+  AdvancedBlock get task => _task;
+
+  late final TextEditingController titleController;
+  late final TextEditingController descriptionController;
+  late final TextEditingController notesController;
+  final FocusNode titleFocus = FocusNode();
+  final FocusNode descriptionFocus = FocusNode();
+  final FocusNode notesFocus = FocusNode();
+  final Function()? onUnfocus;
+
+  AdvancedBlockController(this._task, {this.onUnfocus}) {
+    _initializeControllers();
+    _setupFocusListeners();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    notesController.dispose();
+    titleFocus.dispose();
+    descriptionFocus.dispose();
+    notesFocus.dispose();
+    super.dispose();
+  }
+
+  void _initializeControllers() {
+    titleController = TextEditingController(text: _task.title);
+    descriptionController = TextEditingController(text: _task.description);
+    notesController = TextEditingController(text: _task.notes);
+  }
+
+  void _setupFocusListeners() {
+    titleFocus.addListener(() {
+      if (!titleFocus.hasFocus &&
+          titleController.text.isNotEmpty &&
+          titleController.text != _task.title) {
+        _task.title = titleController.text;
+        onUnfocus?.call();
+        notifyListeners();
+      }
+    });
+    descriptionFocus.addListener(() {
+      if (!descriptionFocus.hasFocus &&
+          descriptionController.text.isNotEmpty &&
+          descriptionController.text != _task.description) {
+        _task.description = descriptionController.text;
+        onUnfocus?.call();
+        notifyListeners();
+      }
+    });
+    notesFocus.addListener(() {
+      if (!notesFocus.hasFocus &&
+          notesController.text.isNotEmpty &&
+          notesController.text != _task.notes) {
+        _task.notes = notesController.text;
+        onUnfocus?.call();
+        notifyListeners();
+      }
+    });
+  }
+
+  void updateDeadline(DateTime deadline) {
+    if (_task.deadline == deadline) return;
+    _task.deadline = deadline;
+    onUnfocus?.call();
+    notifyListeners();
+  }
+
+  void updateStatus(TaskStatus status) {
+    if (_task.status == status) return;
+    _task.status = status;
+    onUnfocus?.call();
+    notifyListeners();
+  }
 
   void updatePriority(TaskPriority priority) {
     if (_task.priority == priority) return;
@@ -131,15 +197,15 @@ class BlockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void updatePoints(TaskPointsTShirt points) {
-  //   if (_task.points == points) return;
-  //   _task.points = points;
-  //   onUnfocus?.call();
-  //   notifyListeners();
-  // }
+  void updatePoints(TaskPointsTShirt points) {
+    if (_task.points == points) return;
+    _task.points = points;
+    onUnfocus?.call();
+    notifyListeners();
+  }
 }
 
-/// deck details controller - control deck details parameters
+/// deck details controller
 class DeckDetailsController extends ChangeNotifier {
   final DeckDetails _project;
   DeckDetails get project => _project;
@@ -214,7 +280,7 @@ class DeckDetailsController extends ChangeNotifier {
   }
 }
 
-/// switch drawers controller - control drawers value changes
+/// switch drawers controller
 class SwitchDrawersController extends ValueNotifier<Drawers> {
   SwitchDrawersController() : super(Drawers.help);
 

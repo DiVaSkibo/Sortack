@@ -1,38 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 export 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sortack/_tools.dart';
+import 'package:sortack/logic/firebase/documents.dart';
 import 'package:sortack/logic/firebase/authentications.dart';
-import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/task/blocks.dart';
 import 'package:sortack/logic/task/planks.dart';
 import 'package:sortack/logic/task/decks.dart';
 
-typedef Doc = Map<String, dynamic>;
-
 /// firestore resources - load, save, update and other resources
 final class FireRources {
   // GETs
-  /// get doc query of user
-  static Query<Doc> getUserDecks(User user) => FirebaseFirestore.instance
+  /// get document query of user
+  static Query<Document> getUserDecks(User user) => FirebaseFirestore.instance
       .collection('decks')
       .where('members', arrayContains: user.uid);
 
-  /// get doc collection reference of all decks
-  static CollectionReference<Doc> getDecks() =>
+  /// get document collection reference of all decks
+  static CollectionReference<Document> getDecks() =>
       FirebaseFirestore.instance.collection('decks');
 
-  /// get doc collection reference of all planks by id
-  static CollectionReference<Doc> getPlanks(String id) =>
+  /// get document collection reference of all planks by id
+  static CollectionReference<Document> getPlanks(String id) =>
       getDecks().doc(id).collection('planks');
 
-  /// get doc collection reference of all blocks by id
-  static CollectionReference<Doc> getBlocks(String id) =>
+  /// get document collection reference of all blocks by id
+  static CollectionReference<Document> getBlocks(String id) =>
       getDecks().doc(id).collection('blocks');
 
   // LOADs
   /// load deck details resource by doc
   static DeckDetails loadDeckDetails(DocumentSnapshot doc) {
-    final data = doc.data() as Doc;
+    final data = doc.data() as Document;
     return DeckDetails(
       id: doc.id,
       name: data['name'],
@@ -81,7 +79,7 @@ final class FireRources {
         const (AdvancedDeck) => loadBlock<AdvancedBlock>(doc),
         _ => loadBlock<Block>(doc),
       };
-      final data = doc.data() as Doc;
+      final data = doc.data() as Document;
       final plankId = data['plankId'] as String?;
       if (plankId != null && planksMap.containsKey(plankId))
         planksMap[plankId]!.blocks.add(block);
@@ -99,83 +97,30 @@ final class FireRources {
   }
 
   /// load plank resource by doc
-  static Plank loadPlank<T extends Plank>(DocumentSnapshot doc) {
-    final data = doc.data() as Doc;
-    String title = data['title'] ?? '';
-    Color color = data['color'] != null
-        ? ColorExtension.fromHex(data['color'])
-        : Colours.W;
-
-    return switch (T) {
-      const (AdvancedPlank) => AdvancedPlank(
-        id: doc.id,
-        title: title,
-        color: color,
-        blocks: [],
-      ),
-      _ => Plank(id: doc.id, title: title, color: color, blocks: []),
-    };
+  static T loadPlank<T extends Plank>(DocumentSnapshot docsnap) {
+    return docToPlank(docsnap.data() as Document, docsnap.id) as T;
   }
 
   /// load block resource by doc
-  static Block loadBlock<T extends Block>(DocumentSnapshot doc) {
-    final data = doc.data() as Doc;
-    String title = data['title'] ?? '';
-    String description = data['description'] ?? '';
-    TaskPriority? priority = data['priority'] != null
-        ? TaskPriority.values.asNameMap()[data['priority']]
-        : null;
-    DateTime deadline = data['deadline'] != null
-        ? (data['deadline'] as Timestamp).toDate()
-        : DateTime.now();
-    String? assignee = data['assignee'];
-
-    return switch (T) {
-      const (AdvancedBlock) => AdvancedBlock(
-        id: doc.id,
-        title: title,
-        description: description,
-        status:
-            TaskStatus.values.asNameMap()[data['status']] ?? TaskStatus.toDo,
-        priority: priority,
-        points: data['points'] != null
-            ? TaskPointsTShirt.values.asNameMap()[data['points']]
-            : null,
-        role: data['role'],
-        deadline: deadline,
-        assignee: assignee,
-        notes: data['notes'] ?? '',
-      ),
-      _ => Block(
-        id: doc.id,
-        title: title,
-        description: description,
-        priority: priority,
-        deadline: deadline,
-        assignee: assignee,
-      ),
-    };
+  static T loadBlock<T extends Block>(DocumentSnapshot docsnap) {
+    return docToBlock<T>(docsnap.data() as Document, docsnap.id) as T;
   }
 
   // SAVEs
   /// save deck details resource
-  static Future<void> saveProject(DeckDetails deck) async {
+  static Future<void> saveProject(DeckDetails details) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) throw Exception('? User is not authorised...');
-    final isNew = deck.id.isEmpty || deck.id == '#';
-    final deckRef = isNew ? getDecks().doc() : getDecks().doc(deck.id);
+    final isNew = details.id.isEmpty || details.id == '#';
+    final deckRef = isNew ? getDecks().doc() : getDecks().doc(details.id);
     final batch = FirebaseFirestore.instance.batch();
-    final deckData = <String, dynamic>{
-      'name': deck.name.trim(),
-      'description': deck.description,
-      'methodology': deck.methodology.name,
-    };
+    final deckData = detailsToDoc(details);
     if (isNew) {
       deckData['created'] = FieldValue.serverTimestamp();
       deckData['owner'] = currentUser.uid;
       deckData['members'] = [currentUser.uid];
       batch.set(deckRef, deckData);
-      List<Doc> initPlanks = switch (deck.methodology) {
+      List<Document> initPlanks = switch (details.methodology) {
         Methodology.Kanban => [
           {'title': 'To Do', 'color': Colours.NOTOK.toHex()},
           {'title': 'In Progress', 'color': Colours.INOK.toHex()},
@@ -216,19 +161,9 @@ final class FireRources {
     Block block,
     int order,
   ) async {
-    await getBlocks(deckId).doc(block.id).set({
-      'plankId': plankId,
-      'title': block.title,
-      'description': block.description,
-      'priority': block.priority?.name,
-      'deadline': block.deadline,
-      'assignee': block.assignee,
-      if (block is AdvancedBlock) 'status': block.status,
-      if (block is AdvancedBlock) 'points': block.points?.name,
-      if (block is AdvancedBlock) 'role': block.role,
-      if (block is AdvancedBlock) 'notes': block.notes,
-      'order': order,
-    }, SetOptions(merge: true));
+    await getBlocks(deckId)
+        .doc(block.id)
+        .set(blockToDoc(block, plankId, order), SetOptions(merge: true));
   }
 
   // UPDATEs

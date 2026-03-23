@@ -53,6 +53,7 @@ class _ScrumTableState extends State<ScrumTable> {
           plankId: tasks.id,
           task: tasks[index],
           order: order,
+          onChanged: () => setState(() {}),
           onDelete: (what) {
             tasks.pop(what);
           },
