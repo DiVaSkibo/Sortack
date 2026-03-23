@@ -1,4 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+extension ColorExtension on Color {
+  String toHex() =>
+      '#${toARGB32().toRadixString(16).padLeft(8, '0').toUpperCase()}';
+
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+}
+
+extension DateExtension on DateTime {
+  String get ddMMMyyyy => DateFormat('dd MMM yyyy').format(this);
+}
 
 mixin Labeling {
   String get label;

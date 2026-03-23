@@ -21,11 +21,11 @@ final class ScrumRow {
       cells: [
         DataCell(Text(task.title)),
         DataCell(Text(task.description)),
+        DataCell(Text(task.deadline != null ? task.deadline!.ddMMMyyyy : '-')),
         DataCell(Text(task.status.label)),
         DataCell(Text(task.priority != null ? task.priority!.label : '-')),
         DataCell(Text(task.points != null ? task.points!.label : '-')),
         DataCell(Text(task.role != null ? task.role! : '-')),
-        DataCell(Text(task.deadline != null ? task.deadline!.toString() : '-')),
         DataCell(Text(task.assignee != null ? task.assignee! : '-')),
         DataCell(Text(task.notes)),
       ],

@@ -35,10 +35,17 @@ class _ScrumTableState extends State<ScrumTable> {
   Widget build(BuildContext context) {
     return DataTable(
       showBottomBorder: true,
-      columns: TaskParameters.values
-          .skip(1)
-          .map((value) => DataColumn(label: Text(value.name)))
-          .toList(),
+      columns: [
+        DataColumn(label: Text('Title')),
+        DataColumn(label: Text('Description')),
+        DataColumn(label: Text('Deadline')),
+        DataColumn(label: Text('Status')),
+        DataColumn(label: Text('Priority')),
+        DataColumn(label: Text('Points')),
+        DataColumn(label: Text('Role')),
+        DataColumn(label: Text('Assignee')),
+        DataColumn(label: Text('Notes')),
+      ],
       rows: List.generate(
         tasks.length,
         (index) => ScrumRow(

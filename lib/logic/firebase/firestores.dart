@@ -51,26 +51,31 @@ final class FireRources {
   /// load deck resource by deck id
   static Future<T> loadDeck<T extends Deck>(String deckId) async {
     final deckRef = getDecks().doc(deckId);
-    final results = await Future.wait([
+    final snapshots = await Future.wait([
       deckRef.get(),
       deckRef.collection('planks').orderBy('order').get(),
       deckRef.collection('blocks').orderBy('order').get(),
     ]);
-    final deckDoc = results[0] as DocumentSnapshot;
-    final planksSnapshot = results[1] as QuerySnapshot;
-    final blocksSnapshot = results[2] as QuerySnapshot;
-    if (!deckDoc.exists) throw Exception('? Deck is not found');
-    final details = loadDeckDetails(deckDoc);
+    final deckSnapshot = snapshots[0] as DocumentSnapshot;
+    final planksSnapshot = snapshots[1] as QuerySnapshot;
+    final blocksSnapshot = snapshots[2] as QuerySnapshot;
+    if (!deckSnapshot.exists) throw Exception('? Deck is not found');
+
+    // deck planks
     final Map<String, Plank> planksMap = {};
-    final List<Plank> planksList = [];
+    final planks = switch (T) {
+      const (AdvancedDeck) => <AdvancedPlank>[],
+      _ => <Plank>[],
+    };
     for (var doc in planksSnapshot.docs) {
       final plank = switch (T) {
         const (AdvancedDeck) => loadPlank<AdvancedPlank>(doc),
         _ => loadPlank<Plank>(doc),
       };
       planksMap[doc.id] = plank;
-      planksList.add(plank);
+      planks.add(plank);
     }
+    // blocks for each deck planks
     for (var doc in blocksSnapshot.docs) {
       final block = switch (T) {
         const (AdvancedDeck) => loadBlock<AdvancedBlock>(doc),
@@ -80,18 +85,16 @@ final class FireRources {
       final plankId = data['plankId'] as String?;
       if (plankId != null && planksMap.containsKey(plankId))
         planksMap[plankId]!.blocks.add(block);
-      else if (planksList.isNotEmpty)
-        planksList.first.blocks.add(block);
+      else if (planks.isNotEmpty)
+        planks.first.blocks.add(block);
     }
 
+    final details = loadDeckDetails(deckSnapshot);
     return switch (T) {
       const (AdvancedDeck) =>
-        AdvancedDeck(
-              details: details,
-              planks: planksList as List<AdvancedPlank>,
-            )
+        AdvancedDeck(details: details, planks: planks as List<AdvancedPlank>)
             as T,
-      _ => DetailedDeck(details: details, planks: planksList) as T,
+      _ => DetailedDeck(details: details, planks: planks) as T,
     };
   }
 
