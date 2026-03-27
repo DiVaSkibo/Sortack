@@ -1,3 +1,4 @@
+import 'package:data_table_2/data_table_2.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/widget/scrum/block.dart';
@@ -33,18 +34,74 @@ class _ScrumTableState extends State<ScrumTable> {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
+    return DataTable2(
+      horizontalMargin: 0,
+      minWidth: 1920,
+      fixedLeftColumns: 1,
       showBottomBorder: true,
+      headingRowHeight: 40,
+      columnSpacing: 0,
+      dividerThickness: 0,
+      empty: Icon(Icons.not_interested_rounded),
+      dataRowColor: WidgetStatePropertyAll(Colours.TINGE),
+      headingRowColor: WidgetStatePropertyAll(Colours.UNTOP),
+      fixedCornerColor: Colours.ACTOP,
+      fixedColumnsColor: Colours.SHADOW,
+      border: TableBorder.symmetric(
+        inside: BorderSide(width: .1, color: Colours.TOP),
+        outside: BorderSide(width: 2, color: Colours.TOP),
+      ),
       columns: [
-        DataColumn(label: Text('Title')),
-        DataColumn(label: Text('Description')),
-        DataColumn(label: Text('Deadline')),
-        DataColumn(label: Text('Status')),
-        DataColumn(label: Text('Priority')),
-        DataColumn(label: Text('Points')),
-        DataColumn(label: Text('Role')),
-        DataColumn(label: Text('Assignee')),
-        DataColumn(label: Text('Notes')),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          isResizable: true,
+          minWidth: 100,
+          fixedWidth: 200,
+          label: Text('Title'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          isResizable: true,
+          fixedWidth: 225,
+          label: Text('Description'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          fixedWidth: 125,
+          label: Text('Deadline'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          fixedWidth: 125,
+          label: Text('Status'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          fixedWidth: 125,
+          label: Text('Priority'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          fixedWidth: 100,
+          label: Text('Points'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          fixedWidth: 100,
+          label: Text('Role'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          fixedWidth: 100,
+          label: Text('Assignee'),
+        ),
+        DataColumn2(
+          headingRowAlignment: MainAxisAlignment.center,
+          isResizable: true,
+          minWidth: 100,
+          fixedWidth: 100,
+          label: Text('Notes'),
+        ),
       ],
       rows: List.generate(
         tasks.length,

@@ -24,7 +24,12 @@ class _MenuPageState extends State<MenuPage> {
             if (snapshot.connectionState == ConnectionState.waiting)
               return const Center(child: CircularProgressIndicator());
             if (snapshot.hasError)
-              return Center(child: Icon(Icons.error_outline_rounded));
+              return Center(
+                child: ListTile(
+                  leading: Icon(Icons.error_outline_rounded),
+                  trailing: Text(snapshot.error.toString()),
+                ),
+              );
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
               return Icon(Icons.cabin_rounded);
             return Wrap(

@@ -46,9 +46,9 @@ final class FireRources {
     );
   }
 
-  /// load deck resource by deck id
-  static Future<T> loadDeck<T extends Deck>(String deckId) async {
-    final deckRef = getDecks().doc(deckId);
+  /// load deck resource by id
+  static Future<T> loadDeck<T extends Deck>(String id) async {
+    final deckRef = getDecks().doc(id);
     final snapshots = await Future.wait([
       deckRef.get(),
       deckRef.collection('planks').orderBy('order').get(),
@@ -58,10 +58,14 @@ final class FireRources {
     final planksSnapshot = snapshots[1] as QuerySnapshot;
     final blocksSnapshot = snapshots[2] as QuerySnapshot;
     if (!deckSnapshot.exists) throw Exception('? Deck is not found');
+    final details = loadDeckDetails(deckSnapshot);
 
     // deck planks
-    final Map<String, Plank> planksMap = {};
-    final planks = switch (T) {
+    final Map planksMap = switch (T) {
+      const (AdvancedDeck) => <String, AdvancedPlank>{},
+      _ => <String, Plank>{},
+    };
+    final List planks = switch (T) {
       const (AdvancedDeck) => <AdvancedPlank>[],
       _ => <Plank>[],
     };
@@ -87,23 +91,24 @@ final class FireRources {
         planks.first.blocks.add(block);
     }
 
-    final details = loadDeckDetails(deckSnapshot);
     return switch (T) {
       const (AdvancedDeck) =>
         AdvancedDeck(details: details, planks: planks as List<AdvancedPlank>)
             as T,
-      _ => DetailedDeck(details: details, planks: planks) as T,
+      _ => DetailedDeck(details: details, planks: planks as List<Plank>) as T,
     };
   }
 
-  /// load plank resource by doc
+  /// load plank resource by document
   static T loadPlank<T extends Plank>(DocumentSnapshot docsnap) {
-    return docToPlank(docsnap.data() as Document, docsnap.id) as T;
+    final doc = docsnap.data() as Document;
+    return docToPlank<T>(doc, docsnap.id) as T;
   }
 
-  /// load block resource by doc
+  /// load block resource by document
   static T loadBlock<T extends Block>(DocumentSnapshot docsnap) {
-    return docToBlock<T>(docsnap.data() as Document, docsnap.id) as T;
+    final doc = docsnap.data() as Document;
+    return docToBlock<T>(doc, docsnap.id) as T;
   }
 
   // SAVEs
@@ -127,8 +132,7 @@ final class FireRources {
           {'title': 'Done', 'color': Colours.OK.toHex()},
         ],
         Methodology.Scrum => [
-          {'title': 'Backlog', 'color': Colours.INOK.toHex()},
-          {'title': 'Sprint-0', 'color': Colours.OK.toHex()},
+          {'title': 'Backlog', 'order': 0, 'color': Colours.INOK.toHex()},
         ],
       };
       for (int i = 0; i < initPlanks.length; i++) {

@@ -12,7 +12,6 @@ class ScrumPage extends StatefulWidget {
 }
 
 class _ScrumPageState extends State<ScrumPage> {
-  late String id = widget.id;
   late final AdvancedDeck? board;
   bool isLoading = true;
 
@@ -30,7 +29,7 @@ class _ScrumPageState extends State<ScrumPage> {
   Future<void> _loadData() async {
     try {
       final AdvancedDeck loadedDeck = await FireRources.loadDeck<AdvancedDeck>(
-        id,
+        widget.id,
       );
       setState(() {
         board = loadedDeck;
@@ -58,7 +57,7 @@ class _ScrumPageState extends State<ScrumPage> {
           IconButton(
             onPressed: () {
               setState(() {
-                board!.push(Plank(id: '#'));
+                board!.push(AdvancedPlank(id: '#'));
               });
             },
             icon: const Icon(Icons.add_box_outlined),
@@ -124,7 +123,7 @@ class _ScrumPageState extends State<ScrumPage> {
             : (board == null || board!.planks.isEmpty)
             ? const Center(child: Icon(Icons.clear_rounded))
             : ScrumBoard(
-                id: id,
+                id: widget.id,
                 tables: board!,
                 selectedIndex: _selectedBoardIndex,
               ),
@@ -133,14 +132,14 @@ class _ScrumPageState extends State<ScrumPage> {
           ? null
           : FloatingActionButton(
               onPressed: () async {
-                final docRef = FireRources.getBlocks(id).doc();
-                final newBlock = Block(id: docRef.id, title: '...');
+                final docRef = FireRources.getBlocks(widget.id).doc();
+                final newBlock = AdvancedBlock(id: docRef.id, title: '...');
                 setState(() {
                   board!.pushBlock(newBlock);
                 });
                 try {
                   await FireRources.saveBlock(
-                    id,
+                    widget.id,
                     board!.first.id,
                     newBlock,
                     board!.first.length - 1,

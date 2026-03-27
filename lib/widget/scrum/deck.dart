@@ -23,47 +23,53 @@ class ScrumBoard extends StatefulWidget {
 class _ScrumBoardState extends State<ScrumBoard> {
   late final String id = widget.id;
   late final AdvancedDeck board = widget.tables;
-  final ScrollController _columnsScrollController = ScrollController();
+  final ScrollController _tableScrollController = ScrollController();
 
   @override
   void dispose() {
-    _columnsScrollController.dispose();
+    _tableScrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScrumTable(
-      deckId: id,
-      tasks: board[widget.selectedIndex],
-      order: widget.selectedIndex,
-      onChanged: () {
-        setState(() {});
-      },
-      onUnfocus: () async {
-        try {
-          await FireRources.savePlank(
-            id,
-            board[widget.selectedIndex],
-            widget.selectedIndex,
-          );
-        } catch (exc) {
-          debugPrint('? ERROR: saving column changes; $exc');
-        }
-      },
-      onDelete: (plank) => showDialog(
-        context: context,
-        builder: (context) => AcceptDialog(
-          message: 'Do you realy want to delete this task?...',
-          onCancel: Navigator.of(context).pop,
-          onAccept: () async {
-            Navigator.of(context).pop();
-            setState(() {
-              board.pop(plank);
-            });
-            await FireRources.deletePlank(id, plank.id);
+    return SizedBox(
+      height: 1000,
+      child: ListenableBuilder(
+        listenable: board,
+        builder: (context, child) => ScrumTable(
+          deckId: id,
+          tasks: board[widget.selectedIndex],
+          order: widget.selectedIndex,
+          onChanged: () {
+            setState(() {});
           },
-          icon: Icons.remove_rounded,
+          onUnfocus: () async {
+            try {
+              await FireRources.savePlank(
+                id,
+                board[widget.selectedIndex],
+                widget.selectedIndex,
+              );
+            } catch (exc) {
+              debugPrint('? ERROR: saving column changes; $exc');
+            }
+          },
+          onDelete: (plank) => showDialog(
+            context: context,
+            builder: (context) => AcceptDialog(
+              message: 'Do you realy want to delete this task?...',
+              onCancel: Navigator.of(context).pop,
+              onAccept: () async {
+                Navigator.of(context).pop();
+                setState(() {
+                  board.pop(plank);
+                });
+                await FireRources.deletePlank(id, plank.id);
+              },
+              icon: Icons.remove_rounded,
+            ),
+          ),
         ),
       ),
     );
@@ -101,7 +107,7 @@ class _ScrumBoardState extends State<ScrumBoard> {
     //   ),
     // ),
     // Scrollbar(
-    //   controller: _columnsScrollController,
+    //   controller: _tableontroller,
     //   scrollbarOrientation: ScrollbarOrientation.top,
     //   child: ListenableBuilder(
     //     listenable: board,

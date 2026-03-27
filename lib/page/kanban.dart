@@ -12,7 +12,6 @@ class KanbanPage extends StatefulWidget {
 }
 
 class _KanbanPageState extends State<KanbanPage> {
-  late String id = widget.id;
   late final DetailedDeck? board;
   bool isLoading = true;
 
@@ -28,7 +27,9 @@ class _KanbanPageState extends State<KanbanPage> {
 
   Future<void> _loadData() async {
     try {
-      final loadedDeck = await FireRources.loadDeck<DetailedDeck>(id);
+      final DetailedDeck loadedDeck = await FireRources.loadDeck<DetailedDeck>(
+        widget.id,
+      );
       setState(() {
         board = loadedDeck;
         isLoading = false;
@@ -119,20 +120,20 @@ class _KanbanPageState extends State<KanbanPage> {
             ? Center(child: CircularProgressIndicator())
             : (board == null || board!.planks.isEmpty)
             ? const Center(child: Icon(Icons.clear_rounded))
-            : KanbanBoard(id: id, columns: board!),
+            : KanbanBoard(id: widget.id, columns: board!),
       ),
       floatingActionButton: isLoading || board == null || board!.planks.isEmpty
           ? null
           : FloatingActionButton(
               onPressed: () async {
-                final docRef = FireRources.getBlocks(id).doc();
+                final docRef = FireRources.getBlocks(widget.id).doc();
                 final newBlock = Block(id: docRef.id, title: '...');
                 setState(() {
                   board!.pushBlock(newBlock);
                 });
                 try {
                   await FireRources.saveBlock(
-                    id,
+                    widget.id,
                     board!.first.id,
                     newBlock,
                     board!.first.length - 1,
