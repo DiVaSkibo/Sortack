@@ -277,6 +277,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         scrollbarTheme: ScrollbarThemeData(
+          interactive: true,
           thumbVisibility: WidgetStateProperty.all(false),
           trackVisibility: WidgetStateProperty.all(false),
           thickness: WidgetStateProperty.all(4),

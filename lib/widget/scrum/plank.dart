@@ -1,4 +1,3 @@
-import 'package:data_table_2/data_table_2.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/widget/scrum/block.dart';
@@ -32,135 +31,84 @@ class _ScrumTableState extends State<ScrumTable> {
   late final Plank<AdvancedBlock> tasks = widget.tasks;
   late final int order = widget.order;
 
+  final ScrollController _horizontalController = ScrollController();
+
+  @override
+  void dispose() {
+    _horizontalController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DataTable2(
-      horizontalMargin: 0,
-      minWidth: 1920,
-      fixedLeftColumns: 1,
-      showBottomBorder: true,
-      headingRowHeight: 40,
-      columnSpacing: 0,
-      dividerThickness: 0,
-      empty: Icon(Icons.not_interested_rounded),
-      dataRowColor: WidgetStatePropertyAll(Colours.TINGE),
-      headingRowColor: WidgetStatePropertyAll(Colours.UNTOP),
-      fixedCornerColor: Colours.ACTOP,
-      fixedColumnsColor: Colours.SHADOW,
-      border: TableBorder.symmetric(
-        inside: BorderSide(width: .1, color: Colours.TOP),
-        outside: BorderSide(width: 2, color: Colours.TOP),
-      ),
-      columns: [
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          isResizable: true,
-          minWidth: 100,
-          fixedWidth: 200,
-          label: Text('Title'),
+    return LayoutBuilder(
+      builder: (context, constraints) => Scrollbar(
+        controller: _horizontalController,
+        scrollbarOrientation: ScrollbarOrientation.top,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          controller: _horizontalController,
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: constraints.maxWidth > 1200 ? constraints.maxWidth : 1200,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colours.UNTOP,
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey[300]!),
+                    ),
+                  ),
+                  child: Row(
+                    children: const [
+                      Expanded(flex: 3, child: Center(child: Text('Title'))),
+                      Expanded(
+                        flex: 4,
+                        child: Center(child: Text('Description')),
+                      ),
+                      Expanded(flex: 2, child: Center(child: Text('Deadline'))),
+                      Expanded(flex: 2, child: Center(child: Text('Status'))),
+                      Expanded(flex: 2, child: Center(child: Text('Priority'))),
+                      Expanded(flex: 2, child: Center(child: Text('Points'))),
+                      Expanded(flex: 2, child: Center(child: Text('Role'))),
+                      Expanded(flex: 2, child: Center(child: Text('Assignee'))),
+                      Expanded(flex: 3, child: Center(child: Text('Notes'))),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ReorderableListView.builder(
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) => ScrumRow(
+                      deckId: widget.deckId,
+                      plankId: tasks.id,
+                      task: tasks[index],
+                      order: order,
+                      onDelete: (what) {
+                        setState(() {
+                          tasks.pop(what);
+                        });
+                      },
+                    ),
+                    onReorder: (oldIndex, newIndex) {
+                      setState(() {
+                        if (newIndex > oldIndex) newIndex -= 1;
+                        tasks.move(oldIndex, newIndex);
+                      });
+                      FireRources.updateBlocksOrder(widget.deckId, tasks);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          isResizable: true,
-          fixedWidth: 225,
-          label: Text('Description'),
-        ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          fixedWidth: 125,
-          label: Text('Deadline'),
-        ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          fixedWidth: 125,
-          label: Text('Status'),
-        ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          fixedWidth: 125,
-          label: Text('Priority'),
-        ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          fixedWidth: 100,
-          label: Text('Points'),
-        ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          fixedWidth: 100,
-          label: Text('Role'),
-        ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          fixedWidth: 100,
-          label: Text('Assignee'),
-        ),
-        DataColumn2(
-          headingRowAlignment: MainAxisAlignment.center,
-          isResizable: true,
-          minWidth: 100,
-          fixedWidth: 100,
-          label: Text('Notes'),
-        ),
-      ],
-      rows: List.generate(
-        tasks.length,
-        (index) => ScrumRow(
-          context: context,
-          deckId: widget.deckId,
-          plankId: tasks.id,
-          task: tasks[index],
-          order: order,
-          onChanged: () => setState(() {}),
-          onDelete: (what) {
-            tasks.pop(what);
-          },
-        ).build(),
       ),
     );
   }
 }
-    // DragAndDropList(
-    //   verticalAlignment: CrossAxisAlignment.center,
-    //   decoration: Decorations.PLANK_BOX,
-    //   contentsWhenEmpty: Icon(unicon(), size: 30),
-    //   header: ListenableBuilder(
-    //     listenable: _titleController,
-    //     builder: (context, child) => TextField(
-    //       controller: _titleController,
-    //       focusNode: _titleFocus,
-    //       textAlign: TextAlign.center,
-    //       onEditingComplete: () {
-    //         _titleFocus.unfocus();
-    //       },
-    //       onTapOutside: (event) {
-    //         _titleFocus.unfocus();
-    //       },
-    //       style: Styles.columnText(color: tasks.color),
-    //       decoration: Decorations.columnInput(),
-    //     ),
-    //   ),
-    //   footer: IconButton(
-    //     onPressed: () => onDelete(tasks),
-    //     icon: Icon(Icons.remove_rounded),
-    //   ),
-    //   children: List.generate(
-    //     visibleTasks.length,
-    //     (index) => DragAndDropItem(
-    //       feedbackWidget: CircleAvatar(
-    //         radius: 12.5,
-    //         backgroundColor: Colours.ACTOP,
-    //       ),
-    //       child: ScrumCard(
-    //         deckId: deckId,
-    //         plankId: tasks.id,
-    //         task: visibleTasks[index],
-    //         order: index,
-    //         onDelete: (what) {
-    //           tasks.pop(what);
-    //           onChanged();
-    //         },
-    //       ),
-    //     ),
-    //   ),
-    // );
