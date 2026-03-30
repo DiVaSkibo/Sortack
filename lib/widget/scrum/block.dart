@@ -4,6 +4,7 @@ import 'package:sortack/_logics.dart';
 
 /// Scrum row class - advanced task block view for scrum methodology
 final class ScrumRow {
+  final BuildContext context;
   final String deckId, plankId;
   final int order;
   final VoidCallback onChanged;
@@ -12,6 +13,7 @@ final class ScrumRow {
   AdvancedBlock get task => _taskController.task;
 
   ScrumRow({
+    required this.context,
     required this.deckId,
     required this.plankId,
     required AdvancedBlock task,
@@ -66,7 +68,26 @@ final class ScrumRow {
             ),
           ),
         ),
-        DataCell(Text(task.deadline != null ? task.deadline!.ddMMMyyyy : '-')),
+        DataCell(
+          Center(
+            child: TextButton(
+              onPressed: () async {
+                DateTime? deadline = await showDatePicker(
+                  context: context,
+                  initialDate: task.deadline,
+                  firstDate: DateTime(1800),
+                  lastDate: DateTime(3000),
+                );
+                if (deadline != null) {
+                  _taskController.updateDeadline(deadline);
+                }
+              },
+              child: Text(
+                task.deadline != null ? task.deadline!.ddMMMyyyy : '-',
+              ),
+            ),
+          ),
+        ),
         DataCell(
           Center(
             child: PopupMenuButton<TaskStatus>(
@@ -81,7 +102,7 @@ final class ScrumRow {
                   .toList(),
               onSelected: (value) {
                 _taskController.updateStatus(value);
-                onChanged();
+                //onChanged();
               },
             ),
           ),
@@ -100,7 +121,6 @@ final class ScrumRow {
                   .toList(),
               onSelected: (value) {
                 _taskController.updatePriority(value);
-                onChanged();
               },
             ),
           ),
@@ -119,7 +139,6 @@ final class ScrumRow {
                   .toList(),
               onSelected: (value) {
                 _taskController.updatePoints(value);
-                onChanged();
               },
             ),
           ),

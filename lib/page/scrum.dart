@@ -11,19 +11,31 @@ class ScrumPage extends StatefulWidget {
   State<ScrumPage> createState() => _ScrumPageState();
 }
 
-class _ScrumPageState extends State<ScrumPage> {
+class _ScrumPageState extends State<ScrumPage>
+    with SingleTickerProviderStateMixin {
   late final AdvancedDeck? board;
   bool isLoading = true;
+  late TabController _tabController;
 
   final SwitchDrawersController _switchDrawersController =
       SwitchDrawersController();
   final _buf = {};
-  int _selectedBoardIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _switchDrawersController.dispose();
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -62,15 +74,6 @@ class _ScrumPageState extends State<ScrumPage> {
             },
             icon: const Icon(Icons.add_box_outlined),
           ),
-          IconButton(
-            onPressed: () => {
-              setState(() {
-                _selectedBoardIndex = ++_selectedBoardIndex % board!.length;
-              }),
-            },
-            //_ScrumBoard.pop(ScrumColumn(status: '...', tasks: [])),
-            icon: const Icon(Icons.incomplete_circle_rounded),
-          ),
           PopupMenuButton<TaskParameters>(
             tooltip: 'sort',
             initialValue: _buf['sort'],
@@ -103,6 +106,14 @@ class _ScrumPageState extends State<ScrumPage> {
             ),
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(icon: Icon(Icons.production_quantity_limits_rounded)),
+            Tab(icon: Icon(Icons.swap_horizontal_circle_outlined)),
+            Tab(icon: Icon(Icons.text_increase_rounded)),
+          ],
+        ),
       ),
       endDrawer: ValueListenableBuilder(
         valueListenable: _switchDrawersController,
@@ -122,34 +133,66 @@ class _ScrumPageState extends State<ScrumPage> {
             ? Center(child: CircularProgressIndicator())
             : (board == null || board!.planks.isEmpty)
             ? const Center(child: Icon(Icons.clear_rounded))
-            : ScrumBoard(
-                id: widget.id,
-                tables: board!,
-                selectedIndex: _selectedBoardIndex,
+            : TabBarView(
+                controller: _tabController,
+                children: [
+                  ScrumBoard(id: widget.id, tables: board!, selectedIndex: 0),
+                  ScrumBoard(id: widget.id, tables: board!, selectedIndex: 1),
+                  Row(
+                    children: [
+                      Icon(Icons.text_increase_rounded),
+                      Text('INCREMENT'),
+                    ],
+                  ), //ScrumBoard(id: widget.id, tables: board!, selectedIndex: 2),
+                ],
               ),
       ),
       floatingActionButton: isLoading || board == null || board!.planks.isEmpty
           ? null
-          : FloatingActionButton(
-              onPressed: () async {
-                final docRef = FireRources.getBlocks(widget.id).doc();
-                final newBlock = AdvancedBlock(id: docRef.id, title: '...');
-                setState(() {
-                  board!.pushBlock(newBlock);
-                });
-                try {
-                  await FireRources.saveBlock(
-                    widget.id,
-                    board!.first.id,
-                    newBlock,
-                    board!.first.length - 1,
-                  );
-                } catch (exc) {
-                  debugPrint('! ERROR: creating new task; $exc');
-                }
-              },
-              child: const Icon(Icons.add_task_rounded),
-            ),
+          : switch (_tabController.index) {
+              0 => FloatingActionButton(
+                onPressed: () async {
+                  final docRef = FireRources.getBlocks(widget.id).doc();
+                  final newBlock = AdvancedBlock(id: docRef.id, title: '...');
+                  setState(() {
+                    board!.pushBlock(newBlock);
+                  });
+                  try {
+                    await FireRources.saveBlock(
+                      widget.id,
+                      board!.first.id,
+                      newBlock,
+                      board!.first.length - 1,
+                    );
+                  } catch (exc) {
+                    debugPrint('! ERROR: creating new task; $exc');
+                  }
+                },
+                child: const Icon(Icons.add_task_rounded),
+              ),
+              1 => FloatingActionButton(
+                onPressed: () async {
+                  final docRef = FireRources.getBlocks(widget.id).doc();
+                  final newBlock = AdvancedBlock(id: docRef.id, title: '...');
+                  setState(() {
+                    board!.pushBlock(newBlock);
+                  });
+                  try {
+                    await FireRources.saveBlock(
+                      widget.id,
+                      board!.first.id,
+                      newBlock,
+                      board!.first.length - 1,
+                    );
+                  } catch (exc) {
+                    debugPrint('! ERROR: creating new task; $exc');
+                  }
+                },
+                child: const Icon(Icons.add_business_rounded),
+              ),
+              2 => null,
+              _ => null,
+            },
     );
   }
 }

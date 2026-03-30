@@ -106,6 +106,7 @@ class _ScrumTableState extends State<ScrumTable> {
       rows: List.generate(
         tasks.length,
         (index) => ScrumRow(
+          context: context,
           deckId: widget.deckId,
           plankId: tasks.id,
           task: tasks[index],
