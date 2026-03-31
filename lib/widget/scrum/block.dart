@@ -31,6 +31,7 @@ class _ScrumRowState extends State<ScrumRow> {
     _taskController = AdvancedBlockController(
       widget.task,
       onUnfocus: () async {
+        setState(() {});
         try {
           await FireRources.saveBlock(
             widget.deckId,
@@ -57,9 +58,9 @@ class _ScrumRowState extends State<ScrumRow> {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: IntrinsicHeight(
         child: Row(
+          mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
               flex: 3,
@@ -115,23 +116,26 @@ class _ScrumRowState extends State<ScrumRow> {
             ),
             Expanded(
               flex: 2,
-              child: Center(
-                child: PopupMenuButton<TaskStatus>(
-                  tooltip: 'status',
-                  initialValue: task.status,
-                  child: Text(task.status.label),
-                  itemBuilder: (context) => TaskStatus.values
-                      .map(
-                        (value) => PopupMenuItem(
-                          value: value,
-                          child: Text(value.label),
-                        ),
-                      )
-                      .toList(),
-                  onSelected: (value) {
-                    _taskController.updateStatus(value);
-                    //onChanged();
-                  },
+              child: Container(
+                color: task.status.colour,
+                child: Center(
+                  child: PopupMenuButton<TaskStatus>(
+                    tooltip: 'status',
+                    initialValue: task.status,
+                    child: Text(task.status.label),
+                    itemBuilder: (context) => TaskStatus.values
+                        .map(
+                          (value) => PopupMenuItem(
+                            value: value,
+                            child: Text(value.label),
+                          ),
+                        )
+                        .toList(),
+                    onSelected: (value) {
+                      _taskController.updateStatus(value);
+                      //onChanged();
+                    },
+                  ),
                 ),
               ),
             ),
@@ -141,8 +145,13 @@ class _ScrumRowState extends State<ScrumRow> {
                 child: PopupMenuButton<TaskPriority>(
                   tooltip: 'priority',
                   initialValue: task.priority,
-                  child: Text(
-                    task.priority != null ? task.priority!.label : '?',
+                  icon: Icon(
+                    task.priority != null
+                        ? task.priority!.icon
+                        : Icons.question_mark_rounded,
+                    color: task.priority != null
+                        ? task.priority!.colour
+                        : Colours.W,
                   ),
                   itemBuilder: (context) => TaskPriority.values
                       .map(

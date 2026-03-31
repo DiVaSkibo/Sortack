@@ -28,7 +28,7 @@ enum TaskStatus with Labeling, ComparableEnum<TaskStatus> {
     done => 'Done',
   };
 
-  Color colour() => switch (this) {
+  Color get colour => switch (this) {
     toDo => Colours.NOTOK,
     inProgress => Colours.INOK,
     done => Colours.OK,
@@ -55,8 +55,15 @@ enum TaskPriority with Labeling, ComparableEnum<TaskPriority> {
     low => 'low',
     very_low => 'very low',
   };
-
-  Color colour() => switch (this) {
+  IconData get icon => switch (this) {
+    critical => Icons.whatshot_rounded,
+    very_high => Icons.keyboard_double_arrow_up_rounded,
+    high => Icons.keyboard_arrow_up_rounded,
+    medium => Icons.wifi_1_bar_rounded,
+    low => Icons.keyboard_arrow_down_rounded,
+    very_low => Icons.keyboard_double_arrow_down_rounded,
+  };
+  Color get colour => switch (this) {
     critical => Colours.NOTOK,
     very_high => Colours.NOTOK,
     high => Colours.NOTOK,

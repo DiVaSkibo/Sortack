@@ -45,7 +45,6 @@ class _ScrumTableState extends State<ScrumTable> {
       builder: (context, constraints) => Scrollbar(
         controller: _horizontalController,
         scrollbarOrientation: ScrollbarOrientation.top,
-        thumbVisibility: true,
         child: SingleChildScrollView(
           controller: _horizontalController,
           scrollDirection: Axis.horizontal,
