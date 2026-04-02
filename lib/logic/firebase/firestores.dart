@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-export 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/firebase/documents.dart';
 import 'package:sortack/logic/firebase/authentications.dart';

@@ -149,50 +149,27 @@ class _ScrumPageState extends State<ScrumPage>
       ),
       floatingActionButton: isLoading || board == null || board!.planks.isEmpty
           ? null
-          : switch (_tabController.index) {
-              0 => FloatingActionButton(
-                onPressed: () async {
-                  final docRef = FireRources.getBlocks(widget.id).doc();
-                  final newBlock = AdvancedBlock(id: docRef.id, title: '...');
-                  setState(() {
-                    board!.pushBlock(newBlock);
-                  });
-                  try {
-                    await FireRources.saveBlock(
-                      widget.id,
-                      board!.first.id,
-                      newBlock,
-                      board!.first.length - 1,
-                    );
-                  } catch (exc) {
-                    debugPrint('! ERROR: creating new task; $exc');
-                  }
-                },
-                child: const Icon(Icons.add_task_rounded),
-              ),
-              1 => FloatingActionButton(
-                onPressed: () async {
-                  final docRef = FireRources.getBlocks(widget.id).doc();
-                  final newBlock = AdvancedBlock(id: docRef.id, title: '...');
-                  setState(() {
-                    board!.pushBlock(newBlock);
-                  });
-                  try {
-                    await FireRources.saveBlock(
-                      widget.id,
-                      board!.first.id,
-                      newBlock,
-                      board!.first.length - 1,
-                    );
-                  } catch (exc) {
-                    debugPrint('! ERROR: creating new task; $exc');
-                  }
-                },
-                child: const Icon(Icons.add_business_rounded),
-              ),
-              2 => null,
-              _ => null,
-            },
+          : FloatingActionButton(
+              onPressed: () async {
+                final docRef = FireRources.getBlocks(widget.id).doc();
+                final newBlock = AdvancedBlock(id: docRef.id, title: '...');
+                setState(() {
+                  board!.pushBlock(newBlock);
+                });
+                try {
+                  await FireRources.saveBlock(
+                    widget.id,
+                    board![_tabController.index].id,
+                    newBlock,
+                    board![_tabController.index].length,
+                  );
+                  debugPrint('${board![_tabController.index].length - 1}');
+                } catch (exc) {
+                  debugPrint('! ERROR: creating new task; $exc');
+                }
+              },
+              child: const Icon(Icons.add_task_rounded),
+            ),
     );
   }
 }

@@ -6,7 +6,7 @@ interface class Block with Parameterizable<TaskParameters> {
   final String id;
   String title;
   String description;
-  TaskPriority? priority;
+  TaskPriority priority;
   DateTime? deadline;
   String? assignee;
 
@@ -14,7 +14,7 @@ interface class Block with Parameterizable<TaskParameters> {
     required this.id,
     this.title = '',
     this.description = '',
-    this.priority,
+    this.priority = TaskPriority.medium,
     this.deadline,
     this.assignee,
   });
@@ -25,8 +25,7 @@ interface class Block with Parameterizable<TaskParameters> {
     TaskParameters.title => title,
     TaskParameters.description => description,
     // TaskParameters.status => comparable ? status.index : status,
-    TaskParameters.priority =>
-      comparable ? (priority != null ? priority!.index : -1) : priority,
+    TaskParameters.priority => comparable ? priority.index : priority,
     // TaskParameters.points =>
     //   comparable ? (points != null ? points!.index : -1) : points,
     // TaskParameters.role =>

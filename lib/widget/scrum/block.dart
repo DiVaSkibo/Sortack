@@ -145,14 +145,7 @@ class _ScrumRowState extends State<ScrumRow> {
                 child: PopupMenuButton<TaskPriority>(
                   tooltip: 'priority',
                   initialValue: task.priority,
-                  icon: Icon(
-                    task.priority != null
-                        ? task.priority!.icon
-                        : Icons.question_mark_rounded,
-                    color: task.priority != null
-                        ? task.priority!.colour
-                        : Colours.W,
-                  ),
+                  icon: Icon(task.priority.icon, color: task.priority.colour),
                   itemBuilder: (context) => TaskPriority.values
                       .map(
                         (value) => PopupMenuItem(
