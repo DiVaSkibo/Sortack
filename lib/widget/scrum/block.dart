@@ -167,26 +167,43 @@ class _ScrumRowState extends State<ScrumRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+    return Dismissible(
+      key: Key(task.id),
+      direction: DismissDirection.startToEnd,
+      background: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20.0),
+        color: Colours.NOTOK,
+        child: const Icon(Icons.delete, color: Colours.W),
       ),
-      child: IntrinsicHeight(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(flex: 3, child: _buildTitle()),
-            Expanded(flex: 4, child: _buildDescription()),
-            Expanded(flex: 2, child: _buildDeadline()),
-            Expanded(flex: 2, child: _buildStatus()),
-            Expanded(flex: 2, child: _buildPriority()),
-            Expanded(flex: 2, child: _buildPoints()),
-            Expanded(flex: 2, child: _buildAssignee()),
-            Expanded(flex: 2, child: _buildTags()),
-            Expanded(flex: 3, child: _buildNotes()),
-          ],
+      child: ReorderableDragStartListener(
+        index: widget.order,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+          ),
+          child: IntrinsicHeight(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(flex: 3, child: _buildTitle()),
+                Expanded(flex: 4, child: _buildDescription()),
+                Expanded(flex: 2, child: _buildDeadline()),
+                Expanded(flex: 2, child: _buildStatus()),
+                Expanded(flex: 2, child: _buildPriority()),
+                Expanded(flex: 2, child: _buildPoints()),
+                Expanded(flex: 2, child: _buildAssignee()),
+                Expanded(flex: 2, child: _buildTags()),
+                Expanded(flex: 3, child: _buildNotes()),
+              ],
+            ),
+          ),
         ),
       ),
+      onDismissed: (direction) async {
+        widget.onDelete(task);
+        await FireRources.deleteBlock(widget.deckId, task.id);
+      },
     );
   }
 }

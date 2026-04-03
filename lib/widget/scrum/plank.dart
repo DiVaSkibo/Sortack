@@ -82,12 +82,13 @@ class _ScrumTableState extends State<ScrumTable> {
                 ),
                 Expanded(
                   child: ReorderableListView.builder(
+                    buildDefaultDragHandles: false,
                     itemCount: tasks.length,
                     itemBuilder: (context, index) => ScrumRow(
                       deckId: widget.deckId,
                       plankId: tasks.id,
                       task: tasks[index],
-                      order: order,
+                      order: index,
                       onDelete: (what) {
                         setState(() {
                           tasks.pop(what);
