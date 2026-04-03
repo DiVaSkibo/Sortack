@@ -52,7 +52,7 @@ class _KanbanCardState extends State<KanbanCard> {
     super.dispose();
   }
 
-  TextField _buildTitleField() => TextField(
+  Widget _buildTitle() => TextField(
     controller: _taskController.titleController,
     focusNode: _taskController.titleFocus,
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
@@ -63,7 +63,7 @@ class _KanbanCardState extends State<KanbanCard> {
       hintText: 'I have to do ...',
     ),
   );
-  TextFormField _buildDescriptionField() => TextFormField(
+  Widget _buildDescription() => TextFormField(
     controller: _taskController.descriptionController,
     focusNode: _taskController.descriptionFocus,
     keyboardType: TextInputType.multiline,
@@ -76,29 +76,47 @@ class _KanbanCardState extends State<KanbanCard> {
       labelText: 'Description',
     ),
   );
-  // PopupMenuButton _buildPointsField() => PopupMenuButton<TaskPointsTShirt>(
-  //   tooltip: 'points',
-  //   initialValue: task.points,
-  //   child: Text(task.points != null ? task.points!.label : '?'),
-  //   itemBuilder: (context) => TaskPointsTShirt.values
-  //       .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
-  //       .toList(),
-  //   onSelected: (TaskPointsTShirt value) {
-  //     setState(() {
-  //       _taskController.updatePoints(value);
-  //     });
-  //   },
-  // );
-  // TextFormField _buildNotesField() => TextFormField(
-  //   controller: _taskController.notesController,
-  //   focusNode: _taskController.notesFocus,
-  //   keyboardType: TextInputType.multiline,
-  //   minLines: 1,
-  //   maxLines: 2,
-  //   onTapOutside: (event) => _taskController.notesFocus.unfocus(),
-  //   style: Styles.TASK_NOTES_TEXT,
-  //   decoration: Decorations.cardInput(collapsed: false, labelText: 'Notes'),
-  // );
+  Widget _buildDeadline() => TextButton(
+    onPressed: () async {
+      DateTime? deadline = await showDatePicker(
+        context: context,
+        initialDate: task.deadline,
+        firstDate: DateTime(1800),
+        lastDate: DateTime(3000),
+      );
+      if (deadline != null) {
+        _taskController.updateDeadline(deadline);
+      }
+    },
+    child: Text(
+      task.deadline != null ? task.deadline!.ddMMMyyyy : '-',
+      style: Styles.TASK_DESCRIPTION_TEXT,
+    ),
+  );
+  Widget _buildPoints() => PopupMenuButton<TaskPointsTShirt>(
+    tooltip: 'points',
+    initialValue: task.points,
+    icon: Text(
+      task.points != null ? task.points!.label : '?',
+      style: Styles.TASK_TITLE_TEXT,
+    ),
+    itemBuilder: (context) => TaskPointsTShirt.values
+        .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
+        .toList(),
+    onSelected: (value) {
+      _taskController.updatePoints(value);
+    },
+  );
+  Widget _buildAssignee() => Center(
+    child: Wrap(
+      children: task.assignee.isNotEmpty
+          ? List.generate(
+              task.assignee.length,
+              (index) => Text(task.assignee[index]),
+            )
+          : [Text('||||||')],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +134,12 @@ class _KanbanCardState extends State<KanbanCard> {
           side: BorderSide.none,
         ),
         leading: const Icon(Icons.task_rounded),
-        title: _buildTitleField(),
+        title: _buildTitle(),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            _buildAssignee(),
+            Spacer(),
             IconButton(
               onPressed: () => showDialog(
                 context: context,
@@ -136,13 +156,12 @@ class _KanbanCardState extends State<KanbanCard> {
               ),
               icon: Icon(Icons.remove_rounded),
             ),
+            Spacer(),
+            _buildDeadline(),
           ],
         ),
-        // trailing: _buildPointsField(),
-        children: [
-          _buildDescriptionField(),
-          // _buildNotesField()
-        ],
+        trailing: _buildPoints(),
+        children: [_buildDescription()],
       ),
     );
   }

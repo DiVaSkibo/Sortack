@@ -11,12 +11,12 @@ Document blockToDoc(Block block, String plankId, int order) =>
       'plankId': plankId,
       'title': block.title,
       'description': block.description,
-      'priority': block.priority.name,
+      'points': block.points?.name,
       'deadline': block.deadline,
       'assignee': block.assignee,
       if (block is AdvancedBlock) 'status': block.status.name,
-      if (block is AdvancedBlock) 'points': block.points?.name,
-      if (block is AdvancedBlock) 'role': block.role,
+      if (block is AdvancedBlock) 'priority': block.priority.name,
+      if (block is AdvancedBlock) 'tags': block.tags,
       if (block is AdvancedBlock) 'notes': block.notes,
       'order': order,
     };
@@ -45,7 +45,7 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     points: doc['points'] != null
         ? TaskPointsTShirt.values.asNameMap()[doc['points']]
         : null,
-    role: doc['role'],
+    tags: doc['tags'],
     assignee: doc['assignee'],
     notes: doc['notes'] ?? '',
   ),
@@ -56,8 +56,9 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     deadline: doc['deadline'] != null
         ? (doc['deadline'] as Timestamp).toDate()
         : DateTime.now(),
-    priority:
-        TaskPriority.values.asNameMap()[doc['priority']] ?? TaskPriority.medium,
+    points: doc['points'] != null
+        ? TaskPointsTShirt.values.asNameMap()[doc['points']]
+        : null,
     assignee: doc['assignee'],
   ),
 };

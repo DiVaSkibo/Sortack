@@ -103,9 +103,16 @@ class BlockController extends ChangeNotifier {
     });
   }
 
-  void updatePriority(TaskPriority priority) {
-    if (_task.priority == priority) return;
-    _task.priority = priority;
+  void updateDeadline(DateTime deadline) {
+    if (_task.deadline == deadline) return;
+    _task.deadline = deadline;
+    onUnfocus?.call();
+    notifyListeners();
+  }
+
+  void updatePoints(TaskPointsTShirt points) {
+    if (_task.points == points) return;
+    _task.points = points;
     onUnfocus?.call();
     notifyListeners();
   }

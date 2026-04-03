@@ -6,18 +6,18 @@ interface class Block with Parameterizable<TaskParameters> {
   final String id;
   String title;
   String description;
-  TaskPriority priority;
+  TaskPointsTShirt? points;
   DateTime? deadline;
-  String? assignee;
+  List<String> assignee;
 
   Block({
     required this.id,
     this.title = '',
     this.description = '',
-    this.priority = TaskPriority.medium,
+    this.points,
     this.deadline,
-    this.assignee,
-  });
+    List<String>? assignee,
+  }) : assignee = assignee ?? [];
 
   @override
   dynamic getParameter(parameter, {comparable = false}) => switch (parameter) {
@@ -25,9 +25,9 @@ interface class Block with Parameterizable<TaskParameters> {
     TaskParameters.title => title,
     TaskParameters.description => description,
     // TaskParameters.status => comparable ? status.index : status,
-    TaskParameters.priority => comparable ? priority.index : priority,
-    // TaskParameters.points =>
-    //   comparable ? (points != null ? points!.index : -1) : points,
+    //TaskParameters.priority => comparable ? priority.index : priority,
+    TaskParameters.points =>
+      comparable ? (points != null ? points!.index : -1) : points,
     // TaskParameters.role =>
     //   role, //comparable ? (role != null ? role!.index : -1) : role,
     TaskParameters.assignee => assignee,
@@ -50,31 +50,31 @@ interface class Block with Parameterizable<TaskParameters> {
 
   @override
   String toString() =>
-      '[$id]\n"$title": "$description"\n ^$priority\n %"$assignee"';
+      '[$id]\n"$title": "$description"\n .$points\n @"$assignee"';
 }
 
 /// immutable advanced task block interface class
 @immutable
 interface class AdvancedBlock extends Block {
   TaskStatus status;
-  TaskPointsTShirt? points;
-  String? role;
+  TaskPriority priority;
+  List<String> tags;
   String notes;
 
   AdvancedBlock({
     required super.id,
     super.title = '',
     super.description = '',
-    super.priority,
+    super.points,
     super.deadline,
     super.assignee,
     this.status = TaskStatus.toDo,
-    this.points,
-    this.role,
+    this.priority = TaskPriority.medium,
+    List<String>? tags,
     this.notes = '',
-  });
+  }) : tags = tags ?? [];
 
   @override
   String toString() =>
-      '[$id]\n"$title": "$description"\n $status ^$priority .$points\n @"$role" %"$assignee"\n"$notes"';
+      '[$id]\n"$title": "$description"\n $status ^$priority .$points\n %"$tags" @"$assignee"\n"$notes"';
 }
