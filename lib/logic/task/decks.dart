@@ -42,17 +42,19 @@ interface class Deck<T extends Plank> extends Collector<T>
 
 /// map task deck interface class - key-value collections of task planks
 interface class MapDeck<T extends Plank> extends Deck<T> {
-  final Map<String, Deck<T>> maplanks;
+  final Map<String, Deck<T>> decks;
   String? selectedKey;
 
-  MapDeck({this.selectedKey, Map<String, Deck<T>>? maplanks, super.listenable})
-    : maplanks = maplanks ?? {};
+  MapDeck({this.selectedKey, Map<String, Deck<T>>? decks, super.listenable})
+    : decks = decks ?? {};
+
+  Iterable<String> get keys => decks.keys;
+  Iterable<Deck<T>> get values => decks.values;
 
   @override
-  List<T> get planks => (maplanks[selectedKey] as Deck<T>).planks;
-  Deck<T> get deck => maplanks[selectedKey] as Deck<T>;
-
-  Deck<T> deckOf(String key) => maplanks[key] as Deck<T>;
+  List<T> get planks => (decks[selectedKey] as Deck<T>).planks;
+  Deck<T> get deck => decks[selectedKey] as Deck<T>;
+  Deck<T> deckOf(String key) => decks[key] as Deck<T>;
 }
 
 /// detailed task deck interface class - collection of task planks with details

@@ -15,7 +15,7 @@ class _ScrumPageState extends State<ScrumPage>
     with SingleTickerProviderStateMixin {
   late final AdvancedMapDeck? board = AdvancedMapDeck(
     selectedKey: SCRUM_KEYS.first,
-    maplanks: {
+    decks: {
       'Product Backlog': AdvancedDeck(
         planks: [
           AdvancedPlank(
@@ -200,11 +200,8 @@ class _ScrumPageState extends State<ScrumPage>
             ? const Center(child: Icon(Icons.clear_rounded))
             : TabBarView(
                 controller: _tabController,
-                children: SCRUM_KEYS
-                    .map(
-                      (key) =>
-                          ScrumBoard(id: widget.id, tables: board!.deckOf(key)),
-                    )
+                children: board!.values
+                    .map((value) => ScrumBoard(id: widget.id, tables: value))
                     .toList(),
               ),
       ),
