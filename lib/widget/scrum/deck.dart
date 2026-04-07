@@ -6,15 +6,9 @@ import 'package:sortack/widget/dialogs.dart';
 /// Scrum board widget - task board view with Scrum table children
 class ScrumBoard extends StatefulWidget {
   final String id;
-  final AdvancedMapDeck tables;
-  final String selectedKey;
+  final AdvancedDeck tables;
 
-  const ScrumBoard({
-    super.key,
-    required this.id,
-    required this.tables,
-    this.selectedKey = '',
-  });
+  const ScrumBoard({super.key, required this.id, required this.tables});
 
   @override
   State<ScrumBoard> createState() => _ScrumBoardState();
@@ -22,7 +16,7 @@ class ScrumBoard extends StatefulWidget {
 
 class _ScrumBoardState extends State<ScrumBoard> {
   late final String id = widget.id;
-  late final AdvancedMapDeck board = widget.tables;
+  late final AdvancedDeck board = widget.tables;
   final ScrollController _tableScrollController = ScrollController();
 
   @override

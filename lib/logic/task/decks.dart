@@ -4,7 +4,10 @@ import 'package:sortack/logic/task/blocks.dart';
 import 'package:sortack/logic/task/planks.dart';
 
 /// advanced deck - collection of advanced planks
-typedef AdvancedDeck = DetailedDeck<AdvancedPlank>;
+typedef AdvancedDeck = Deck<AdvancedPlank>;
+
+/// advanced detailed deck - collection of advanced planks with the deck details
+typedef AdvancedDetailedDeck = DetailedDeck<AdvancedPlank>;
 
 /// advanced map deck - key-value collections of advanced planks
 typedef AdvancedMapDeck = MapDeck<AdvancedPlank>;
@@ -47,24 +50,9 @@ interface class MapDeck<T extends Plank> extends Deck<T> {
 
   @override
   List<T> get planks => maplanks[selectedKey] as List<T>;
+  Deck<T> get deck => Deck<T>(planks: planks);
 
-  List<T> of(String key) => maplanks[key] as List<T>;
-
-  // @override
-  // void sort({TaskParameters by = TaskParameters.id}) {
-  //   if (planks[selectedKey] == null) return;
-  //   if (planks[selectedKey]!.isEmpty()) return;
-  //   for (final plank in planks[selectedKey]) {
-  //     plank.sort(by: by);
-  //   }
-  // }
-  // @override
-  // void filter(FilterCriteria<TaskParameters> criteria) {
-  //   super.filter(criteria);
-  //   for (final plank in planks) {
-  //     plank.filter(criteria);
-  //   }
-  // }
+  Deck<T> deckOf(String key) => Deck<T>(planks: maplanks[key]);
 }
 
 /// detailed task deck interface class - collection of task planks with details

@@ -92,7 +92,10 @@ final class FireRources {
 
     return switch (T) {
       const (AdvancedDeck) =>
-        AdvancedDeck(details: details, planks: planks as List<AdvancedPlank>)
+        AdvancedDetailedDeck(
+              details: details,
+              planks: planks as List<AdvancedPlank>,
+            )
             as T,
       _ => DetailedDeck(details: details, planks: planks as List<Plank>) as T,
     };

@@ -82,8 +82,10 @@ class _ScrumPageState extends State<ScrumPage>
     //_loadData();
     _tabController = TabController(length: SCRUM_KEYS.length, vsync: this);
     _tabController.addListener(() {
+      var newKey = SCRUM_KEYS[_tabController.index];
+      if (board!.selectedKey == newKey) return;
       setState(() {
-        board!.selectedKey = SCRUM_KEYS[_tabController.index];
+        board!.selectedKey = newKey;
       });
     });
   }
@@ -194,11 +196,8 @@ class _ScrumPageState extends State<ScrumPage>
                 controller: _tabController,
                 children: SCRUM_KEYS
                     .map(
-                      (key) => ScrumBoard(
-                        id: widget.id,
-                        tables: board!,
-                        selectedKey: key,
-                      ),
+                      (key) =>
+                          ScrumBoard(id: widget.id, tables: board!.deckOf(key)),
                     )
                     .toList(),
               ),
