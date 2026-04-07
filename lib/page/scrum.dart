@@ -16,57 +16,63 @@ class _ScrumPageState extends State<ScrumPage>
   late final AdvancedMapDeck? board = AdvancedMapDeck(
     selectedKey: SCRUM_KEYS.first,
     maplanks: {
-      'Product Backlog': [
-        AdvancedPlank(
-          id: '!',
-          title: 'Product Backlog',
-          blocks: [
-            AdvancedBlock(id: '!', title: '1'),
-            AdvancedBlock(id: '@', title: '22'),
-            AdvancedBlock(id: '#', title: '333'),
-            AdvancedBlock(id: '%', title: '4444'),
-            AdvancedBlock(id: '^', title: '55555'),
-          ],
-        ),
-      ],
-      'Sprint Backlog': [
-        AdvancedPlank(
-          id: '@',
-          title: 'Sprint-1',
-          blocks: [
-            AdvancedBlock(id: '@', title: '22'),
-            AdvancedBlock(id: '%', title: '4444'),
-          ],
-        ),
-        AdvancedPlank(
-          id: '#',
-          title: 'Sprint-2',
-          blocks: [AdvancedBlock(id: '!', title: '1')],
-        ),
-        AdvancedPlank(
-          id: '%',
-          title: 'Sprint-3',
-          blocks: [
-            AdvancedBlock(id: '^', title: '55555'),
-            AdvancedBlock(id: '#', title: '333'),
-          ],
-        ),
-      ],
-      'Increments': [
-        AdvancedPlank(
-          id: '^',
-          title: 'Increment-1',
-          blocks: [
-            AdvancedBlock(id: '@', title: '22'),
-            AdvancedBlock(id: '%', title: '4444'),
-          ],
-        ),
-        AdvancedPlank(
-          id: '&',
-          title: 'Increment-2',
-          blocks: [AdvancedBlock(id: '!', title: '1')],
-        ),
-      ],
+      'Product Backlog': AdvancedDeck(
+        planks: [
+          AdvancedPlank(
+            id: '!',
+            title: 'Product Backlog',
+            blocks: [
+              AdvancedBlock(id: '!', title: '1'),
+              AdvancedBlock(id: '@', title: '22'),
+              AdvancedBlock(id: '#', title: '333'),
+              AdvancedBlock(id: '%', title: '4444'),
+              AdvancedBlock(id: '^', title: '55555'),
+            ],
+          ),
+        ],
+      ),
+      'Sprint Backlog': AdvancedDeck(
+        planks: [
+          AdvancedPlank(
+            id: '@',
+            title: 'Sprint-1',
+            blocks: [
+              AdvancedBlock(id: '@', title: '22'),
+              AdvancedBlock(id: '%', title: '4444'),
+            ],
+          ),
+          AdvancedPlank(
+            id: '#',
+            title: 'Sprint-2',
+            blocks: [AdvancedBlock(id: '!', title: '1')],
+          ),
+          AdvancedPlank(
+            id: '%',
+            title: 'Sprint-3',
+            blocks: [
+              AdvancedBlock(id: '^', title: '55555'),
+              AdvancedBlock(id: '#', title: '333'),
+            ],
+          ),
+        ],
+      ),
+      'Increments': AdvancedDeck(
+        planks: [
+          AdvancedPlank(
+            id: '^',
+            title: 'Increment-1',
+            blocks: [
+              AdvancedBlock(id: '@', title: '22'),
+              AdvancedBlock(id: '%', title: '4444'),
+            ],
+          ),
+          AdvancedPlank(
+            id: '&',
+            title: 'Increment-2',
+            blocks: [AdvancedBlock(id: '!', title: '1')],
+          ),
+        ],
+      ),
     },
   );
   bool isLoading = false;
