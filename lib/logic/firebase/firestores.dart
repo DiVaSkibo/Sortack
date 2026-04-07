@@ -189,24 +189,6 @@ final class FireRources {
   }
 
   // SAVEs
-  /// ????????????????????
-  static Future<void> saveMapDeck(String id, MapDeck mapDeck) async {
-    final batch = FirebaseFirestore.instance.batch();
-    for (final key in mapDeck.keys) {
-      final deck = mapDeck.deckOf(key);
-      for (int i = 0; i < deck.length; i++) {
-        final plank = deck[i];
-        final plankRef = getPlanks(id).doc(plank.id);
-        batch.set(
-          plankRef,
-          plankToDoc(plank, i, key: key),
-          SetOptions(merge: true),
-        );
-      }
-    }
-    await batch.commit();
-  }
-
   /// save deck details resource
   static Future<void> saveProject(DeckDetails details) async {
     final currentUser = FirebaseAuth.instance.currentUser;
