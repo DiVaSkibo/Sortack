@@ -208,5 +208,8 @@ const List<IconData> Unicons = [
   Icons.diamond_outlined,
 ];
 
+/// scrum keys for mapping tables
+const SCRUM_KEYS = ['Product Backlog', 'Sprint Backlog', 'Increments'];
+
 /// random useless icon, just for fun :P
 IconData unicon() => Unicons[Random().nextInt(Unicons.length)];

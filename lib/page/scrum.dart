@@ -13,8 +13,63 @@ class ScrumPage extends StatefulWidget {
 
 class _ScrumPageState extends State<ScrumPage>
     with SingleTickerProviderStateMixin {
-  late final AdvancedDeck? board;
-  bool isLoading = true;
+  late final AdvancedMapDeck? board = AdvancedMapDeck(
+    selectedKey: SCRUM_KEYS.first,
+    maplanks: {
+      'Product Backlog': [
+        AdvancedPlank(
+          id: '!',
+          title: 'Product Backlog',
+          blocks: [
+            AdvancedBlock(id: '!', title: '1'),
+            AdvancedBlock(id: '@', title: '22'),
+            AdvancedBlock(id: '#', title: '333'),
+            AdvancedBlock(id: '%', title: '4444'),
+            AdvancedBlock(id: '^', title: '55555'),
+          ],
+        ),
+      ],
+      'Sprint Backlog': [
+        AdvancedPlank(
+          id: '@',
+          title: 'Sprint-1',
+          blocks: [
+            AdvancedBlock(id: '@', title: '22'),
+            AdvancedBlock(id: '%', title: '4444'),
+          ],
+        ),
+        AdvancedPlank(
+          id: '#',
+          title: 'Sprint-2',
+          blocks: [AdvancedBlock(id: '!', title: '1')],
+        ),
+        AdvancedPlank(
+          id: '%',
+          title: 'Sprint-3',
+          blocks: [
+            AdvancedBlock(id: '^', title: '55555'),
+            AdvancedBlock(id: '#', title: '333'),
+          ],
+        ),
+      ],
+      'Increments': [
+        AdvancedPlank(
+          id: '^',
+          title: 'Increment-1',
+          blocks: [
+            AdvancedBlock(id: '@', title: '22'),
+            AdvancedBlock(id: '%', title: '4444'),
+          ],
+        ),
+        AdvancedPlank(
+          id: '&',
+          title: 'Increment-2',
+          blocks: [AdvancedBlock(id: '!', title: '1')],
+        ),
+      ],
+    },
+  );
+  bool isLoading = false;
   late TabController _tabController;
 
   final SwitchDrawersController _switchDrawersController =
@@ -24,10 +79,12 @@ class _ScrumPageState extends State<ScrumPage>
   @override
   void initState() {
     super.initState();
-    _loadData();
-    _tabController = TabController(length: 3, vsync: this);
+    //_loadData();
+    _tabController = TabController(length: SCRUM_KEYS.length, vsync: this);
     _tabController.addListener(() {
-      setState(() {});
+      setState(() {
+        board!.selectedKey = SCRUM_KEYS[_tabController.index];
+      });
     });
   }
 
@@ -38,22 +95,22 @@ class _ScrumPageState extends State<ScrumPage>
     super.dispose();
   }
 
-  Future<void> _loadData() async {
-    try {
-      final AdvancedDeck loadedDeck = await FireRources.loadDeck<AdvancedDeck>(
-        widget.id,
-      );
-      setState(() {
-        board = loadedDeck;
-        isLoading = false;
-      });
-    } catch (exc) {
-      debugPrint('! ERROR: loading deck; $exc');
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
+  // Future<void> _loadData() async {
+  //   try {
+  //     final AdvancedDeck loadedDeck = await FireRources.loadDeck<AdvancedDeck>(
+  //       widget.id,
+  //     );
+  //     setState(() {
+  //       board = loadedDeck;
+  //       isLoading = false;
+  //     });
+  //   } catch (exc) {
+  //     debugPrint('! ERROR: loading deck; $exc');
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -135,16 +192,15 @@ class _ScrumPageState extends State<ScrumPage>
             ? const Center(child: Icon(Icons.clear_rounded))
             : TabBarView(
                 controller: _tabController,
-                children: [
-                  ScrumBoard(id: widget.id, tables: board!, selectedIndex: 0),
-                  ScrumBoard(id: widget.id, tables: board!, selectedIndex: 1),
-                  Row(
-                    children: [
-                      Icon(Icons.text_increase_rounded),
-                      Text('INCREMENT'),
-                    ],
-                  ), //ScrumBoard(id: widget.id, tables: board!, selectedIndex: 2),
-                ],
+                children: SCRUM_KEYS
+                    .map(
+                      (key) => ScrumBoard(
+                        id: widget.id,
+                        tables: board!,
+                        selectedKey: key,
+                      ),
+                    )
+                    .toList(),
               ),
       ),
       floatingActionButton: isLoading || board == null || board!.planks.isEmpty

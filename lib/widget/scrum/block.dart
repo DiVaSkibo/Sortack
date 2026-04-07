@@ -106,7 +106,6 @@ class _ScrumRowState extends State<ScrumRow> {
             .toList(),
         onSelected: (value) {
           _taskController.updateStatus(value);
-          //onChanged();
         },
       ),
     ),

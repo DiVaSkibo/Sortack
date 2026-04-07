@@ -3,8 +3,11 @@ import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/task/blocks.dart';
 import 'package:sortack/logic/task/planks.dart';
 
-/// advanced task deck - collection of advanced task planks
+/// advanced deck - collection of advanced planks
 typedef AdvancedDeck = DetailedDeck<AdvancedPlank>;
+
+/// advanced map deck - key-value collections of advanced planks
+typedef AdvancedMapDeck = MapDeck<AdvancedPlank>;
 
 /// task deck interface class - collection of task planks
 interface class Deck<T extends Plank> extends Collector<T>
@@ -32,6 +35,36 @@ interface class Deck<T extends Plank> extends Collector<T>
       plank.filter(criteria);
     }
   }
+}
+
+/// map task deck interface class - key-value collections of task planks
+interface class MapDeck<T extends Plank> extends Deck<T> {
+  final Map<String, List<T>> maplanks;
+  String? selectedKey;
+
+  MapDeck({this.selectedKey, Map<String, List<T>>? maplanks, super.listenable})
+    : maplanks = maplanks ?? {};
+
+  @override
+  List<T> get planks => maplanks[selectedKey] as List<T>;
+
+  List<T> of(String key) => maplanks[key] as List<T>;
+
+  // @override
+  // void sort({TaskParameters by = TaskParameters.id}) {
+  //   if (planks[selectedKey] == null) return;
+  //   if (planks[selectedKey]!.isEmpty()) return;
+  //   for (final plank in planks[selectedKey]) {
+  //     plank.sort(by: by);
+  //   }
+  // }
+  // @override
+  // void filter(FilterCriteria<TaskParameters> criteria) {
+  //   super.filter(criteria);
+  //   for (final plank in planks) {
+  //     plank.filter(criteria);
+  //   }
+  // }
 }
 
 /// detailed task deck interface class - collection of task planks with details
