@@ -1,6 +1,5 @@
 import 'package:sortack/_tools.dart';
-import 'package:sortack/logic/task/blocks.dart';
-import 'package:sortack/logic/task/decks.dart';
+import 'package:sortack/logic/_tasks.dart';
 
 /// auth controller - control email and password
 class AuthController extends ChangeNotifier {

@@ -13,69 +13,70 @@ class ScrumPage extends StatefulWidget {
 
 class _ScrumPageState extends State<ScrumPage>
     with SingleTickerProviderStateMixin {
-  late final AdvancedMapDeck? board = AdvancedMapDeck(
-    selectedKey: SCRUM_KEYS.first,
-    decks: {
-      'Product Backlog': AdvancedDeck(
-        planks: [
-          AdvancedPlank(
-            id: '!',
-            title: 'Product Backlog',
-            blocks: [
-              AdvancedBlock(id: '!', title: '1'),
-              AdvancedBlock(id: '@', title: '22'),
-              AdvancedBlock(id: '#', title: '333'),
-              AdvancedBlock(id: '%', title: '4444'),
-              AdvancedBlock(id: '^', title: '55555'),
-            ],
-          ),
-        ],
-      ),
-      'Sprint Backlog': AdvancedDeck(
-        planks: [
-          AdvancedPlank(
-            id: '@',
-            title: 'Sprint-1',
-            blocks: [
-              AdvancedBlock(id: '@', title: '22'),
-              AdvancedBlock(id: '%', title: '4444'),
-            ],
-          ),
-          AdvancedPlank(
-            id: '#',
-            title: 'Sprint-2',
-            blocks: [AdvancedBlock(id: '!', title: '1')],
-          ),
-          AdvancedPlank(
-            id: '%',
-            title: 'Sprint-3',
-            blocks: [
-              AdvancedBlock(id: '^', title: '55555'),
-              AdvancedBlock(id: '#', title: '333'),
-            ],
-          ),
-        ],
-      ),
-      'Increments': AdvancedDeck(
-        planks: [
-          AdvancedPlank(
-            id: '^',
-            title: 'Increment-1',
-            blocks: [
-              AdvancedBlock(id: '@', title: '22'),
-              AdvancedBlock(id: '%', title: '4444'),
-            ],
-          ),
-          AdvancedPlank(
-            id: '&',
-            title: 'Increment-2',
-            blocks: [AdvancedBlock(id: '!', title: '1')],
-          ),
-        ],
-      ),
-    },
-  );
-  bool isLoading = false;
+  late final AdvancedMapDeck? board;
+  //  = AdvancedMapDeck(
+  //   selectedKey: SCRUM_KEYS.first,
+  //   decks: {
+  //     'Product Backlog': AdvancedDeck(
+  //       planks: [
+  //         AdvancedPlank(
+  //           id: '!',
+  //           title: 'Product Backlog',
+  //           blocks: [
+  //             AdvancedBlock(id: '!', title: '1'),
+  //             AdvancedBlock(id: '@', title: '22'),
+  //             AdvancedBlock(id: '#', title: '333'),
+  //             AdvancedBlock(id: '%', title: '4444'),
+  //             AdvancedBlock(id: '^', title: '55555'),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //     'Sprint Backlog': AdvancedDeck(
+  //       planks: [
+  //         AdvancedPlank(
+  //           id: '@',
+  //           title: 'Sprint-1',
+  //           blocks: [
+  //             AdvancedBlock(id: '@', title: '22'),
+  //             AdvancedBlock(id: '%', title: '4444'),
+  //           ],
+  //         ),
+  //         AdvancedPlank(
+  //           id: '#',
+  //           title: 'Sprint-2',
+  //           blocks: [AdvancedBlock(id: '!', title: '1')],
+  //         ),
+  //         AdvancedPlank(
+  //           id: '%',
+  //           title: 'Sprint-3',
+  //           blocks: [
+  //             AdvancedBlock(id: '^', title: '55555'),
+  //             AdvancedBlock(id: '#', title: '333'),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //     'Increments': AdvancedDeck(
+  //       planks: [
+  //         AdvancedPlank(
+  //           id: '^',
+  //           title: 'Increment-1',
+  //           blocks: [
+  //             AdvancedBlock(id: '@', title: '22'),
+  //             AdvancedBlock(id: '%', title: '4444'),
+  //           ],
+  //         ),
+  //         AdvancedPlank(
+  //           id: '&',
+  //           title: 'Increment-2',
+  //           blocks: [AdvancedBlock(id: '!', title: '1')],
+  //         ),
+  //       ],
+  //     ),
+  //   },
+  // );
+  bool isLoading = true;
   late TabController _tabController;
 
   final SwitchDrawersController _switchDrawersController =
@@ -85,7 +86,7 @@ class _ScrumPageState extends State<ScrumPage>
   @override
   void initState() {
     super.initState();
-    //_loadData();
+    _loadData();
     _tabController = TabController(length: SCRUM_KEYS.length, vsync: this);
     _tabController.addListener(() {
       var newKey = SCRUM_KEYS[_tabController.index];
@@ -103,22 +104,25 @@ class _ScrumPageState extends State<ScrumPage>
     super.dispose();
   }
 
-  // Future<void> _loadData() async {
-  //   try {
-  //     final AdvancedDeck loadedDeck = await FireRources.loadDeck<AdvancedDeck>(
-  //       widget.id,
-  //     );
-  //     setState(() {
-  //       board = loadedDeck;
-  //       isLoading = false;
-  //     });
-  //   } catch (exc) {
-  //     debugPrint('! ERROR: loading deck; $exc');
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
+  Future<void> _loadData() async {
+    try {
+      final AdvancedMapDeck loadedMapDeck =
+          await FireRources.loadMapDeck<AdvancedMapDeck>(
+            widget.id,
+            keys: SCRUM_KEYS,
+          );
+      setState(() {
+        board = loadedMapDeck;
+        board!.selectedKey = SCRUM_KEYS.first;
+        isLoading = false;
+      });
+    } catch (exc) {
+      debugPrint('! ERROR: loading map deck; $exc');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

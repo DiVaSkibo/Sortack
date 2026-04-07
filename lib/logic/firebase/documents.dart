@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sortack/_tools.dart';
-import 'package:sortack/logic/task/blocks.dart';
-import 'package:sortack/logic/task/planks.dart';
-import 'package:sortack/logic/task/decks.dart';
+import 'package:sortack/logic/_tasks.dart';
 
 typedef Document = Map<String, dynamic>;
 
@@ -20,10 +18,11 @@ Document blockToDoc(Block block, String plankId, int order) =>
       if (block is AdvancedBlock) 'notes': block.notes,
       'order': order,
     };
-Document plankToDoc(Plank plank, int order) => <String, dynamic>{
+Document plankToDoc(Plank plank, int order, {String? key}) => <String, dynamic>{
   'title': plank.title,
   'color': plank.color.toHex(),
   'order': order,
+  'key': ?key,
 };
 Document detailsToDoc(DeckDetails deck) => <String, dynamic>{
   'name': deck.name.trim(),
@@ -38,7 +37,7 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     description: doc['description'] ?? '',
     deadline: doc['deadline'] != null
         ? (doc['deadline'] as Timestamp).toDate()
-        : DateTime.now(),
+        : DateTime.now().add(Duration(days: 1)),
     status: TaskStatus.values.asNameMap()[doc['status']] ?? TaskStatus.toDo,
     priority:
         TaskPriority.values.asNameMap()[doc['priority']] ?? TaskPriority.medium,
