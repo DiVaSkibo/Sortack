@@ -38,20 +38,17 @@ class _ProjectCardState extends State<ProjectCard> {
           spacing: 10,
           runSpacing: 15,
           children: [
-            Text(details.name, style: Styles.TASK_TITLE_TEXT),
-            Text(
-              details.description ?? '',
-              style: Styles.TASK_DESCRIPTION_TEXT,
-            ),
+            Text(details.name, style: Styles.TEXT_INPUT),
+            Text(details.description ?? '', style: Styles.TEXT_INPUT_MULTILINE),
             Container(height: 125, color: Colours.CENTER),
             Text(
               '${details.methodology.label}\nby 0 ${details.owner}\nwith 0 ${details.members.toString()}\nin ${details.created}',
-              style: Styles.TASK_NOTES_TEXT,
+              style: Styles.TEXT_INPUT_ITALIC,
             ),
             IconButton(
               onPressed: () => showDialog(
                 context: context,
-                builder: (context) => AcceptDialog(
+                builder: (context) => AcceptGradialog(
                   message: 'Do you realy want to delete this project?...',
                   onCancel: Navigator.of(context).pop,
                   onAccept: () async {

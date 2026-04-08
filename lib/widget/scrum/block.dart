@@ -1,5 +1,6 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
+import 'package:sortack/widget/basics.dart';
 
 /// Scrum row class - advanced task block view for scrum methodology
 class ScrumRow extends StatefulWidget {
@@ -57,8 +58,13 @@ class _ScrumRowState extends State<ScrumRow> {
     focusNode: _taskController.titleFocus,
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
     onTapOutside: (event) => _taskController.titleFocus.unfocus(),
-    style: Styles.TASK_TITLE_TEXT,
-    decoration: Decorations.cardInput(
+    style: TextStyle(
+      fontSize: 16,
+      fontFamily: Fonts.RUBIK,
+      fontWeight: FontWeight.w400,
+      color: Colours.W,
+    ),
+    decoration: Decorations.INPUT_FIELD(
       collapsed: true,
       hintText: 'I have to do ...',
     ),
@@ -70,8 +76,13 @@ class _ScrumRowState extends State<ScrumRow> {
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
-    style: Styles.TASK_DESCRIPTION_TEXT,
-    decoration: Decorations.cardInput(
+    style: TextStyle(
+      fontSize: 14,
+      fontFamily: Fonts.RUBIK,
+      fontWeight: FontWeight.w300,
+      color: Colours.W,
+    ),
+    decoration: Decorations.INPUT_FIELD(
       collapsed: false,
       labelText: 'Description',
     ),
@@ -92,31 +103,27 @@ class _ScrumRowState extends State<ScrumRow> {
       child: Text(task.deadline != null ? task.deadline!.ddMMMyyyy : '-'),
     ),
   );
-  Widget _buildStatus() => Container(
-    color: task.status.colour,
-    child: Center(
-      child: PopupMenuButton<TaskStatus>(
-        tooltip: 'status',
-        initialValue: task.status,
-        child: Text(task.status.label),
-        itemBuilder: (context) => TaskStatus.values
-            .map(
-              (value) => PopupMenuItem(value: value, child: Text(value.label)),
-            )
-            .toList(),
-        onSelected: (value) {
-          _taskController.updateStatus(value);
-        },
-      ),
-    ),
+  Widget _buildStatus() => BlinkBox<TaskStatus>(
+    index: TaskStatus.values.indexOf(task.status),
+    values: TaskStatus.values,
+    colors: [for (final value in TaskStatus.values) value.colour],
+    onBlink: (value) => _taskController.updateStatus(value),
   );
   Widget _buildPriority() => Center(
     child: PopupMenuButton<TaskPriority>(
       tooltip: 'priority',
       initialValue: task.priority,
-      icon: Icon(task.priority.icon, color: task.priority.colour),
+      icon: Icon(task.priority.icon, size: 25, color: task.priority.colour),
       itemBuilder: (context) => TaskPriority.values
-          .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
+          .map(
+            (value) => PopupMenuItem(
+              value: value,
+              child: ListTile(
+                leading: Icon(value.icon, size: 25, color: value.colour),
+                title: Text(value.label),
+              ),
+            ),
+          )
           .toList(),
       onSelected: (value) {
         _taskController.updatePriority(value);
@@ -160,8 +167,14 @@ class _ScrumRowState extends State<ScrumRow> {
     minLines: 1,
     maxLines: 2,
     onTapOutside: (event) => _taskController.notesFocus.unfocus(),
-    style: Styles.TASK_NOTES_TEXT,
-    decoration: Decorations.cardInput(collapsed: false, labelText: 'Notes'),
+    style: TextStyle(
+      fontSize: 14,
+      fontFamily: Fonts.RUBIK,
+      fontWeight: FontWeight.w300,
+      fontStyle: FontStyle.italic,
+      color: Colours.W,
+    ),
+    decoration: Decorations.INPUT_FIELD(collapsed: false, labelText: 'Notes'),
   );
 
   @override

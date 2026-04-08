@@ -230,13 +230,6 @@ class MyApp extends StatelessWidget {
           collapsedIconColor: Colours.CENTER,
           iconColor: Colours.CENTER,
         ),
-        dialogTheme: const DialogThemeData(
-          alignment: Alignment.bottomRight,
-          backgroundColor: Colours.WARNING,
-          surfaceTintColor: Colours.WARNING,
-          barrierColor: Colours.SHADOW,
-          iconColor: Colours.FRONT,
-        ),
         popupMenuTheme: const PopupMenuThemeData(
           position: PopupMenuPosition.under,
           color: Colours.BACK_GLOW,
@@ -264,17 +257,25 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        dataTableTheme: DataTableThemeData(
-          headingTextStyle: const TextStyle(
-            fontSize: 15,
+        dialogTheme: const DialogThemeData(
+          alignment: Alignment.centerRight,
+          insetPadding: EdgeInsets.zero,
+          actionsPadding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 0.0),
+          shadowColor: Colours.o,
+          barrierColor: Colours.SHADOW,
+          backgroundColor: Colours.o,
+          surfaceTintColor: Colours.o,
+          iconColor: Colours.UNTOP,
+          titleTextStyle: TextStyle(
+            fontSize: 17,
             fontFamily: Fonts.RUBIK,
-            fontWeight: FontWeight.w600,
+            color: Colours.W,
           ),
-          dataTextStyle: const TextStyle(
-            fontSize: 15,
-            fontFamily: Fonts.RUBIK,
-            fontWeight: FontWeight.w500,
-          ),
+        ),
+        drawerTheme: const DrawerThemeData(
+          width: 200,
+          backgroundColor: Colours.o,
+          scrimColor: Colours.o,
         ),
         scrollbarTheme: ScrollbarThemeData(
           interactive: true,
@@ -307,11 +308,6 @@ class MyApp extends StatelessWidget {
           ),
           dividerHeight: 2.25,
           dividerColor: Colours.WARNING,
-        ),
-        drawerTheme: const DrawerThemeData(
-          width: 200,
-          backgroundColor: Colours.o,
-          scrimColor: Colours.o,
         ),
         appBarTheme: const AppBarTheme(
           centerTitle: true,

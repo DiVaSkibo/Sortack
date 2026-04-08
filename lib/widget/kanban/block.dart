@@ -57,8 +57,8 @@ class _KanbanCardState extends State<KanbanCard> {
     focusNode: _taskController.titleFocus,
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
     onTapOutside: (event) => _taskController.titleFocus.unfocus(),
-    style: Styles.TASK_TITLE_TEXT,
-    decoration: Decorations.cardInput(
+    style: Styles.TEXT_INPUT,
+    decoration: Decorations.INPUT_FIELD(
       collapsed: true,
       hintText: 'I have to do ...',
     ),
@@ -70,8 +70,8 @@ class _KanbanCardState extends State<KanbanCard> {
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
-    style: Styles.TASK_DESCRIPTION_TEXT,
-    decoration: Decorations.cardInput(
+    style: Styles.TEXT_INPUT_MULTILINE,
+    decoration: Decorations.INPUT_FIELD(
       collapsed: false,
       labelText: 'Description',
     ),
@@ -90,7 +90,7 @@ class _KanbanCardState extends State<KanbanCard> {
     },
     child: Text(
       task.deadline != null ? task.deadline!.ddMMMyyyy : '-',
-      style: Styles.TASK_DESCRIPTION_TEXT,
+      style: Styles.TEXT_INPUT_MULTILINE,
     ),
   );
   Widget _buildPoints() => PopupMenuButton<TaskPointsTShirt>(
@@ -98,7 +98,7 @@ class _KanbanCardState extends State<KanbanCard> {
     initialValue: task.points,
     icon: Text(
       task.points != null ? task.points!.label : '?',
-      style: Styles.TASK_TITLE_TEXT,
+      style: Styles.TEXT_INPUT,
     ),
     itemBuilder: (context) => TaskPointsTShirt.values
         .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
@@ -143,7 +143,7 @@ class _KanbanCardState extends State<KanbanCard> {
             IconButton(
               onPressed: () => showDialog(
                 context: context,
-                builder: (context) => AcceptDialog(
+                builder: (context) => AcceptGradialog(
                   message: 'Do you realy want to delete this task?...',
                   onCancel: Navigator.of(context).pop,
                   onAccept: () async {

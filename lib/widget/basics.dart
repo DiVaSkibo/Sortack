@@ -14,7 +14,7 @@ class Ground extends StatelessWidget {
   Widget build(BuildContext context) {
     final widget = Container(
       padding: const EdgeInsets.all(24),
-      decoration: Decorations.DECK_BOX,
+      decoration: BoxDecoration(gradient: Gradients.DECK),
       constraints: BoxConstraints.fromViewConstraints(
         ViewConstraints(
           minWidth: MediaQuery.of(context).size.width,
@@ -48,8 +48,64 @@ class Surface extends StatelessWidget {
       padding: padding,
       width: width,
       height: height,
-      decoration: Decorations.SURFACE_BOX,
+      decoration: BoxDecoration(
+        gradient: Gradients.SURFACE,
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+      ),
       child: child,
+    );
+  }
+}
+
+/// blink box widget - blinking by click and changing a value
+class BlinkBox<T extends Labeling> extends StatefulWidget {
+  final List<T> values;
+  final List<Color> colors;
+  final int index;
+  final Function(T)? onBlink;
+
+  const BlinkBox({
+    super.key,
+    this.index = 0,
+    required this.values,
+    required this.colors,
+    this.onBlink,
+  });
+
+  @override
+  State<BlinkBox> createState() => _BlinkBoxState<T>();
+}
+
+class _BlinkBoxState<T extends Labeling> extends State<BlinkBox> {
+  late final List<T> values = widget.values as List<T>;
+  late final List<Color> colors = widget.colors;
+  late int index = widget.index;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          index = (index + 1) % values.length;
+        });
+        widget.onBlink?.call(values[index]);
+      },
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: colors[index],
+        child: Center(
+          child: Text(
+            values[index].label,
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: Fonts.RUBIK,
+              fontWeight: FontWeight.w600,
+              color: Colours.BACK_GLOW,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -89,8 +145,8 @@ class _AuthViewState extends State<AuthView> {
             focusNode: _authController.emailFocus,
             onEditingComplete: () => _authController.emailFocus.unfocus(),
             onTapOutside: (event) => _authController.emailFocus.unfocus(),
-            style: Styles.TASK_TITLE_TEXT,
-            decoration: Decorations.cardInput(
+            style: Styles.TEXT_INPUT,
+            decoration: Decorations.INPUT_FIELD(
               collapsed: true,
               hintText: 'I have to do ...',
             ),
@@ -102,8 +158,8 @@ class _AuthViewState extends State<AuthView> {
             focusNode: _authController.passwordFocus,
             onEditingComplete: () => _authController.passwordFocus.unfocus(),
             onTapOutside: (event) => _authController.passwordFocus.unfocus(),
-            style: Styles.TASK_TITLE_TEXT,
-            decoration: Decorations.cardInput(
+            style: Styles.TEXT_INPUT,
+            decoration: Decorations.INPUT_FIELD(
               collapsed: true,
               hintText: 'I have to do ...',
             ),

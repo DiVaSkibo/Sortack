@@ -53,8 +53,8 @@ class _MenuPageState extends State<MenuPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,
-          builder: (context) => ProjectDialog(
-            project: DeckDetails(
+          builder: (context) => ProjectGradialog(
+            details: DeckDetails(
               id: '#',
               name: '',
               methodology: Methodology.Kanban,

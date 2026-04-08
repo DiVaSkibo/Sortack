@@ -32,12 +32,23 @@ final class Colours {
   static const BACK_GLOW = Color(0xFF_0A3333);
 
   static const GLOSS = Color(0x2F_00FFFF);
-  static const TINGE = Color(0x8F_001919);
   static const SHADOW = Color(0xAF_001919);
+
+  static const GOOD = Color(0xFF_66FF66);
+  static const BAD = Color(0xFF_FF6666);
 
   static const OK = Color(0xFF_66FF7F);
   static const INOK = Color(0xFF_FFFF66);
   static const NOTOK = Color(0xFF_FF667F);
+
+  static const CRITICAL = Color(0xFF_FF6666);
+  static const VERY_HIGH = Color(0xFF_FFB266);
+  static const HIGH = Color(0xFF_FFFF66);
+  static const MEDIUM = Color(0xFF_66FFB2);
+  static const LOW = Color(0xFF_66B2FF);
+  static const VERY_LOW = Color(0xFF_6666FF);
+  static const FROZEN = Color(0xFF_66FFFF);
+
   static const WARNING = Color(0xFF_6600FF);
 }
 
@@ -48,46 +59,49 @@ final class Gradients {
     radius: 1.0,
     colors: [Colours.BACK_GLOW, Colours.UNBACK],
   );
+  static const PLANK = RadialGradient(
+    center: Alignment.topLeft,
+    radius: 1.5,
+    colors: [Colours.BACK_GLOW, Colours.BACK],
+  );
   static const SURFACE = RadialGradient(
     center: Alignment.centerRight,
     radius: 1.25,
     colors: [Colours.BACK_GLOW, Colours.BACK],
   );
-  static const PLANK = RadialGradient(
-    center: Alignment.topLeft,
-    radius: 1.5,
+  static const BLOCK = RadialGradient(
+    center: Alignment.centerRight,
+    radius: 5.0,
     colors: [Colours.BACK_GLOW, Colours.BACK],
   );
 }
 
 /// styles static const class - custom static const styles
 final class Styles {
-  static const LARGE_TEXT = TextStyle(
+  static const TEXT_MARKER = TextStyle(
     fontFamily: Fonts.RUBIK_MARKER_HATCH,
     fontSize: 44,
   );
-  static TextStyle AUTH_TEXT = TextStyle(
+  static const TEXT_BUTTON_FILLED = TextStyle(
+    fontSize: 15,
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w700,
+    color: Colours.B,
+  );
+  static const TEXT_INPUT = TextStyle(
     fontSize: 17,
     fontFamily: Fonts.RUBIK,
     fontWeight: FontWeight.w600,
     color: Colours.BACK,
   );
-  static TextStyle columnText({Color? color}) =>
-      TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: color);
-  static const TASK_TITLE_TEXT = TextStyle(
-    fontSize: 17,
-    fontFamily: Fonts.RUBIK,
-    fontWeight: FontWeight.w600,
-    color: Colours.BACK,
-  );
-  static const TASK_DESCRIPTION_TEXT = TextStyle(
+  static const TEXT_INPUT_MULTILINE = TextStyle(
     height: 1.4,
     fontSize: 13,
     fontFamily: Fonts.RUBIK,
     fontWeight: FontWeight.w500,
     color: Colours.BACK_GLOW,
   );
-  static const TASK_NOTES_TEXT = TextStyle(
+  static const TEXT_INPUT_ITALIC = TextStyle(
     height: 1.4,
     fontSize: 11,
     fontFamily: Fonts.RUBIK,
@@ -95,36 +109,11 @@ final class Styles {
     fontStyle: FontStyle.italic,
     color: Colours.FRONT,
   );
-  static TextStyle cardLabelText({double? fontSize, FontWeight? fontWeight}) =>
-      TextStyle(
-        fontSize: fontSize ?? 13,
-        fontWeight: fontWeight ?? FontWeight.w600,
-        color: Colours.UNTOP,
-      );
-  static TextStyle cardHintText({double? fontSize, FontWeight? fontWeight}) =>
-      TextStyle(
-        fontSize: fontSize ?? 15,
-        fontWeight: fontWeight ?? FontWeight.w600,
-        fontStyle: FontStyle.italic,
-        color: Colours.UNTOP,
-      );
 }
 
 /// decorations static const class - custom static const decorations
 final class Decorations {
-  static const DECK_BOX = BoxDecoration(gradient: Gradients.DECK);
-  static final PLANK_BOX = BoxDecoration(
-    gradient: Gradients.PLANK,
-    borderRadius: BorderRadius.circular(15.0),
-  );
-  static const SURFACE_BOX = BoxDecoration(
-    gradient: Gradients.SURFACE,
-    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-  );
-  static InputDecoration columnInput() => InputDecoration(
-    contentPadding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
-  );
-  static InputDecoration cardInput({
+  static InputDecoration INPUT_FIELD({
     required bool collapsed,
     String? labelText,
     String? hintText,
@@ -136,9 +125,18 @@ final class Decorations {
     fillColor: Colours.o,
     hoverColor: Colours.CENTER,
     labelText: labelText,
-    labelStyle: Styles.cardLabelText(),
+    labelStyle: TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      color: Colours.UNTOP,
+    ),
     hintText: hintText,
-    hintStyle: Styles.cardHintText(),
+    hintStyle: TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w600,
+      fontStyle: FontStyle.italic,
+      color: Colours.UNTOP,
+    ),
     floatingLabelAlignment: FloatingLabelAlignment.center,
   );
 }

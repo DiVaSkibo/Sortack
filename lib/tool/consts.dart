@@ -44,7 +44,8 @@ enum TaskPriority with Labeling, ComparableEnum<TaskPriority> {
   high,
   medium,
   low,
-  very_low;
+  very_low,
+  frozen;
 
   @override
   String get label => switch (this) {
@@ -54,22 +55,25 @@ enum TaskPriority with Labeling, ComparableEnum<TaskPriority> {
     medium => 'medium',
     low => 'low',
     very_low => 'very low',
+    frozen => 'frozen',
   };
   IconData get icon => switch (this) {
     critical => Icons.whatshot_rounded,
     very_high => Icons.keyboard_double_arrow_up_rounded,
     high => Icons.keyboard_arrow_up_rounded,
-    medium => Icons.wifi_1_bar_rounded,
+    medium => Icons.wifi_1_bar_rounded, //Icons.remove_rounded,
     low => Icons.keyboard_arrow_down_rounded,
     very_low => Icons.keyboard_double_arrow_down_rounded,
+    frozen => Icons.ac_unit_rounded,
   };
   Color get colour => switch (this) {
-    critical => Colours.NOTOK,
-    very_high => Colours.NOTOK,
-    high => Colours.NOTOK,
-    medium => Colours.INOK,
-    low => Colours.OK,
-    very_low => Colours.BOTTOM,
+    critical => Colours.CRITICAL,
+    very_high => Colours.VERY_HIGH,
+    high => Colours.HIGH,
+    medium => Colours.MEDIUM,
+    low => Colours.LOW,
+    very_low => Colours.VERY_LOW,
+    frozen => Colours.FROZEN,
   };
 }
 

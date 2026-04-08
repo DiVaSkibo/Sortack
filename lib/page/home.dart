@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
               spacing: 60,
               children: [
                 SvgPicture.asset('assets/icon/Sortack.svg'),
-                Text('Sortack welcomes!', style: Styles.LARGE_TEXT),
+                Text('Sortack welcomes!', style: Styles.TEXT_MARKER),
               ],
             ),
             AuthView(),

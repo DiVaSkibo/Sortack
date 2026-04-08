@@ -51,7 +51,7 @@ class _ScrumBoardState extends State<ScrumBoard> {
                 },
                 onDelete: (plank) => showDialog(
                   context: context,
-                  builder: (context) => AcceptDialog(
+                  builder: (context) => AcceptGradialog(
                     message: 'Do you realy want to delete this task?...',
                     onCancel: Navigator.of(context).pop,
                     onAccept: () async {

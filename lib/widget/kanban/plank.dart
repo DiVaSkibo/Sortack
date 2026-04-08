@@ -40,7 +40,10 @@ final class KanbanColumn {
   DragAndDropList build() {
     return DragAndDropList(
       verticalAlignment: CrossAxisAlignment.center,
-      decoration: Decorations.PLANK_BOX,
+      decoration: BoxDecoration(
+        gradient: Gradients.PLANK,
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       contentsWhenEmpty: Icon(unicon(), size: 30),
       header: ListenableBuilder(
         listenable: _titleController,
@@ -54,8 +57,17 @@ final class KanbanColumn {
           onTapOutside: (event) {
             _titleFocus.unfocus();
           },
-          style: Styles.columnText(color: tasks.color),
-          decoration: Decorations.columnInput(),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: tasks.color,
+          ),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 18.0,
+              vertical: 15.0,
+            ),
+          ),
         ),
       ),
       footer: IconButton(

@@ -1,14 +1,61 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 
-/// accept dialog widget - dialog for accept action
-class AcceptDialog extends StatelessWidget {
+/// gradialog - dialog with gradient
+class Gradialog extends StatelessWidget {
+  final IconData? icon;
+  final String? title;
+  final Widget? content;
+  final List<Widget>? actions;
+
+  const Gradialog({
+    super.key,
+    this.icon,
+    this.title,
+    this.content,
+    this.actions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+          gradient: Gradients.BLOCK,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 15,
+          children: [
+            if (title != null) Text(title!),
+            if (icon != null) Icon(icon),
+          ],
+        ),
+      ),
+      content: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          gradient: Gradients.BLOCK,
+        ),
+        child: content,
+      ),
+      actions: actions,
+    );
+  }
+}
+
+/// accept gradialog widget - gradialog for accept action
+class AcceptGradialog extends StatelessWidget {
   final String? message;
   final Function() onCancel;
   final Function() onAccept;
   final IconData? icon;
 
-  const AcceptDialog({
+  const AcceptGradialog({
     super.key,
     this.message,
     required this.onCancel,
@@ -18,35 +65,52 @@ class AcceptDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      icon: icon != null ? Icon(icon, size: 40) : null,
+    return Gradialog(
+      icon: icon,
+      title: 'Sure?',
       content: Text(message ?? 'are you sure?...'),
       actions: [
-        IconButton(onPressed: onCancel, icon: Icon(Icons.close_rounded)),
-        IconButton(onPressed: onAccept, icon: Icon(Icons.check_rounded)),
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
+          onPressed: onAccept,
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
+          ),
+        ),
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
+          onPressed: onCancel,
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            backgroundColor: WidgetStatePropertyAll(Colours.BAD),
+          ),
+        ),
       ],
     );
   }
 }
 
-/// project dialog widget - dialog for project settings
-class ProjectDialog extends StatefulWidget {
-  final DeckDetails project;
+/// project gradialog widget - gradialog for project settings
+class ProjectGradialog extends StatefulWidget {
+  final DeckDetails details;
   final Function(DeckDetails) onAccept;
   final Function() onCancel;
 
-  const ProjectDialog({
+  const ProjectGradialog({
     super.key,
-    required this.project,
+    required this.details,
     required this.onAccept,
     required this.onCancel,
   });
 
   @override
-  State<ProjectDialog> createState() => _ProjectDialogState();
+  State<ProjectGradialog> createState() => _ProjectGradialogState();
 }
 
-class _ProjectDialogState extends State<ProjectDialog> {
+class _ProjectGradialogState extends State<ProjectGradialog> {
   late final DeckDetailsController _projectController;
   DeckDetails get project => _projectController.project;
   bool _isLoading = false;
@@ -54,7 +118,7 @@ class _ProjectDialogState extends State<ProjectDialog> {
   @override
   void initState() {
     super.initState();
-    _projectController = DeckDetailsController(widget.project);
+    _projectController = DeckDetailsController(widget.details);
   }
 
   @override
@@ -76,28 +140,28 @@ class _ProjectDialogState extends State<ProjectDialog> {
     }
   }
 
-  TextField _buildNameField() => TextField(
+  TextField _buildName() => TextField(
     controller: _projectController.nameController,
     focusNode: _projectController.nameFocus,
     onEditingComplete: () => _projectController.nameFocus.unfocus(),
     onTapOutside: (event) => _projectController.nameFocus.unfocus(),
-    style: Styles.TASK_TITLE_TEXT,
-    decoration: Decorations.cardInput(collapsed: true, hintText: 'Name'),
+    style: Styles.TEXT_INPUT,
+    decoration: Decorations.INPUT_FIELD(collapsed: true, hintText: 'Name'),
   );
-  TextFormField _buildDescriptionField() => TextFormField(
+  TextFormField _buildDescription() => TextFormField(
     controller: _projectController.descriptionController,
     focusNode: _projectController.descriptionFocus,
     keyboardType: TextInputType.multiline,
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _projectController.descriptionFocus.unfocus(),
-    style: Styles.TASK_DESCRIPTION_TEXT,
-    decoration: Decorations.cardInput(
+    style: Styles.TEXT_INPUT_MULTILINE,
+    decoration: Decorations.INPUT_FIELD(
       collapsed: false,
       labelText: 'Description',
     ),
   );
-  PopupMenuButton _buildMethodologyField() => PopupMenuButton<Methodology>(
+  PopupMenuButton _buildMethodology() => PopupMenuButton<Methodology>(
     tooltip: 'methodology',
     initialValue: project.methodology,
     child: Text(project.methodology.label),
@@ -113,25 +177,29 @@ class _ProjectDialogState extends State<ProjectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Icon(Icons.new_label_rounded),
-      content: Column(
-        children: [
-          _buildNameField(),
-          _buildDescriptionField(),
-          _buildMethodologyField(),
-        ],
+    return Gradialog(
+      icon: Icons.new_label_rounded,
+      title: 'Project setting',
+      content: Wrap(
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [_buildName(), _buildDescription(), _buildMethodology()],
       ),
       actions: [
-        ElevatedButton(
-          onPressed: _isLoading ? null : _fireProject,
-          child: _isLoading
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
+        FilledButton.icon(
+          icon: _isLoading
+              ? const SizedBox.square(
+                  dimension: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : const Icon(Icons.create_new_folder_rounded),
+          label: Text('create'),
+          onPressed: _isLoading ? null : _fireProject,
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(Colours.BOTTOM),
+            textStyle: WidgetStatePropertyAll(Styles.TEXT_BUTTON_FILLED),
+          ),
         ),
       ],
     );
