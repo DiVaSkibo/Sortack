@@ -16,7 +16,7 @@ enum Methodology with Labeling {
 /// task status enum - task statuses
 ///
 /// [to do, in progress, done]
-enum TaskStatus with Labeling, ComparableEnum<TaskStatus> {
+enum Status with Labeling, ComparableEnum<Status> {
   toDo,
   inProgress,
   done;
@@ -38,41 +38,41 @@ enum TaskStatus with Labeling, ComparableEnum<TaskStatus> {
 /// task priority enum - task priority levels
 ///
 /// [critical, very high, high, medium, low, very low]
-enum TaskPriority with Labeling, ComparableEnum<TaskPriority> {
+enum Priority with Labeling, ComparableEnum<Priority> {
   critical,
-  very_high,
+  veryHigh,
   high,
   medium,
   low,
-  very_low,
+  veryLow,
   frozen;
 
   @override
   String get label => switch (this) {
     critical => 'critical',
-    very_high => 'very high',
+    veryHigh => 'very high',
     high => 'high',
     medium => 'medium',
     low => 'low',
-    very_low => 'very low',
+    veryLow => 'very low',
     frozen => 'frozen',
   };
   IconData get icon => switch (this) {
     critical => Icons.whatshot_rounded,
-    very_high => Icons.keyboard_double_arrow_up_rounded,
+    veryHigh => Icons.keyboard_double_arrow_up_rounded,
     high => Icons.keyboard_arrow_up_rounded,
     medium => Icons.wifi_1_bar_rounded, //Icons.remove_rounded,
     low => Icons.keyboard_arrow_down_rounded,
-    very_low => Icons.keyboard_double_arrow_down_rounded,
+    veryLow => Icons.keyboard_double_arrow_down_rounded,
     frozen => Icons.ac_unit_rounded,
   };
   Color get colour => switch (this) {
     critical => Colours.CRITICAL,
-    very_high => Colours.VERY_HIGH,
+    veryHigh => Colours.VERY_HIGH,
     high => Colours.HIGH,
     medium => Colours.MEDIUM,
     low => Colours.LOW,
-    very_low => Colours.VERY_LOW,
+    veryLow => Colours.VERY_LOW,
     frozen => Colours.FROZEN,
   };
 }
@@ -80,7 +80,7 @@ enum TaskPriority with Labeling, ComparableEnum<TaskPriority> {
 /// task fibonacci points enum - task points using fibonacci system
 ///
 /// [0, 1, 2, 3, 5, 8, 13, 20, 40, 100]
-enum TaskPointsFibonacci with Labeling, TaskPointing {
+enum PointsFibonacci with Labeling, Pointing {
   X0(0),
   X1(1),
   X2(2),
@@ -99,13 +99,13 @@ enum TaskPointsFibonacci with Labeling, TaskPointing {
   @override
   String get label => _value.toString();
 
-  const TaskPointsFibonacci(this._value);
+  const PointsFibonacci(this._value);
 }
 
 /// task tshirt points enum - task points using tshirt system
 ///
 /// [XS, S, M, L, XL, XXL]
-enum TaskPointsTShirt with Labeling, TaskPointing {
+enum PointsTShirt with Labeling, Pointing {
   XS,
   S,
   M,
@@ -126,10 +126,10 @@ enum TaskPointsTShirt with Labeling, TaskPointing {
   String get label => name;
 }
 
-/// task roles enum - task roles
+/// task tags enum - task tags
 ///
 /// [Design, Development, QA]
-enum TaskRoles with Labeling, ComparableEnum<TaskRoles> {
+enum Tag with Labeling, ComparableEnum<Tag> {
   Design,
   Development,
   QA;
@@ -157,9 +157,9 @@ enum TaskParameters implements Parameters {
     id => int,
     title => String,
     description => String,
-    status => TaskStatus,
-    priority => TaskPriority,
-    points => TaskPointing,
+    status => Status,
+    priority => Priority,
+    points => Pointing,
     role => String,
     assignee => String,
     notes => String,
@@ -169,9 +169,9 @@ enum TaskParameters implements Parameters {
     id => [],
     title => [],
     description => [],
-    status => TaskStatus.values,
-    priority => TaskPriority.values,
-    points => TaskPointsTShirt.values,
+    status => Status.values,
+    priority => Priority.values,
+    points => PointsTShirt.values,
     role => [],
     assignee => [],
     notes => [],

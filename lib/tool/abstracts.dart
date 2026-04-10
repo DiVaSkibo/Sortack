@@ -26,7 +26,7 @@ mixin ComparableEnum<T> on Enum implements Comparable<ComparableEnum> {
   int compareTo(other) => index - other.index;
 }
 
-mixin TaskPointing on Enum implements Comparable<TaskPointing> {
+mixin Pointing on Enum implements Comparable<Pointing> {
   int get value;
 
   @override

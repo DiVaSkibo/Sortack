@@ -109,7 +109,7 @@ class BlockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updatePoints(TaskPointsTShirt points) {
+  void updatePoints(PointsTShirt points) {
     if (_task.points == points) return;
     _task.points = points;
     onUnfocus?.call();
@@ -189,21 +189,21 @@ class AdvancedBlockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateStatus(TaskStatus status) {
+  void updateStatus(Status status) {
     if (_task.status == status) return;
     _task.status = status;
     onUnfocus?.call();
     notifyListeners();
   }
 
-  void updatePriority(TaskPriority priority) {
+  void updatePriority(Priority priority) {
     if (_task.priority == priority) return;
     _task.priority = priority;
     onUnfocus?.call();
     notifyListeners();
   }
 
-  void updatePoints(TaskPointsTShirt points) {
+  void updatePoints(PointsTShirt points) {
     if (_task.points == points) return;
     _task.points = points;
     onUnfocus?.call();

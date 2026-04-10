@@ -81,7 +81,7 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
           Wrap(
             spacing: 11.0,
             runSpacing: 9.0,
-            children: TaskPriority.values
+            children: Priority.values
                 .map(
                   (value) => ChoiceChip(
                     selected: filter.selected(TaskParameters.priority, value),
@@ -109,7 +109,7 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
           Wrap(
             spacing: 11.0,
             runSpacing: 9.0,
-            children: TaskPointsTShirt.values
+            children: PointsTShirt.values
                 .map(
                   (value) => ChoiceChip(
                     selected: filter.selected(TaskParameters.points, value),
@@ -137,7 +137,7 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
           Wrap(
             spacing: 11.0,
             runSpacing: 9.0,
-            children: TaskRoles.values
+            children: Tag.values
                 .map(
                   (value) => ChoiceChip(
                     selected: filter.selected(TaskParameters.role, value),

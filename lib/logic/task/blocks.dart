@@ -6,7 +6,7 @@ interface class Block with Parameterizable<TaskParameters> {
   final String id;
   String title;
   String description;
-  TaskPointsTShirt? points;
+  PointsTShirt? points;
   DateTime? deadline;
   List<String> assignee;
 
@@ -25,7 +25,7 @@ interface class Block with Parameterizable<TaskParameters> {
     TaskParameters.title => title,
     TaskParameters.description => description,
     // TaskParameters.status => comparable ? status.index : status,
-    //TaskParameters.priority => comparable ? priority.index : priority,
+    // TaskParameters.priority => comparable ? priority.index : priority,
     TaskParameters.points =>
       comparable ? (points != null ? points!.index : -1) : points,
     // TaskParameters.role =>
@@ -56,9 +56,9 @@ interface class Block with Parameterizable<TaskParameters> {
 /// immutable advanced task block interface class
 @immutable
 interface class AdvancedBlock extends Block {
-  TaskStatus status;
-  TaskPriority priority;
-  List<String> tags;
+  Status status;
+  Priority priority;
+  List<Tag> tags;
   String notes;
 
   AdvancedBlock({
@@ -68,9 +68,9 @@ interface class AdvancedBlock extends Block {
     super.points,
     super.deadline,
     super.assignee,
-    this.status = TaskStatus.toDo,
-    this.priority = TaskPriority.medium,
-    List<String>? tags,
+    this.status = Status.toDo,
+    this.priority = Priority.medium,
+    List<Tag>? tags,
     this.notes = '',
   }) : tags = tags ?? [];
 

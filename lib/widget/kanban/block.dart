@@ -93,14 +93,14 @@ class _KanbanCardState extends State<KanbanCard> {
       style: Styles.TEXT_INPUT_MULTILINE,
     ),
   );
-  Widget _buildPoints() => PopupMenuButton<TaskPointsTShirt>(
+  Widget _buildPoints() => PopupMenuButton<PointsTShirt>(
     tooltip: 'points',
     initialValue: task.points,
     icon: Text(
       task.points != null ? task.points!.label : '?',
       style: Styles.TEXT_INPUT,
     ),
-    itemBuilder: (context) => TaskPointsTShirt.values
+    itemBuilder: (context) => PointsTShirt.values
         .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
         .toList(),
     onSelected: (value) {

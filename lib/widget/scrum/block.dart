@@ -103,18 +103,18 @@ class _ScrumRowState extends State<ScrumRow> {
       child: Text(task.deadline != null ? task.deadline!.ddMMMyyyy : '-'),
     ),
   );
-  Widget _buildStatus() => BlinkBox<TaskStatus>(
-    index: TaskStatus.values.indexOf(task.status),
-    values: TaskStatus.values,
-    colors: [for (final value in TaskStatus.values) value.colour],
+  Widget _buildStatus() => BlinkBox<Status>(
+    index: Status.values.indexOf(task.status),
+    values: Status.values,
+    colors: [for (final value in Status.values) value.colour],
     onBlink: (value) => _taskController.updateStatus(value),
   );
   Widget _buildPriority() => Center(
-    child: PopupMenuButton<TaskPriority>(
+    child: PopupMenuButton<Priority>(
       tooltip: 'priority',
       initialValue: task.priority,
       icon: Icon(task.priority.icon, size: 25, color: task.priority.colour),
-      itemBuilder: (context) => TaskPriority.values
+      itemBuilder: (context) => Priority.values
           .map(
             (value) => PopupMenuItem(
               value: value,
@@ -131,11 +131,11 @@ class _ScrumRowState extends State<ScrumRow> {
     ),
   );
   Widget _buildPoints() => Center(
-    child: PopupMenuButton<TaskPointsTShirt>(
+    child: PopupMenuButton<PointsTShirt>(
       tooltip: 'points',
       initialValue: task.points,
       child: Text(task.points != null ? task.points!.label : '?'),
-      itemBuilder: (context) => TaskPointsTShirt.values
+      itemBuilder: (context) => PointsTShirt.values
           .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
           .toList(),
       onSelected: (value) {
@@ -156,7 +156,10 @@ class _ScrumRowState extends State<ScrumRow> {
   Widget _buildTags() => Center(
     child: Wrap(
       children: task.tags.isNotEmpty
-          ? List.generate(task.tags.length, (index) => Text(task.tags[index]))
+          ? List.generate(
+              task.tags.length,
+              (index) => Text(task.tags[index].label),
+            )
           : [Text('||||||')],
     ),
   );

@@ -38,14 +38,15 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     deadline: doc['deadline'] != null
         ? (doc['deadline'] as Timestamp).toDate()
         : DateTime.now().add(Duration(days: 1)),
-    status: TaskStatus.values.asNameMap()[doc['status']] ?? TaskStatus.toDo,
-    priority:
-        TaskPriority.values.asNameMap()[doc['priority']] ?? TaskPriority.medium,
+    status: Status.values.asNameMap()[doc['status']] ?? Status.toDo,
+    priority: Priority.values.asNameMap()[doc['priority']] ?? Priority.medium,
     points: doc['points'] != null
-        ? TaskPointsTShirt.values.asNameMap()[doc['points']]
+        ? PointsTShirt.values.asNameMap()[doc['points']]
         : null,
     assignee: List<String>.from(doc['assignee'] ?? []),
-    tags: List<String>.from(doc['tags'] ?? []),
+    tags: doc['tags'].isNotEmpty
+        ? doc['tags']?.map((value) => Tag.values.asNameMap()[value])
+        : null,
     notes: doc['notes'] ?? '',
   ),
   _ => Block(
@@ -56,7 +57,7 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
         ? (doc['deadline'] as Timestamp).toDate()
         : DateTime.now(),
     points: doc['points'] != null
-        ? TaskPointsTShirt.values.asNameMap()[doc['points']]
+        ? PointsTShirt.values.asNameMap()[doc['points']]
         : null,
     assignee: List<String>.from(doc['assignee'] ?? []),
   ),
