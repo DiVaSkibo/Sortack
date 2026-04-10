@@ -222,8 +222,9 @@ class DeckDetailsController extends ChangeNotifier {
   final FocusNode nameFocus = FocusNode();
   final FocusNode descriptionFocus = FocusNode();
   final FocusNode ownerFocus = FocusNode();
+  final Function()? onUnfocus;
 
-  DeckDetailsController(this._project) {
+  DeckDetailsController(this._project, {this.onUnfocus}) {
     _initializeControllers();
     _setupFocusListeners();
   }
@@ -249,6 +250,7 @@ class DeckDetailsController extends ChangeNotifier {
     nameFocus.addListener(() {
       if (!nameFocus.hasFocus && nameController.text != _project.name) {
         _project.name = nameController.text;
+        onUnfocus?.call();
         notifyListeners();
       }
     });
@@ -256,12 +258,14 @@ class DeckDetailsController extends ChangeNotifier {
       if (!descriptionFocus.hasFocus &&
           descriptionController.text != _project.description) {
         _project.description = descriptionController.text;
+        onUnfocus?.call();
         notifyListeners();
       }
     });
     ownerFocus.addListener(() {
       if (!ownerFocus.hasFocus && ownerController.text != _project.owner) {
         _project.owner = ownerController.text;
+        onUnfocus?.call();
         notifyListeners();
       }
     });

@@ -14,35 +14,98 @@ class ProjectCard extends StatefulWidget {
 }
 
 class _ProjectCardState extends State<ProjectCard> {
-  late final DeckDetails details = widget.details;
+  late final DeckDetailsController _deckDetailsController;
+  DeckDetails get details => _deckDetailsController.project;
+
+  @override
+  void initState() {
+    super.initState();
+    _deckDetailsController = DeckDetailsController(
+      widget.details,
+      onUnfocus: () async {
+        try {
+          await FireRources.saveProject(details);
+        } catch (exc) {
+          debugPrint('? ERROR: saving details changes; $exc');
+        }
+      },
+    );
+  }
+
+  Widget _buildName() => TextField(
+    controller: _deckDetailsController.nameController,
+    focusNode: _deckDetailsController.nameFocus,
+    onEditingComplete: () => _deckDetailsController.nameFocus.unfocus(),
+    onTapOutside: (event) => _deckDetailsController.nameFocus.unfocus(),
+    style: Styles.TEXT_INPUT,
+    decoration: Decorations.INPUT_FIELD(
+      collapsed: true,
+      hintText: 'I call it ...',
+    ),
+  );
+  Widget _buildDescription() => TextFormField(
+    controller: _deckDetailsController.descriptionController,
+    focusNode: _deckDetailsController.descriptionFocus,
+    keyboardType: TextInputType.multiline,
+    minLines: 1,
+    maxLines: 4,
+    onTapOutside: (event) => _deckDetailsController.descriptionFocus.unfocus(),
+    style: Styles.TEXT_INPUT_MULTILINE,
+    decoration: Decorations.INPUT_FIELD(
+      collapsed: false,
+      labelText: 'Description',
+    ),
+  );
+  // Widget _buildAssignee() => Center(
+  //   child: Wrap(
+  //     children: task.assignee.isNotEmpty
+  //         ? List.generate(
+  //             task.assignee.length,
+  //             (index) => Text(task.assignee[index]),
+  //           )
+  //         : [Text('||||||')],
+  //   ),
+  // );
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 300,
-      color: Colours.BOTTOM,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => switch (details.methodology) {
-                Methodology.Kanban => KanbanPage(id: details.id),
-                Methodology.Scrum => ScrumPage(id: details.id),
-              },
-            ),
-          );
-        },
+    return InkWell(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
+        width: 275,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25.0),
+            topRight: Radius.circular(5.0),
+            bottomLeft: Radius.circular(55.0),
+            bottomRight: Radius.circular(5.0),
+          ),
+          gradient: RadialGradient(
+            center: AlignmentGeometry.topCenter,
+            radius: 1.75,
+            colors: switch (details.methodology) {
+              Methodology.Kanban => [Colours.HIGH, Colours.VERY_HIGH],
+              Methodology.Scrum => [Colours.LOW, Colours.VERY_LOW],
+            },
+          ),
+        ),
         child: Wrap(
+          alignment: WrapAlignment.end,
           spacing: 10,
           runSpacing: 15,
           children: [
-            Text(details.name, style: Styles.TEXT_INPUT),
-            Text(details.description ?? '', style: Styles.TEXT_INPUT_MULTILINE),
-            Container(height: 125, color: Colours.CENTER),
+            _buildName(),
+            _buildDescription(),
+            Row(
+              children: [
+                Text('created in ${details.created.ddMMMyyyy}'),
+                Spacer(),
+                Chip(label: Text(details.methodology.label)),
+              ],
+            ),
+            Container(height: 100, color: Colours.UNBACK),
             Text(
-              '${details.methodology.label}\nby 0 ${details.owner}\nwith 0 ${details.members.toString()}\nin ${details.created}',
+              'by 0 ${details.owner}\nwith 0 ${details.members.toString()}',
               style: Styles.TEXT_INPUT_ITALIC,
             ),
             IconButton(
@@ -63,6 +126,17 @@ class _ProjectCardState extends State<ProjectCard> {
           ],
         ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => switch (details.methodology) {
+              Methodology.Kanban => KanbanPage(id: details.id),
+              Methodology.Scrum => ScrumPage(id: details.id),
+            },
+          ),
+        );
+      },
     );
   }
 }
