@@ -317,4 +317,21 @@ final class FireRources {
       rethrow;
     }
   }
+
+  // OTHERs
+  /// join user into the project
+  static Future<void> joinProject(String deckId, String userId) async {
+    final deckRef = getDecks().doc(deckId);
+    try {
+      final docSnapshot = await deckRef.get();
+      if (!docSnapshot.exists)
+        throw Exception('ERROR: project "$deckId" does not exist');
+      await deckRef.update({
+        'members': FieldValue.arrayUnion([userId]),
+      });
+    } catch (exc) {
+      debugPrint('! ERROR: joining user into the project; $exc');
+      rethrow;
+    }
+  }
 }

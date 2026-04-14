@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/widget/dialogs.dart';
@@ -108,20 +109,37 @@ class _ProjectCardState extends State<ProjectCard> {
               'by 0 ${details.owner}\nwith 0 ${details.members.toString()}',
               style: Styles.TEXT_INPUT_ITALIC,
             ),
-            IconButton(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) => AcceptGradialog(
-                  message: 'Do you realy want to delete this project?...',
-                  onCancel: Navigator.of(context).pop,
-                  onAccept: () async {
-                    Navigator.of(context).pop();
-                    await FireRources.deleteDeck(details.id);
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.link_rounded),
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: details.id));
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Copied the project code '),
+                        ),
+                      );
+                    }
                   },
-                  icon: Icons.remove_rounded,
                 ),
-              ),
-              icon: Icon(Icons.remove_rounded),
+                IconButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => AcceptGradialog(
+                      message: 'Do you realy want to delete this project?...',
+                      onCancel: Navigator.of(context).pop,
+                      onAccept: () async {
+                        Navigator.of(context).pop();
+                        await FireRources.deleteDeck(details.id);
+                      },
+                      icon: Icons.remove_rounded,
+                    ),
+                  ),
+                  icon: Icon(Icons.remove_rounded),
+                ),
+              ],
             ),
           ],
         ),

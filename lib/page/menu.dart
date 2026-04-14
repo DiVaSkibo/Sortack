@@ -50,21 +50,33 @@ class _MenuPageState extends State<MenuPage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => ProjectGradialog(
-            details: DeckDetails(
-              id: '#',
-              name: '',
-              methodology: Methodology.Kanban,
-              created: DateTime.now(),
-              owner: '',
+      floatingActionButton: Wrap(
+        children: [
+          FloatingActionButton(
+            child: Icon(Icons.add_box_rounded),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => ProjectGradialog(
+                details: DeckDetails(
+                  id: '#',
+                  name: '',
+                  methodology: Methodology.Kanban,
+                  created: DateTime.now(),
+                  owner: '',
+                ),
+                onAccept: (_) {},
+                onCancel: () {},
+              ),
             ),
-            onAccept: (_) {},
-            onCancel: () {},
           ),
-        ),
+          FloatingActionButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => JoinGradialog(),
+            ),
+            child: Icon(Icons.explore_rounded),
+          ),
+        ],
       ),
     );
   }

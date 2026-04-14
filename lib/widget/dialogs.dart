@@ -282,3 +282,56 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
     );
   }
 }
+
+class JoinGradialog extends StatefulWidget {
+  const JoinGradialog({super.key});
+
+  @override
+  State<JoinGradialog> createState() => _JoinGradialogState();
+}
+
+class _JoinGradialogState extends State<JoinGradialog> {
+  final TextEditingController _codeController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Gradialog(
+      title: 'Join the project',
+      content: TextField(
+        controller: _codeController,
+        decoration: const InputDecoration(
+          hintText: 'Введіть код...',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      actions: [
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
+          onPressed: () {
+            final code = _codeController.text.trim();
+            if (code.isEmpty) return;
+            FireRources.joinProject(
+              code,
+              FirebaseAuth.instance.currentUser!.uid,
+            );
+            Navigator.pop(context);
+          },
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
+          ),
+        ),
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
+          onPressed: () => Navigator.pop(context),
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            backgroundColor: WidgetStatePropertyAll(Colours.BAD),
+          ),
+        ),
+      ],
+    );
+  }
+}
