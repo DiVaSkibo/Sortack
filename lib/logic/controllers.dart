@@ -115,6 +115,13 @@ class BlockController extends ChangeNotifier {
     onUnfocus?.call();
     notifyListeners();
   }
+
+  void updateAssignee(Set<String> assignee) {
+    if (_task.assignee == assignee) return;
+    _task.assignee = assignee;
+    onUnfocus?.call();
+    notifyListeners();
+  }
 }
 
 /// advanced block controller
@@ -206,6 +213,20 @@ class AdvancedBlockController extends ChangeNotifier {
   void updatePoints(PointsTShirt points) {
     if (_task.points == points) return;
     _task.points = points;
+    onUnfocus?.call();
+    notifyListeners();
+  }
+
+  void updateAssignee(Set<String> assignee) {
+    if (_task.assignee == assignee) return;
+    _task.assignee = assignee;
+    onUnfocus?.call();
+    notifyListeners();
+  }
+
+  void updateTags(Set<Tag> tags) {
+    if (_task.tags == tags) return;
+    _task.tags = tags;
     onUnfocus?.call();
     notifyListeners();
   }

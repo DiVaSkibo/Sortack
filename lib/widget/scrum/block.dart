@@ -1,6 +1,7 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/widget/basics.dart';
+import 'package:sortack/widget/dialogs.dart';
 
 /// Scrum row class - advanced task block view for scrum methodology
 class ScrumRow extends StatefulWidget {
@@ -145,22 +146,62 @@ class _ScrumRowState extends State<ScrumRow> {
   );
   Widget _buildAssignee() => Center(
     child: Wrap(
-      children: task.assignee.isNotEmpty
-          ? List.generate(
-              task.assignee.length,
-              (index) => Text(task.assignee[index]),
-            )
-          : [Text('||||||')],
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        for (final assignee in task.assignee)
+          ChoiceChip(label: Text(assignee), selected: true),
+        InputChip(
+          label: Icon(Icons.settings_input_composite_outlined),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => ChipsGradialog(
+              values: {
+                'Me',
+                'You',
+                'Brain',
+                'Eye',
+                'Heart',
+                'Perfection',
+                'Chaos',
+              },
+              selected: task.assignee.toSet(),
+              onPick: (assignee) {
+                Navigator.of(context).pop();
+                _taskController.updateAssignee(assignee as Set<String>);
+              },
+              onCancel: Navigator.of(context).pop,
+            ),
+          ),
+        ),
+      ],
     ),
   );
   Widget _buildTags() => Center(
     child: Wrap(
-      children: task.tags.isNotEmpty
-          ? List.generate(
-              task.tags.length,
-              (index) => Text(task.tags[index].label),
-            )
-          : [Text('||||||')],
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        for (final tag in task.tags)
+          ChoiceChip(label: Text(tag.label), selected: true),
+        InputChip(
+          label: Icon(Icons.settings_input_composite_outlined),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => ChipsGradialog(
+              values: Tag.values.toSet(),
+              selected: task.tags.toSet(),
+              onPick: (tags) {
+                Navigator.of(context).pop();
+                _taskController.updateAssignee(tags as Set<String>);
+              },
+              onCancel: Navigator.of(context).pop,
+            ),
+          ),
+        ),
+      ],
     ),
   );
   Widget _buildNotes() => TextFormField(

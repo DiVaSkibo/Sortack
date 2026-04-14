@@ -103,19 +103,39 @@ class _KanbanCardState extends State<KanbanCard> {
     itemBuilder: (context) => PointsTShirt.values
         .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
         .toList(),
-    onSelected: (value) {
-      _taskController.updatePoints(value);
+    onSelected: (points) {
+      _taskController.updatePoints(points);
     },
   );
-  Widget _buildAssignee() => Center(
-    child: Wrap(
-      children: task.assignee.isNotEmpty
-          ? List.generate(
-              task.assignee.length,
-              (index) => Text(task.assignee[index]),
-            )
-          : [Text('||||||')],
-    ),
+  Widget _buildAssignee() => Wrap(
+    crossAxisAlignment: WrapCrossAlignment.center,
+    children: [
+      for (final assignee in task.assignee)
+        ChoiceChip(label: Text(assignee), selected: true),
+      InputChip(
+        label: Icon(Icons.settings_input_composite_outlined),
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => ChipsGradialog(
+            values: {
+              'Me',
+              'You',
+              'Brain',
+              'Eye',
+              'Heart',
+              'Perfection',
+              'Chaos',
+            },
+            selected: task.assignee.toSet(),
+            onPick: (assignee) {
+              Navigator.of(context).pop();
+              _taskController.updateAssignee(assignee as Set<String>);
+            },
+            onCancel: Navigator.of(context).pop,
+          ),
+        ),
+      ),
+    ],
   );
 
   @override
@@ -135,33 +155,32 @@ class _KanbanCardState extends State<KanbanCard> {
         ),
         leading: const Icon(Icons.task_rounded),
         title: _buildTitle(),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildAssignee(),
-            Spacer(),
-            IconButton(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) => AcceptGradialog(
-                  message: 'Do you realy want to delete this task?...',
-                  onCancel: Navigator.of(context).pop,
-                  onAccept: () async {
-                    Navigator.of(context).pop();
-                    widget.onDelete(task);
-                    await FireRources.deleteBlock(widget.deckId, task.id);
-                  },
-                  icon: Icons.remove_rounded,
-                ),
-              ),
-              icon: Icon(Icons.remove_rounded),
+        subtitle: _buildAssignee(),
+        trailing: IconButton(
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => AcceptGradialog(
+              icon: Icons.delete_sweep_rounded,
+              message: 'Do you realy want to delete this task?...',
+              onAccept: () async {
+                Navigator.of(context).pop();
+                widget.onDelete(task);
+                await FireRources.deleteBlock(widget.deckId, task.id);
+              },
+              onCancel: Navigator.of(context).pop,
             ),
-            Spacer(),
-            _buildDeadline(),
-          ],
+          ),
+          icon: const Icon(Icons.delete_sweep_outlined),
         ),
-        trailing: _buildPoints(),
-        children: [_buildDescription()],
+        children: [
+          _buildDescription(),
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: MediaQuery.of(context).size.width / 30,
+            children: [_buildPoints(), const Spacer(), _buildDeadline()],
+          ),
+        ],
       ),
     );
   }

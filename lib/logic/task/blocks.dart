@@ -8,7 +8,7 @@ interface class Block with Parameterizable<TaskParameters> {
   String description;
   PointsTShirt? points;
   DateTime? deadline;
-  List<String> assignee;
+  Set<String> assignee;
 
   Block({
     required this.id,
@@ -16,8 +16,8 @@ interface class Block with Parameterizable<TaskParameters> {
     this.description = '',
     this.points,
     this.deadline,
-    List<String>? assignee,
-  }) : assignee = assignee ?? [];
+    Set<String>? assignee,
+  }) : assignee = assignee ?? {};
 
   @override
   dynamic getParameter(parameter, {comparable = false}) => switch (parameter) {
@@ -58,7 +58,7 @@ interface class Block with Parameterizable<TaskParameters> {
 interface class AdvancedBlock extends Block {
   Status status;
   Priority priority;
-  List<Tag> tags;
+  Set<Tag> tags;
   String notes;
 
   AdvancedBlock({
@@ -70,9 +70,9 @@ interface class AdvancedBlock extends Block {
     super.assignee,
     this.status = Status.toDo,
     this.priority = Priority.medium,
-    List<Tag>? tags,
+    Set<Tag>? tags,
     this.notes = '',
-  }) : tags = tags ?? [];
+  }) : tags = tags ?? {};
 
   @override
   String toString() =>

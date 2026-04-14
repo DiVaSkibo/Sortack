@@ -43,7 +43,7 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     points: doc['points'] != null
         ? PointsTShirt.values.asNameMap()[doc['points']]
         : null,
-    assignee: List<String>.from(doc['assignee'] ?? []),
+    assignee: Set<String>.from(doc['assignee'] ?? []),
     tags: doc['tags'].isNotEmpty
         ? doc['tags']?.map((value) => Tag.values.asNameMap()[value])
         : null,
@@ -59,7 +59,7 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     points: doc['points'] != null
         ? PointsTShirt.values.asNameMap()[doc['points']]
         : null,
-    assignee: List<String>.from(doc['assignee'] ?? []),
+    assignee: Set<String>.from(doc['assignee'] ?? []),
   ),
 };
 Plank docToPlank<T extends Plank>(Document doc, String id) => switch (T) {

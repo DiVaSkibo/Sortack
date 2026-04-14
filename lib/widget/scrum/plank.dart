@@ -95,11 +95,11 @@ class _ScrumTableState extends State<ScrumTable> {
                           child: Center(child: Text('Priority')),
                         ),
                         Expanded(flex: 2, child: Center(child: Text('Points'))),
-                        Expanded(flex: 2, child: Center(child: Text('Role'))),
                         Expanded(
                           flex: 2,
                           child: Center(child: Text('Assignee')),
                         ),
+                        Expanded(flex: 2, child: Center(child: Text('Tags'))),
                         Expanded(flex: 3, child: Center(child: Text('Notes'))),
                       ],
                     ),

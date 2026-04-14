@@ -21,6 +21,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         fontFamily: Fonts.RUBIK,
         shadowColor: Colours.o,
+        visualDensity: VisualDensity(horizontal: -4.0, vertical: -4.0),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Colours.TOP,
           selectionColor: Colours.UNTOP,
@@ -169,9 +171,14 @@ class MyApp extends StatelessWidget {
           splashColor: Colours.NOTOK,
         ),
         chipTheme: const ChipThemeData(
-          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+          padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: -3.0),
+          labelPadding: EdgeInsets.symmetric(horizontal: 4.0, vertical: -3.0),
           showCheckmark: false,
-          side: BorderSide.none,
+          side: BorderSide(
+            strokeAlign: BorderSide.strokeAlignOutside,
+            width: 1.0,
+            color: Colours.UNCENTER,
+          ),
           shadowColor: Colours.o,
           selectedShadowColor: Colours.o,
           selectedColor: Colours.CENTER,
@@ -180,14 +187,14 @@ class MyApp extends StatelessWidget {
           surfaceTintColor: Colours.WARNING,
           deleteIconColor: Colours.NOTOK,
           labelStyle: TextStyle(
-            fontSize: 13,
+            fontSize: 10,
             fontFamily: Fonts.RUBIK,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w400,
             fontStyle: FontStyle.italic,
-            color: Colours.UNCENTER,
+            color: Colours.CENTER,
           ),
           secondaryLabelStyle: TextStyle(
-            fontSize: 13,
+            fontSize: 10,
             fontFamily: Fonts.RUBIK,
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.italic,
@@ -195,6 +202,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         listTileTheme: const ListTileThemeData(
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 12.5,
+          ),
           minVerticalPadding: 0.0,
           minTileHeight: 30.0,
           minLeadingWidth: 30.0,
@@ -223,6 +234,7 @@ class MyApp extends StatelessWidget {
         ),
         expansionTileTheme: const ExpansionTileThemeData(
           expandedAlignment: Alignment.center,
+          childrenPadding: EdgeInsets.only(bottom: 7.5),
           collapsedBackgroundColor: Colours.TOP,
           backgroundColor: Colours.ACTOP,
           collapsedTextColor: Colours.BACK_GLOW,

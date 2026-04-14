@@ -51,15 +51,15 @@ class Gradialog extends StatelessWidget {
 /// accept gradialog widget - gradialog for accept action
 class AcceptGradialog extends StatelessWidget {
   final String? message;
-  final Function() onCancel;
-  final Function() onAccept;
+  final VoidCallback onAccept;
+  final VoidCallback onCancel;
   final IconData? icon;
 
   const AcceptGradialog({
     super.key,
     this.message,
-    required this.onCancel,
     required this.onAccept,
+    required this.onCancel,
     this.icon,
   });
 
@@ -83,6 +83,83 @@ class AcceptGradialog extends StatelessWidget {
           iconSize: 18,
           icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
           onPressed: onCancel,
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            backgroundColor: WidgetStatePropertyAll(Colours.BAD),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// chips gradialog widget - gradialog for picking chips
+class ChipsGradialog extends StatefulWidget {
+  final Set values;
+  final Set? selected;
+  final Function(Set) onPick;
+  final VoidCallback onCancel;
+
+  const ChipsGradialog({
+    super.key,
+    required this.values,
+    this.selected,
+    required this.onPick,
+    required this.onCancel,
+  });
+
+  @override
+  State<ChipsGradialog> createState() => _ChipsGradialogState();
+}
+
+class _ChipsGradialogState extends State<ChipsGradialog> {
+  late final values = widget.values;
+  late final selected = widget.selected ?? {};
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint(values.toString());
+    debugPrint(selected.toString());
+    return Gradialog(
+      icon: Icons.catching_pokemon_rounded,
+      title: 'Pick what you want',
+      content: Wrap(
+        children: values.map((value) {
+          String text;
+          if (value is String)
+            text = value;
+          else if (value is Labeling)
+            text = value.label;
+          else
+            text = value.toString();
+          return ChoiceChip(
+            label: Text(text),
+            selected: selected.contains(value),
+            onSelected: (v) {
+              setState(() {
+                if (v)
+                  selected.add(value);
+                else
+                  selected.remove(value);
+              });
+            },
+          );
+        }).toList(),
+      ),
+      actions: [
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
+          onPressed: () => widget.onPick(selected),
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
+          ),
+        ),
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
+          onPressed: widget.onCancel,
           style: const ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(Colours.B),
             backgroundColor: WidgetStatePropertyAll(Colours.BAD),
