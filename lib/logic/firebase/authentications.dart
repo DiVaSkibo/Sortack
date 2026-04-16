@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sortack/logic/firebase/documents.dart';
+import 'package:sortack/logic/firebase/firestores.dart';
 
 class AuthHandler {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,11 +16,21 @@ class AuthHandler {
     required String password,
   }) async {
     try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(
+      final userCredentialential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential.user;
+      final user = userCredentialential.user;
+      if (user != null) {
+        final profile = UserProfile(
+          id: user.uid,
+          name: email.split('@').first,
+          email: user.email ?? email,
+          avatar: '',
+        );
+        await FireRources.saveUserProfile(profile);
+      }
+      return user;
     } on FirebaseAuthException catch (exc) {
       throw Exception(exc.message ?? '! ERROR: on signing up user...');
     }
@@ -44,14 +56,25 @@ class AuthHandler {
       final googleAccount = await _googleSignIn.signIn();
       if (googleAccount == null) return null;
       final googleAuth = await googleAccount.authentication;
-      final oauthCred = GoogleAuthProvider.credential(
+      final oauthCredential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
         accessToken: googleAuth.accessToken,
       );
-      final userCred = await _auth.signInWithCredential(oauthCred);
-      return userCred.user;
+      final userCredential = await _auth.signInWithCredential(oauthCredential);
+      final user = userCredential.user;
+      if (user != null &&
+          (userCredential.additionalUserInfo?.isNewUser ?? false)) {
+        final profile = UserProfile(
+          id: user.uid,
+          name: user.displayName ?? 'customer',
+          email: user.email ?? '',
+          avatar: user.photoURL ?? '',
+        );
+        await FireRources.saveUserProfile(profile);
+      }
+      return user;
     } on FirebaseAuthException catch (exc) {
-      throw Exception('ERROR: google sign in: ${exc.message}');
+      throw Exception('ERROR: on google sign in: ${exc.message}');
     }
   }
 

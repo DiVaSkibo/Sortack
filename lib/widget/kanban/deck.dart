@@ -9,8 +9,14 @@ import 'package:sortack/widget/dialogs.dart';
 class KanbanBoard extends StatefulWidget {
   final String id;
   final DetailedDeck columns;
+  final Map<String, UserProfile> members;
 
-  const KanbanBoard({super.key, required this.id, required this.columns});
+  KanbanBoard({
+    super.key,
+    required this.id,
+    required this.columns,
+    Map<String, UserProfile>? members,
+  }) : members = members ?? {};
 
   @override
   State<KanbanBoard> createState() => _KanbanBoardState();
@@ -97,6 +103,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
               deckId: id,
               tasks: board[index],
               order: index,
+              members: widget.members,
               onChanged: () {
                 setState(() {});
               },

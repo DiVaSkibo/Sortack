@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_widgets.dart';
@@ -10,12 +11,61 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
+  UserProfile? _profile;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final profile = await FireRources.loadUserProfile(uid);
+      setState(() {
+        _profile = profile;
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null)
       return Center(child: Icon(Icons.error_outline_rounded));
     return Scaffold(
+      appBar: AppBar(
+        title: _isLoading
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 30,
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: _profile!.avatar,
+                    imageBuilder: (context, imageProvider) => CircleAvatar(
+                      backgroundImage: imageProvider,
+                      backgroundColor: Colours.UNFRONT,
+                    ),
+                    placeholder: (context, url) => const SizedBox.square(
+                      dimension: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        CircleAvatar(backgroundColor: Colours.BAD),
+                  ),
+                  Text(_profile!.name),
+                ],
+              ),
+      ),
       body: Ground(
         scrollable: true,
         child: StreamBuilder(

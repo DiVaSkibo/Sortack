@@ -4,6 +4,22 @@ import 'package:sortack/logic/_tasks.dart';
 
 typedef Document = Map<String, dynamic>;
 
+class UserProfile {
+  final String id, name, email, avatar;
+
+  UserProfile({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.avatar,
+  });
+}
+
+Document userToDoc(UserProfile user) => <String, dynamic>{
+  'name': user.name,
+  'email': user.email,
+  'avatar': user.avatar,
+};
 Document blockToDoc(Block block, String plankId, int order) =>
     <String, dynamic>{
       'plankId': plankId,
@@ -30,6 +46,12 @@ Document detailsToDoc(DeckDetails deck) => <String, dynamic>{
   'methodology': deck.methodology.name,
 };
 
+UserProfile docToUser(Document doc, String id) => UserProfile(
+  id: id,
+  name: doc['name'] ?? 'customer',
+  email: doc['email'] ?? '',
+  avatar: doc['avatar'] ?? '',
+);
 Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
   const (AdvancedBlock) => AdvancedBlock(
     id: id,

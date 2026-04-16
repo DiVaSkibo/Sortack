@@ -8,6 +8,7 @@ final class KanbanColumn {
   final String deckId;
   final Plank tasks;
   final int order;
+  final Map<String, UserProfile> members;
   final VoidCallback onChanged;
   final Function()? onUnfocus;
   final Function(Plank) onDelete;
@@ -20,10 +21,12 @@ final class KanbanColumn {
     required this.deckId,
     required this.tasks,
     required this.order,
+    Map<String, UserProfile>? members,
     required this.onChanged,
     this.onUnfocus,
     required this.onDelete,
-  }) : _titleController = TextEditingController(text: tasks.title) {
+  }) : members = members ?? {},
+       _titleController = TextEditingController(text: tasks.title) {
     _titleFocus.addListener(() async {
       if (!_titleFocus.hasFocus && _titleController.text != tasks.title) {
         tasks.title = _titleController.text;
@@ -70,10 +73,6 @@ final class KanbanColumn {
           ),
         ),
       ),
-      footer: IconButton(
-        onPressed: () => onDelete(tasks),
-        icon: Icon(Icons.remove_rounded),
-      ),
       children: List.generate(
         visibleTasks.length,
         (index) => DragAndDropItem(
@@ -86,12 +85,17 @@ final class KanbanColumn {
             plankId: tasks.id,
             task: visibleTasks[index],
             order: index,
+            members: members,
             onDelete: (what) {
               tasks.pop(what);
               onChanged();
             },
           ),
         ),
+      ),
+      footer: IconButton(
+        onPressed: () => onDelete(tasks),
+        icon: Icon(Icons.remove_rounded),
       ),
     );
   }

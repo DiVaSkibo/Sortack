@@ -4,9 +4,13 @@ import 'package:sortack/logic/firebase/documents.dart';
 import 'package:sortack/logic/firebase/authentications.dart';
 import 'package:sortack/logic/_tasks.dart';
 
-/// firestore resources - load, save, update and other resources
+/// firestore resources - get, load, save, update, delete and other resources
 final class FireRources {
   // GETs
+  /// get users collection
+  static CollectionReference<Document> getUsers() =>
+      FirebaseFirestore.instance.collection('users');
+
   /// get document query of user
   static Query<Document> getUserDecks(User user) => FirebaseFirestore.instance
       .collection('decks')
@@ -25,6 +29,18 @@ final class FireRources {
       getDecks().doc(id).collection('blocks');
 
   // LOADs
+  /// load user profile resource by uid
+  static Future<UserProfile?> loadUserProfile(String uid) async {
+    try {
+      final docSnapshot = await getUsers().doc(uid).get();
+      if (docSnapshot.exists && docSnapshot.data() != null)
+        return docToUser(docSnapshot.data()!, docSnapshot.id);
+    } catch (exc) {
+      debugPrint('! ERROR: loading user profile; $e');
+    }
+    return null;
+  }
+
   /// load deck details resource by doc
   static DeckDetails loadDeckDetails(DocumentSnapshot doc) {
     final data = doc.data() as Document;
@@ -189,6 +205,11 @@ final class FireRources {
   }
 
   // SAVEs
+  /// save user profile resource
+  static Future<void> saveUserProfile(UserProfile user) async {
+    await getUsers().doc(user.id).set(userToDoc(user), SetOptions(merge: true));
+  }
+
   /// save deck details resource
   static Future<void> saveProject(DeckDetails details) async {
     final currentUser = FirebaseAuth.instance.currentUser;

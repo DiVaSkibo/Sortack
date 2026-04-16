@@ -13,7 +13,8 @@ class KanbanPage extends StatefulWidget {
 
 class _KanbanPageState extends State<KanbanPage> {
   late final DetailedDeck? board;
-  bool isLoading = true;
+  Map<String, UserProfile> membersProfiles = {};
+  bool _isLoading = true;
 
   final SwitchDrawersController _switchDrawersController =
       SwitchDrawersController();
@@ -30,14 +31,19 @@ class _KanbanPageState extends State<KanbanPage> {
       final DetailedDeck loadedDeck = await FireRources.loadDeck<DetailedDeck>(
         widget.id,
       );
-      setState(() {
-        board = loadedDeck;
-        isLoading = false;
-      });
+      board = loadedDeck;
+      Map<String, UserProfile> loadedProfiles = {};
+      for (String uid in board!.details!.members) {
+        final profile = await FireRources.loadUserProfile(uid);
+        if (profile != null) loadedProfiles[uid] = profile;
+      }
+      if (!mounted) return;
+      membersProfiles = loadedProfiles;
     } catch (exc) {
-      debugPrint('! ERROR: loading deck; $exc');
+      debugPrint('! ERROR: on loading data; $exc');
+    } finally {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
@@ -116,13 +122,17 @@ class _KanbanPageState extends State<KanbanPage> {
         },
       ),
       body: Ground(
-        child: isLoading
+        child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : (board == null || board!.planks.isEmpty)
             ? const Center(child: Icon(Icons.clear_rounded))
-            : KanbanBoard(id: widget.id, columns: board!),
+            : KanbanBoard(
+                id: widget.id,
+                columns: board!,
+                members: membersProfiles,
+              ),
       ),
-      floatingActionButton: isLoading || board == null || board!.planks.isEmpty
+      floatingActionButton: _isLoading || board == null || board!.planks.isEmpty
           ? null
           : FloatingActionButton(
               onPressed: () async {

@@ -7,6 +7,7 @@ class KanbanCard extends StatefulWidget {
   final String deckId, plankId;
   final Block task;
   final int order;
+  final Map<String, UserProfile> members;
   final Function(Block) onDelete;
 
   KanbanCard({
@@ -15,8 +16,10 @@ class KanbanCard extends StatefulWidget {
     required this.plankId,
     required this.task,
     required this.order,
+    Map<String, UserProfile>? members,
     required this.onDelete,
-  }) : super(key: key ?? ObjectKey(task));
+  }) : members = members ?? {},
+       super(key: key ?? ObjectKey(task));
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
@@ -111,21 +114,16 @@ class _KanbanCardState extends State<KanbanCard> {
     crossAxisAlignment: WrapCrossAlignment.center,
     children: [
       for (final assignee in task.assignee)
-        ChoiceChip(label: Text(assignee), selected: true),
+        ChoiceChip(
+          label: Text(assignee), //widget.members[assignee]!.name),
+          selected: true,
+        ),
       InputChip(
         label: Icon(Icons.settings_input_composite_outlined),
         onPressed: () => showDialog(
           context: context,
           builder: (context) => ChipsGradialog(
-            values: {
-              'Me',
-              'You',
-              'Brain',
-              'Eye',
-              'Heart',
-              'Perfection',
-              'Chaos',
-            },
+            values: widget.members.values.toSet(),
             selected: task.assignee.toSet(),
             onPick: (assignee) {
               Navigator.of(context).pop();

@@ -118,29 +118,31 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(values.toString());
-    debugPrint(selected.toString());
     return Gradialog(
       icon: Icons.catching_pokemon_rounded,
       title: 'Pick what you want',
       content: Wrap(
         children: values.map((value) {
           String text;
+          dynamic val = value;
           if (value is String)
             text = value;
           else if (value is Labeling)
             text = value.label;
-          else
+          else if (value is UserProfile) {
+            text = value.name;
+            val = value.id;
+          } else
             text = value.toString();
           return ChoiceChip(
             label: Text(text),
-            selected: selected.contains(value),
+            selected: selected.contains(val),
             onSelected: (v) {
               setState(() {
                 if (v)
-                  selected.add(value);
+                  selected.add(val);
                 else
-                  selected.remove(value);
+                  selected.remove(val);
               });
             },
           );
