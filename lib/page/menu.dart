@@ -103,6 +103,7 @@ class _MenuPageState extends State<MenuPage> {
       floatingActionButton: Wrap(
         children: [
           FloatingActionButton(
+            heroTag: 'btnCreateProject',
             child: Icon(Icons.add_box_rounded),
             onPressed: () => showDialog(
               context: context,
@@ -120,6 +121,7 @@ class _MenuPageState extends State<MenuPage> {
             ),
           ),
           FloatingActionButton(
+            heroTag: 'btnJoinProject',
             onPressed: () => showDialog(
               context: context,
               builder: (context) => JoinGradialog(),
