@@ -7,33 +7,30 @@ import 'package:sortack/logic/_tasks.dart';
 
 /// firestore resources - get, load, save, update, delete and other resources
 final class FireRources {
-  // GETs
-  /// get users collection
-  static CollectionReference<Document> getUsers() =>
+  static CollectionReference<Document> get _users =>
       FirebaseFirestore.instance.collection('users');
+  static CollectionReference<Document> get _decks =>
+      FirebaseFirestore.instance.collection('decks');
 
+  // GETs
   /// get document query of user
   static Query<Document> getUserDecks(User user) => FirebaseFirestore.instance
       .collection('decks')
       .where('members', arrayContains: user.uid);
 
-  /// get document collection reference of all decks
-  static CollectionReference<Document> getDecks() =>
-      FirebaseFirestore.instance.collection('decks');
-
   /// get document collection reference of all planks by id
   static CollectionReference<Document> getPlanks(String id) =>
-      getDecks().doc(id).collection('planks');
+      _decks.doc(id).collection('planks');
 
   /// get document collection reference of all blocks by id
   static CollectionReference<Document> getBlocks(String id) =>
-      getDecks().doc(id).collection('blocks');
+      _decks.doc(id).collection('blocks');
 
   // LOADs
   /// load user profile resource by uid
   static Future<UserProfile?> loadUserProfile(String uid) async {
     try {
-      final docSnapshot = await getUsers().doc(uid).get();
+      final docSnapshot = await _users.doc(uid).get();
       if (docSnapshot.exists && docSnapshot.data() != null)
         return docToUser(docSnapshot.data()!, docSnapshot.id);
     } catch (exc) {
@@ -65,7 +62,7 @@ final class FireRources {
     String id, {
     required List<String> keys,
   }) async {
-    final deckRef = getDecks().doc(id);
+    final deckRef = _decks.doc(id);
     final snapshots = await Future.wait([
       deckRef.get(),
       deckRef.collection('planks').orderBy('order').get(),
@@ -139,7 +136,7 @@ final class FireRources {
 
   /// load deck resource by id
   static Future<T> loadDeck<T extends Deck>(String id) async {
-    final deckRef = getDecks().doc(id);
+    final deckRef = _decks.doc(id);
     final snapshots = await Future.wait([
       deckRef.get(),
       deckRef.collection('planks').orderBy('order').get(),
@@ -203,7 +200,7 @@ final class FireRources {
   // SAVEs
   /// save user profile resource
   static Future<void> saveUserProfile(UserProfile user) async {
-    await getUsers().doc(user.id).set(userToDoc(user), SetOptions(merge: true));
+    await _users.doc(user.id).set(userToDoc(user), SetOptions(merge: true));
   }
 
   /// save project details resource
@@ -211,7 +208,7 @@ final class FireRources {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) throw Exception('? User is not authorised...');
     final isNew = details.id.isEmpty || details.id == '#';
-    final deckRef = isNew ? getDecks().doc() : getDecks().doc(details.id);
+    final deckRef = isNew ? _decks.doc() : _decks.doc(details.id);
     final batch = FirebaseFirestore.instance.batch();
     final deckData = detailsToDoc(details);
     if (isNew) {
@@ -297,7 +294,7 @@ final class FireRources {
   // DELETEs
   /// delete deck resource by id
   static Future<void> deleteDeck(String id) async {
-    final deckRef = getDecks().doc(id);
+    final deckRef = _decks.doc(id);
     try {
       final planksSnapshot = await getPlanks(id).get();
       final blocksSnapshot = await getBlocks(id).get();
@@ -334,14 +331,14 @@ final class FireRources {
 
   // OTHERs
   /// join user into the project
-  static Future<void> joinProject(String deckId, String userId) async {
-    final deckRef = getDecks().doc(deckId);
+  static Future<void> joinProject(String deckId, String uid) async {
+    final deckRef = _decks.doc(deckId);
     try {
       final docSnapshot = await deckRef.get();
       if (!docSnapshot.exists)
         throw Exception('ERROR: project "$deckId" does not exist');
       await deckRef.update({
-        'members': FieldValue.arrayUnion([userId]),
+        'members': FieldValue.arrayUnion([uid]),
       });
     } catch (exc) {
       debugPrint('! ERROR: joining user into the project; $exc');
