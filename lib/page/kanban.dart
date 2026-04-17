@@ -3,16 +3,16 @@ import 'package:sortack/_logics.dart';
 import 'package:sortack/_widgets.dart';
 
 class KanbanPage extends StatefulWidget {
-  final String id;
+  final ProjectDetails details;
 
-  const KanbanPage({super.key, required this.id});
+  const KanbanPage({super.key, required this.details});
 
   @override
   State<KanbanPage> createState() => _KanbanPageState();
 }
 
 class _KanbanPageState extends State<KanbanPage> {
-  late final DetailedDeck? board;
+  late final Deck? board;
   Map<String, UserProfile> membersProfiles = {};
   bool _isLoading = true;
 
@@ -28,12 +28,12 @@ class _KanbanPageState extends State<KanbanPage> {
 
   Future<void> _loadData() async {
     try {
-      final DetailedDeck loadedDeck = await FireRources.loadDeck<DetailedDeck>(
-        widget.id,
+      final Deck loadedDeck = await FireRources.loadDeck<Deck>(
+        widget.details.id,
       );
       board = loadedDeck;
       Map<String, UserProfile> loadedProfiles = {};
-      for (String uid in board!.details!.members) {
+      for (String uid in widget.details.members) {
         final profile = await FireRources.loadUserProfile(uid);
         if (profile != null) loadedProfiles[uid] = profile;
       }
@@ -127,7 +127,7 @@ class _KanbanPageState extends State<KanbanPage> {
             : (board == null || board!.planks.isEmpty)
             ? const Center(child: Icon(Icons.clear_rounded))
             : KanbanBoard(
-                id: widget.id,
+                id: widget.details.id,
                 columns: board!,
                 members: membersProfiles,
               ),
@@ -136,14 +136,14 @@ class _KanbanPageState extends State<KanbanPage> {
           ? null
           : FloatingActionButton(
               onPressed: () async {
-                final docRef = FireRources.getBlocks(widget.id).doc();
+                final docRef = FireRources.getBlocks(widget.details.id).doc();
                 final newBlock = Block(id: docRef.id, title: '...');
                 setState(() {
                   board!.pushBlock(newBlock);
                 });
                 try {
                   await FireRources.saveBlock(
-                    widget.id,
+                    widget.details.id,
                     board!.first.id,
                     newBlock,
                     board!.first.length - 1,

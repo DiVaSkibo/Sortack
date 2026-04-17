@@ -6,7 +6,7 @@ import 'package:sortack/page/kanban.dart';
 import 'package:sortack/page/scrum.dart';
 
 class ProjectCard extends StatefulWidget {
-  final DeckDetails details;
+  final ProjectDetails details;
 
   const ProjectCard({super.key, required this.details});
 
@@ -15,13 +15,13 @@ class ProjectCard extends StatefulWidget {
 }
 
 class _ProjectCardState extends State<ProjectCard> {
-  late final DeckDetailsController _deckDetailsController;
-  DeckDetails get details => _deckDetailsController.project;
+  late final ProjectDetailsController _deckDetailsController;
+  ProjectDetails get details => _deckDetailsController.project;
 
   @override
   void initState() {
     super.initState();
-    _deckDetailsController = DeckDetailsController(
+    _deckDetailsController = ProjectDetailsController(
       widget.details,
       onUnfocus: () async {
         try {
@@ -149,8 +149,8 @@ class _ProjectCardState extends State<ProjectCard> {
           context,
           MaterialPageRoute(
             builder: (context) => switch (details.methodology) {
-              Methodology.Kanban => KanbanPage(id: details.id),
-              Methodology.Scrum => ScrumPage(id: details.id),
+              Methodology.Kanban => KanbanPage(details: details),
+              Methodology.Scrum => ScrumPage(details: details),
             },
           ),
         );

@@ -174,8 +174,8 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
 
 /// project gradialog widget - gradialog for project settings
 class ProjectGradialog extends StatefulWidget {
-  final DeckDetails details;
-  final Function(DeckDetails) onAccept;
+  final ProjectDetails details;
+  final Function(ProjectDetails) onAccept;
   final Function() onCancel;
 
   const ProjectGradialog({
@@ -190,14 +190,14 @@ class ProjectGradialog extends StatefulWidget {
 }
 
 class _ProjectGradialogState extends State<ProjectGradialog> {
-  late final DeckDetailsController _projectController;
-  DeckDetails get project => _projectController.project;
+  late final ProjectDetailsController _projectController;
+  ProjectDetails get project => _projectController.project;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _projectController = DeckDetailsController(widget.details);
+    _projectController = ProjectDetailsController(widget.details);
   }
 
   @override

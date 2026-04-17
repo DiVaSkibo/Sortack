@@ -1,5 +1,26 @@
 import 'package:sortack/_tools.dart';
 
+/// final project details class
+final class ProjectDetails {
+  final String id;
+  String name;
+  String? description;
+  Methodology methodology;
+  DateTime created;
+  String owner;
+  List<String> members;
+
+  ProjectDetails({
+    required this.id,
+    required this.name,
+    required this.methodology,
+    this.description = '',
+    required this.created,
+    required this.owner,
+    List<String>? members,
+  }) : members = members ?? [];
+}
+
 /// base filter criteria class
 ///
 /// criterion = { key : value } entry

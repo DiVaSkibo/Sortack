@@ -8,7 +8,7 @@ final class KanbanColumn {
   final String deckId;
   final Plank tasks;
   final int order;
-  final Map<String, UserProfile> members;
+  final Map<String, UserProfile>? members;
   final VoidCallback onChanged;
   final Function()? onUnfocus;
   final Function(Plank) onDelete;
@@ -21,12 +21,11 @@ final class KanbanColumn {
     required this.deckId,
     required this.tasks,
     required this.order,
-    Map<String, UserProfile>? members,
+    this.members,
     required this.onChanged,
     this.onUnfocus,
     required this.onDelete,
-  }) : members = members ?? {},
-       _titleController = TextEditingController(text: tasks.title) {
+  }) : _titleController = TextEditingController(text: tasks.title) {
     _titleFocus.addListener(() async {
       if (!_titleFocus.hasFocus && _titleController.text != tasks.title) {
         tasks.title = _titleController.text;

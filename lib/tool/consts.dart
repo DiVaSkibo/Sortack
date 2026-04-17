@@ -61,7 +61,7 @@ enum Priority with Labeling, ComparableEnum<Priority> {
     critical => Icons.whatshot_rounded,
     veryHigh => Icons.keyboard_double_arrow_up_rounded,
     high => Icons.keyboard_arrow_up_rounded,
-    medium => Icons.wifi_1_bar_rounded, //Icons.remove_rounded,
+    medium => Icons.wifi_1_bar_rounded, //remove_rounded,
     low => Icons.keyboard_arrow_down_rounded,
     veryLow => Icons.keyboard_double_arrow_down_rounded,
     frozen => Icons.ac_unit_rounded,

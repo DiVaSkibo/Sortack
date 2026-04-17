@@ -3,9 +3,9 @@ import 'package:sortack/_logics.dart';
 import 'package:sortack/_widgets.dart';
 
 class ScrumPage extends StatefulWidget {
-  final String id;
+  final ProjectDetails details;
 
-  const ScrumPage({super.key, required this.id});
+  const ScrumPage({super.key, required this.details});
 
   @override
   State<ScrumPage> createState() => _ScrumPageState();
@@ -14,70 +14,9 @@ class ScrumPage extends StatefulWidget {
 class _ScrumPageState extends State<ScrumPage>
     with SingleTickerProviderStateMixin {
   late final AdvancedMapDeck? board;
-  //  = AdvancedMapDeck(
-  //   selectedKey: SCRUM_KEYS.first,
-  //   decks: {
-  //     'Product Backlog': AdvancedDeck(
-  //       planks: [
-  //         AdvancedPlank(
-  //           id: '!',
-  //           title: 'Product Backlog',
-  //           blocks: [
-  //             AdvancedBlock(id: '!', title: '1'),
-  //             AdvancedBlock(id: '@', title: '22'),
-  //             AdvancedBlock(id: '#', title: '333'),
-  //             AdvancedBlock(id: '%', title: '4444'),
-  //             AdvancedBlock(id: '^', title: '55555'),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //     'Sprint Backlog': AdvancedDeck(
-  //       planks: [
-  //         AdvancedPlank(
-  //           id: '@',
-  //           title: 'Sprint-1',
-  //           blocks: [
-  //             AdvancedBlock(id: '@', title: '22'),
-  //             AdvancedBlock(id: '%', title: '4444'),
-  //           ],
-  //         ),
-  //         AdvancedPlank(
-  //           id: '#',
-  //           title: 'Sprint-2',
-  //           blocks: [AdvancedBlock(id: '!', title: '1')],
-  //         ),
-  //         AdvancedPlank(
-  //           id: '%',
-  //           title: 'Sprint-3',
-  //           blocks: [
-  //             AdvancedBlock(id: '^', title: '55555'),
-  //             AdvancedBlock(id: '#', title: '333'),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //     'Increments': AdvancedDeck(
-  //       planks: [
-  //         AdvancedPlank(
-  //           id: '^',
-  //           title: 'Increment-1',
-  //           blocks: [
-  //             AdvancedBlock(id: '@', title: '22'),
-  //             AdvancedBlock(id: '%', title: '4444'),
-  //           ],
-  //         ),
-  //         AdvancedPlank(
-  //           id: '&',
-  //           title: 'Increment-2',
-  //           blocks: [AdvancedBlock(id: '!', title: '1')],
-  //         ),
-  //       ],
-  //     ),
-  //   },
-  // );
-  bool isLoading = true;
+  Map<String, UserProfile> membersProfiles = {};
   late TabController _tabController;
+  bool _isLoading = true;
 
   final SwitchDrawersController _switchDrawersController =
       SwitchDrawersController();
@@ -108,18 +47,23 @@ class _ScrumPageState extends State<ScrumPage>
     try {
       final AdvancedMapDeck loadedMapDeck =
           await FireRources.loadMapDeck<AdvancedMapDeck>(
-            widget.id,
+            widget.details.id,
             keys: SCRUM_KEYS,
           );
-      setState(() {
-        board = loadedMapDeck;
-        board!.selectedKey = SCRUM_KEYS.first;
-        isLoading = false;
-      });
+      board = loadedMapDeck;
+      board!.selectedKey = SCRUM_KEYS.first;
+      Map<String, UserProfile> loadedProfiles = {};
+      for (String uid in widget.details.members) {
+        final profile = await FireRources.loadUserProfile(uid);
+        if (profile != null) loadedProfiles[uid] = profile;
+      }
+      if (!mounted) return;
+      membersProfiles = loadedProfiles;
     } catch (exc) {
-      debugPrint('! ERROR: loading map deck; $exc');
+      debugPrint('! ERROR: on loading data; $exc');
+    } finally {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
@@ -198,29 +142,35 @@ class _ScrumPageState extends State<ScrumPage>
         },
       ),
       body: Ground(
-        child: isLoading
+        child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : (board == null || board!.planks.isEmpty)
             ? const Center(child: Icon(Icons.clear_rounded))
             : TabBarView(
                 controller: _tabController,
                 children: board!.values
-                    .map((value) => ScrumBoard(id: widget.id, tables: value))
+                    .map(
+                      (value) => ScrumBoard(
+                        id: widget.details.id,
+                        tables: value,
+                        members: membersProfiles,
+                      ),
+                    )
                     .toList(),
               ),
       ),
-      floatingActionButton: isLoading || board == null || board!.planks.isEmpty
+      floatingActionButton: _isLoading || board == null || board!.planks.isEmpty
           ? null
           : FloatingActionButton(
               onPressed: () async {
-                final docRef = FireRources.getBlocks(widget.id).doc();
+                final docRef = FireRources.getBlocks(widget.details.id).doc();
                 final newBlock = AdvancedBlock(id: docRef.id, title: '...');
                 setState(() {
                   board!.pushBlock(newBlock);
                 });
                 try {
                   await FireRources.saveBlock(
-                    widget.id,
+                    widget.details.id,
                     board![_tabController.index].id,
                     newBlock,
                     board![_tabController.index].length,

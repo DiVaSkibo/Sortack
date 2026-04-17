@@ -92,7 +92,7 @@ class _MenuPageState extends State<MenuPage> {
                   .map(
                     (doc) => ProjectCard(
                       key: ValueKey(doc.id),
-                      details: FireRources.loadDeckDetails(doc),
+                      details: FireRources.loadProjectDetails(doc),
                     ),
                   )
                   .toList(),
@@ -108,7 +108,7 @@ class _MenuPageState extends State<MenuPage> {
             onPressed: () => showDialog(
               context: context,
               builder: (context) => ProjectGradialog(
-                details: DeckDetails(
+                details: ProjectDetails(
                   id: '#',
                   name: '',
                   methodology: Methodology.Kanban,
@@ -126,7 +126,7 @@ class _MenuPageState extends State<MenuPage> {
               context: context,
               builder: (context) => JoinGradialog(),
             ),
-            child: Icon(Icons.explore_rounded),
+            child: Icon(Icons.travel_explore_rounded),
           ),
         ],
       ),

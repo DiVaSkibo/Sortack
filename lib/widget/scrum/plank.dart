@@ -7,6 +7,7 @@ class ScrumTable extends StatefulWidget {
   final String deckId;
   final Plank<AdvancedBlock> tasks;
   final int order;
+  final Map<String, UserProfile>? members;
   final VoidCallback onChanged;
   final Function()? onUnfocus;
   final Function(Plank<AdvancedBlock>) onDelete;
@@ -18,6 +19,7 @@ class ScrumTable extends StatefulWidget {
     required this.deckId,
     required this.tasks,
     required this.order,
+    this.members,
     required this.onChanged,
     this.onUnfocus,
     required this.onDelete,
@@ -109,6 +111,7 @@ class _ScrumTableState extends State<ScrumTable> {
                     plankId: tasks.id,
                     task: tasks[index],
                     order: index,
+                    members: widget.members,
                     onDelete: (what) {
                       setState(() {
                         tasks.pop(what);

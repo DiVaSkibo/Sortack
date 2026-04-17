@@ -114,10 +114,11 @@ class _KanbanCardState extends State<KanbanCard> {
     crossAxisAlignment: WrapCrossAlignment.center,
     children: [
       for (final assignee in task.assignee)
-        ChoiceChip(
-          label: Text(assignee), //widget.members[assignee]!.name),
-          selected: true,
-        ),
+        if (widget.members.containsKey(assignee))
+          ChoiceChip(
+            label: Text(widget.members[assignee]!.name),
+            selected: true,
+          ),
       InputChip(
         label: Icon(Icons.settings_input_composite_outlined),
         onPressed: () => showDialog(
@@ -175,8 +176,8 @@ class _KanbanCardState extends State<KanbanCard> {
           Wrap(
             alignment: WrapAlignment.spaceBetween,
             crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: MediaQuery.of(context).size.width / 30,
-            children: [_buildPoints(), const Spacer(), _buildDeadline()],
+            spacing: MediaQuery.of(context).size.width / 18,
+            children: [_buildPoints(), _buildDeadline()],
           ),
         ],
       ),

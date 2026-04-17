@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/firebase/documents.dart';
 import 'package:sortack/logic/firebase/authentications.dart';
+import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/_tasks.dart';
 
 /// firestore resources - get, load, save, update, delete and other resources
@@ -41,10 +42,10 @@ final class FireRources {
     return null;
   }
 
-  /// load deck details resource by doc
-  static DeckDetails loadDeckDetails(DocumentSnapshot doc) {
+  /// load project details resource by doc
+  static ProjectDetails loadProjectDetails(DocumentSnapshot doc) {
     final data = doc.data() as Document;
-    return DeckDetails(
+    return ProjectDetails(
       id: doc.id,
       name: data['name'],
       description: data['description'],
@@ -148,7 +149,6 @@ final class FireRources {
     final planksSnapshot = snapshots[1] as QuerySnapshot;
     final blocksSnapshot = snapshots[2] as QuerySnapshot;
     if (!deckSnapshot.exists) throw Exception('? Deck is not found');
-    final details = loadDeckDetails(deckSnapshot);
 
     // deck planks
     final Map planksMap = switch (T) {
@@ -183,12 +183,8 @@ final class FireRources {
 
     return switch (T) {
       const (AdvancedDeck) =>
-        AdvancedDetailedDeck(
-              details: details,
-              planks: planks as List<AdvancedPlank>,
-            )
-            as T,
-      _ => DetailedDeck(details: details, planks: planks as List<Plank>) as T,
+        AdvancedDeck(planks: planks as List<AdvancedPlank>) as T,
+      _ => Deck(planks: planks as List<Plank>) as T,
     };
   }
 
@@ -210,8 +206,8 @@ final class FireRources {
     await getUsers().doc(user.id).set(userToDoc(user), SetOptions(merge: true));
   }
 
-  /// save deck details resource
-  static Future<void> saveProject(DeckDetails details) async {
+  /// save project details resource
+  static Future<void> saveProject(ProjectDetails details) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) throw Exception('? User is not authorised...');
     final isNew = details.id.isEmpty || details.id == '#';
@@ -276,10 +272,7 @@ final class FireRources {
 
   // UPDATEs
   /// update planks order by deck id
-  static Future<void> updatePlanksOrder(
-    String deckId,
-    DetailedDeck deck,
-  ) async {
+  static Future<void> updatePlanksOrder(String deckId, Deck deck) async {
     final batch = FirebaseFirestore.instance.batch();
     for (int i = 0; i < deck.length; i++) {
       final plank = deck[i];

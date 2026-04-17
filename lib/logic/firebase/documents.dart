@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sortack/_tools.dart';
+import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/_tasks.dart';
 
 typedef Document = Map<String, dynamic>;
@@ -40,7 +41,7 @@ Document plankToDoc(Plank plank, int order, {String? key}) => <String, dynamic>{
   'order': order,
   'key': ?key,
 };
-Document detailsToDoc(DeckDetails deck) => <String, dynamic>{
+Document detailsToDoc(ProjectDetails deck) => <String, dynamic>{
   'name': deck.name.trim(),
   'description': deck.description,
   'methodology': deck.methodology.name,

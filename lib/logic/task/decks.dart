@@ -6,9 +6,6 @@ import 'package:sortack/logic/task/planks.dart';
 /// advanced deck - collection of advanced planks
 typedef AdvancedDeck = Deck<AdvancedPlank>;
 
-/// advanced detailed deck - collection of advanced planks with the deck details
-typedef AdvancedDetailedDeck = DetailedDeck<AdvancedPlank>;
-
 /// advanced map deck - key-value collections of advanced planks
 typedef AdvancedMapDeck = MapDeck<AdvancedPlank>;
 
@@ -55,33 +52,4 @@ interface class MapDeck<T extends Plank> extends Deck<T> {
   List<T> get planks => (decks[selectedKey] as Deck<T>).planks;
   Deck<T> get deck => decks[selectedKey] as Deck<T>;
   Deck<T> deckOf(String key) => decks[key] as Deck<T>;
-}
-
-/// detailed task deck interface class - collection of task planks with details
-interface class DetailedDeck<T extends Plank> extends Deck<T> {
-  final DeckDetails? details;
-
-  DetailedDeck({super.planks, super.listenable, required this.details})
-    : super();
-}
-
-/// final deck details class
-final class DeckDetails {
-  final String id;
-  String name;
-  String? description;
-  Methodology methodology;
-  DateTime created;
-  String owner;
-  List<String> members;
-
-  DeckDetails({
-    required this.id,
-    required this.name,
-    required this.methodology,
-    this.description = '',
-    required this.created,
-    required this.owner,
-    List<String>? members,
-  }) : members = members ?? [];
 }

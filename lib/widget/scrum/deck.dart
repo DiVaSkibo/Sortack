@@ -7,8 +7,14 @@ import 'package:sortack/widget/dialogs.dart';
 class ScrumBoard extends StatefulWidget {
   final String id;
   final AdvancedDeck tables;
+  final Map<String, UserProfile>? members;
 
-  const ScrumBoard({super.key, required this.id, required this.tables});
+  const ScrumBoard({
+    super.key,
+    required this.id,
+    required this.tables,
+    this.members,
+  });
 
   @override
   State<ScrumBoard> createState() => _ScrumBoardState();
@@ -39,6 +45,7 @@ class _ScrumBoardState extends State<ScrumBoard> {
                 deckId: id,
                 tasks: board[index],
                 order: index,
+                members: widget.members,
                 onChanged: () {
                   setState(() {});
                 },

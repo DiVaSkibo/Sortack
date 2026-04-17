@@ -8,6 +8,7 @@ class ScrumRow extends StatefulWidget {
   final String deckId, plankId;
   final AdvancedBlock task;
   final int order;
+  final Map<String, UserProfile> members;
   final Function(AdvancedBlock) onDelete;
 
   ScrumRow({
@@ -16,8 +17,10 @@ class ScrumRow extends StatefulWidget {
     required this.plankId,
     required this.task,
     required this.order,
+    Map<String, UserProfile>? members,
     required this.onDelete,
-  }) : super(key: key ?? ObjectKey(task));
+  }) : members = members ?? {},
+       super(key: key ?? ObjectKey(task));
 
   @override
   State<ScrumRow> createState() => _ScrumRowState();
@@ -146,26 +149,20 @@ class _ScrumRowState extends State<ScrumRow> {
   );
   Widget _buildAssignee() => Center(
     child: Wrap(
-      alignment: WrapAlignment.center,
-      runAlignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         for (final assignee in task.assignee)
-          ChoiceChip(label: Text(assignee), selected: true),
+          if (widget.members.containsKey(assignee))
+            ChoiceChip(
+              label: Text(widget.members[assignee]!.name),
+              selected: true,
+            ),
         InputChip(
           label: Icon(Icons.settings_input_composite_outlined),
           onPressed: () => showDialog(
             context: context,
             builder: (context) => ChipsGradialog(
-              values: {
-                'Me',
-                'You',
-                'Brain',
-                'Eye',
-                'Heart',
-                'Perfection',
-                'Chaos',
-              },
+              values: widget.members.values.toSet(),
               selected: task.assignee.toSet(),
               onPick: (assignee) {
                 Navigator.of(context).pop();

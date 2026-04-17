@@ -1,4 +1,5 @@
 import 'package:sortack/_tools.dart';
+import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/_tasks.dart';
 
 /// auth controller - control email and password
@@ -232,10 +233,10 @@ class AdvancedBlockController extends ChangeNotifier {
   }
 }
 
-/// deck details controller
-class DeckDetailsController extends ChangeNotifier {
-  final DeckDetails _project;
-  DeckDetails get project => _project;
+/// project details controller
+class ProjectDetailsController extends ChangeNotifier {
+  final ProjectDetails _project;
+  ProjectDetails get project => _project;
 
   late final TextEditingController nameController;
   late final TextEditingController descriptionController;
@@ -245,7 +246,7 @@ class DeckDetailsController extends ChangeNotifier {
   final FocusNode ownerFocus = FocusNode();
   final Function()? onUnfocus;
 
-  DeckDetailsController(this._project, {this.onUnfocus}) {
+  ProjectDetailsController(this._project, {this.onUnfocus}) {
     _initializeControllers();
     _setupFocusListeners();
   }
