@@ -72,7 +72,7 @@ class _MenuPageState extends State<MenuPage> {
             return Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.end,
               spacing: 50,
               runSpacing: 100,
               children: snapshot.data!.docs
