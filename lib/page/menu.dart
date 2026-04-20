@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_widgets.dart';
@@ -49,19 +48,7 @@ class _MenuPageState extends State<MenuPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 30,
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: _profile!.avatar,
-                    imageBuilder: (context, imageProvider) => CircleAvatar(
-                      backgroundImage: imageProvider,
-                      backgroundColor: Colours.UNFRONT,
-                    ),
-                    placeholder: (context, url) => const SizedBox.square(
-                      dimension: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    errorWidget: (context, url, error) =>
-                        CircleAvatar(backgroundColor: Colours.BAD),
-                  ),
+                  ProfileAvatar(name: _profile!.name, avatar: _profile!.avatar),
                   Text(_profile!.name),
                 ],
               ),

@@ -1,5 +1,9 @@
-import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:ui';
+import 'dart:ui_web' as ui_web;
+import 'package:web/web.dart' as web;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 
@@ -203,5 +207,59 @@ class _AuthViewState extends State<AuthView> {
         ],
       ),
     );
+  }
+}
+
+/// profile avatar widget
+class ProfileAvatar extends StatelessWidget {
+  final String name;
+  final String? avatar;
+  final double radius;
+
+  const ProfileAvatar({
+    super.key,
+    required this.name,
+    this.avatar,
+    this.radius = 20.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (avatar == null || avatar!.isEmpty)
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: Colours.SHADOW,
+        child: Text(name.isNotEmpty ? name[0] : ''),
+      );
+    if (kIsWeb) {
+      final String viewId = 'avatar-image-${avatar.hashCode}';
+      ui_web.platformViewRegistry.registerViewFactory(viewId, (int viewId) {
+        final web.HTMLImageElement img = web.HTMLImageElement()
+          ..src = avatar!
+          ..style.borderRadius = '50%'
+          ..style.width = '100%'
+          ..style.height = '100%'
+          ..style.objectFit = 'cover';
+        return img;
+      });
+      return SizedBox(
+        width: radius * 2,
+        height: radius * 2,
+        child: HtmlElementView(viewType: viewId),
+      );
+    } else
+      return CachedNetworkImage(
+        imageUrl: avatar!,
+        imageBuilder: (context, imageProvider) => CircleAvatar(
+          backgroundImage: imageProvider,
+          backgroundColor: Colours.UNFRONT,
+        ),
+        placeholder: (context, url) => const SizedBox.square(
+          dimension: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+        errorWidget: (context, url, error) =>
+            CircleAvatar(backgroundColor: Colours.BAD),
+      );
   }
 }
