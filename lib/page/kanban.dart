@@ -28,10 +28,12 @@ class _KanbanPageState extends State<KanbanPage> {
 
   Future<void> _loadData() async {
     try {
+      // board data
       final Deck loadedDeck = await FireRources.loadDeck<Deck>(
         widget.details.id,
       );
       board = loadedDeck;
+      // profiles data
       Map<String, UserProfile> loadedProfiles = {};
       for (String uid in widget.details.members) {
         final profile = await FireRources.loadUserProfile(uid);
@@ -45,6 +47,49 @@ class _KanbanPageState extends State<KanbanPage> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  void addTaskList() async {
+    // generate
+    final docRef = FireRources.getPlanks(widget.details.id).doc();
+    final newTaskList = Plank(id: docRef.id);
+    // display
+    setState(() {
+      board!.push(newTaskList);
+    });
+    // fire
+    try {
+      await FireRources.savePlank(
+        widget.details.id,
+        newTaskList,
+        board!.length - 1,
+      );
+    } catch (exc) {
+      debugPrint('! ERROR: creating new tasklist; $exc');
+    }
+  }
+
+  void addTask() async {
+    // generate
+    final docRef = FireRources.getBlocks(widget.details.id).doc();
+    final newTask = Block(id: docRef.id);
+    // check if no tasklists
+    if (board!.isEmpty) addTaskList();
+    // display
+    setState(() {
+      board!.pushBlock(newTask);
+    });
+    // fire
+    try {
+      await FireRources.saveBlock(
+        widget.details.id,
+        board!.first.id,
+        newTask,
+        board!.first.length - 1,
+      );
+    } catch (exc) {
+      debugPrint('! ERROR: creating new task; $exc');
     }
   }
 
@@ -63,17 +108,8 @@ class _KanbanPageState extends State<KanbanPage> {
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () {
-              setState(() {
-                board!.push(Plank(id: '#'));
-              });
-            },
+            onPressed: () => addTaskList(),
             icon: const Icon(Icons.add_box_outlined),
-          ),
-          IconButton(
-            onPressed: () => {},
-            //_kanbanBoard.pop(KanbanColumn(status: '...', tasks: [])),
-            icon: const Icon(Icons.indeterminate_check_box_outlined),
           ),
           PopupMenuButton<TaskParameters>(
             tooltip: 'sort',
@@ -135,23 +171,7 @@ class _KanbanPageState extends State<KanbanPage> {
       floatingActionButton: _isLoading || board == null || board!.planks.isEmpty
           ? null
           : FloatingActionButton(
-              onPressed: () async {
-                final docRef = FireRources.getBlocks(widget.details.id).doc();
-                final newBlock = Block(id: docRef.id, title: '...');
-                setState(() {
-                  board!.pushBlock(newBlock);
-                });
-                try {
-                  await FireRources.saveBlock(
-                    widget.details.id,
-                    board!.first.id,
-                    newBlock,
-                    board!.first.length - 1,
-                  );
-                } catch (exc) {
-                  debugPrint('! ERROR: creating new task; $exc');
-                }
-              },
+              onPressed: () => addTask(),
               child: const Icon(Icons.add_task_rounded),
             ),
     );

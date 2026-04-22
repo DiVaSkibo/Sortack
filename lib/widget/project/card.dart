@@ -39,6 +39,7 @@ class _ProjectCardState extends State<ProjectCard> {
 
   Future<void> _loadData() async {
     try {
+      // profiles data
       Map<String, UserProfile> loadedProfiles = {};
       for (String uid in widget.details.members) {
         final profile = await FireRources.loadUserProfile(uid);
@@ -52,6 +53,14 @@ class _ProjectCardState extends State<ProjectCard> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  void delete() async {
+    try {
+      await FireRources.deleteDeck(details.id);
+    } catch (exc) {
+      debugPrint('! ERROR: on deleting project; $exc');
     }
   }
 
@@ -182,11 +191,7 @@ class _ProjectCardState extends State<ProjectCard> {
                           builder: (context) => AcceptGradialog(
                             message:
                                 'Do you realy want to delete this project?...',
-                            onCancel: Navigator.of(context).pop,
-                            onAccept: () async {
-                              Navigator.of(context).pop();
-                              await FireRources.deleteDeck(details.id);
-                            },
+                            onAccept: () => delete(),
                             icon: Icons.remove_rounded,
                           ),
                         ),

@@ -26,6 +26,7 @@ class _ScrumPageState extends State<ScrumPage>
   void initState() {
     super.initState();
     _loadData();
+    // tab controller
     _tabController = TabController(length: SCRUM_KEYS.length, vsync: this);
     _tabController.addListener(() {
       var newKey = SCRUM_KEYS[_tabController.index];
@@ -45,6 +46,7 @@ class _ScrumPageState extends State<ScrumPage>
 
   Future<void> _loadData() async {
     try {
+      // board data
       final AdvancedMapDeck loadedMapDeck =
           await FireRources.loadMapDeck<AdvancedMapDeck>(
             widget.details.id,
@@ -52,6 +54,7 @@ class _ScrumPageState extends State<ScrumPage>
           );
       board = loadedMapDeck;
       board!.selectedKey = SCRUM_KEYS.first;
+      // profiles data
       Map<String, UserProfile> loadedProfiles = {};
       for (String uid in widget.details.members) {
         final profile = await FireRources.loadUserProfile(uid);
@@ -68,6 +71,49 @@ class _ScrumPageState extends State<ScrumPage>
     }
   }
 
+  void addTaskList() async {
+    // generate
+    final docRef = FireRources.getPlanks(widget.details.id).doc();
+    final newTaskList = AdvancedPlank(id: docRef.id);
+    // display
+    setState(() {
+      board!.push(newTaskList);
+    });
+    // fire
+    try {
+      await FireRources.savePlank(
+        widget.details.id,
+        newTaskList,
+        board!.length - 1,
+      );
+    } catch (exc) {
+      debugPrint('! ERROR: creating new tasklist; $exc');
+    }
+  }
+
+  void addTask() async {
+    // generate
+    final docRef = FireRources.getBlocks(widget.details.id).doc();
+    final newTask = AdvancedBlock(id: docRef.id);
+    // check if no tasklists
+    if (board!.isEmpty) addTaskList();
+    // display
+    setState(() {
+      board!.pushBlock(newTask);
+    });
+    // fire
+    try {
+      await FireRources.saveBlock(
+        widget.details.id,
+        board!.first.id,
+        newTask,
+        board!.first.length - 1,
+      );
+    } catch (exc) {
+      debugPrint('! ERROR: creating new task; $exc');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,11 +126,7 @@ class _ScrumPageState extends State<ScrumPage>
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () {
-              setState(() {
-                board!.push(AdvancedPlank(id: '#'));
-              });
-            },
+            onPressed: () => addTaskList(),
             icon: const Icon(Icons.add_box_outlined),
           ),
           PopupMenuButton<TaskParameters>(
@@ -162,24 +204,7 @@ class _ScrumPageState extends State<ScrumPage>
       floatingActionButton: _isLoading || board == null || board!.planks.isEmpty
           ? null
           : FloatingActionButton(
-              onPressed: () async {
-                final docRef = FireRources.getBlocks(widget.details.id).doc();
-                final newBlock = AdvancedBlock(id: docRef.id, title: '...');
-                setState(() {
-                  board!.pushBlock(newBlock);
-                });
-                try {
-                  await FireRources.saveBlock(
-                    widget.details.id,
-                    board![_tabController.index].id,
-                    newBlock,
-                    board![_tabController.index].length,
-                  );
-                  debugPrint('${board![_tabController.index].length - 1}');
-                } catch (exc) {
-                  debugPrint('! ERROR: creating new task; $exc');
-                }
-              },
+              onPressed: () => addTask(),
               child: const Icon(Icons.add_task_rounded),
             ),
     );

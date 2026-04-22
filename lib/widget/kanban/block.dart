@@ -55,6 +55,17 @@ class _KanbanCardState extends State<KanbanCard> {
     super.dispose();
   }
 
+  void delete() async {
+    // call parent
+    widget.onDelete(task);
+    // fire
+    try {
+      await FireRources.deleteBlock(widget.deckId, task.id);
+    } catch (exc) {
+      debugPrint('? ERROR: deleting task; $exc');
+    }
+  }
+
   Widget _buildTitle() => TextField(
     controller: _taskController.titleController,
     focusNode: _taskController.titleFocus,
@@ -126,11 +137,8 @@ class _KanbanCardState extends State<KanbanCard> {
           builder: (context) => ChipsGradialog(
             values: widget.members.values.toSet(),
             selected: task.assignee.toSet(),
-            onPick: (assignee) {
-              Navigator.of(context).pop();
-              _taskController.updateAssignee(assignee as Set<String>);
-            },
-            onCancel: Navigator.of(context).pop,
+            onPick: (assignee) =>
+                _taskController.updateAssignee(assignee as Set<String>),
           ),
         ),
       ),
@@ -161,12 +169,7 @@ class _KanbanCardState extends State<KanbanCard> {
             builder: (context) => AcceptGradialog(
               icon: Icons.delete_sweep_rounded,
               message: 'Do you realy want to delete this task?...',
-              onAccept: () async {
-                Navigator.of(context).pop();
-                widget.onDelete(task);
-                await FireRources.deleteBlock(widget.deckId, task.id);
-              },
-              onCancel: Navigator.of(context).pop,
+              onAccept: () => delete(),
             ),
           ),
           icon: const Icon(Icons.delete_sweep_outlined),

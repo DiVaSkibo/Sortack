@@ -33,6 +33,27 @@ class _KanbanBoardState extends State<KanbanBoard> {
     super.dispose();
   }
 
+  void updateTaskList(int index) async {
+    // fire
+    try {
+      await FireRources.savePlank(id, board[index], index);
+    } catch (exc) {
+      debugPrint('? ERROR: saving column changes; $exc');
+    }
+  }
+
+  void deleteTaskList(Plank taskList) async {
+    // delete tasks inside
+    for (final task in taskList.blocks)
+      await FireRources.deleteBlock(id, task.id);
+    // display
+    setState(() {
+      board.pop(taskList);
+    });
+    // fire
+    await FireRources.deletePlank(id, taskList.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
@@ -107,25 +128,12 @@ class _KanbanBoardState extends State<KanbanBoard> {
               onChanged: () {
                 setState(() {});
               },
-              onUnfocus: () async {
-                try {
-                  await FireRources.savePlank(id, board[index], index);
-                } catch (exc) {
-                  debugPrint('? ERROR: saving column changes; $exc');
-                }
-              },
+              onUnfocus: () => updateTaskList(index),
               onDelete: (plank) => showDialog(
                 context: context,
                 builder: (context) => AcceptGradialog(
-                  message: 'Do you realy want to delete this task?...',
-                  onCancel: Navigator.of(context).pop,
-                  onAccept: () async {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      board.pop(plank);
-                    });
-                    await FireRources.deletePlank(id, plank.id);
-                  },
+                  message: 'Do you realy want to delete this column?...',
+                  onAccept: () => deleteTaskList(plank),
                   icon: Icons.remove_rounded,
                 ),
               ),

@@ -51,15 +51,15 @@ class Gradialog extends StatelessWidget {
 /// accept gradialog widget - gradialog for accept action
 class AcceptGradialog extends StatelessWidget {
   final String? message;
-  final VoidCallback onAccept;
-  final VoidCallback onCancel;
+  final VoidCallback? onAccept;
+  final VoidCallback? onCancel;
   final IconData? icon;
 
   const AcceptGradialog({
     super.key,
     this.message,
-    required this.onAccept,
-    required this.onCancel,
+    this.onAccept,
+    this.onCancel,
     this.icon,
   });
 
@@ -73,7 +73,10 @@ class AcceptGradialog extends StatelessWidget {
         IconButton(
           iconSize: 18,
           icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
-          onPressed: onAccept,
+          onPressed: () {
+            Navigator.of(context).pop();
+            onAccept?.call();
+          },
           style: const ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(Colours.B),
             backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
@@ -82,7 +85,10 @@ class AcceptGradialog extends StatelessWidget {
         IconButton(
           iconSize: 18,
           icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
-          onPressed: onCancel,
+          onPressed: () {
+            Navigator.of(context).pop();
+            onCancel?.call();
+          },
           style: const ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(Colours.B),
             backgroundColor: WidgetStatePropertyAll(Colours.BAD),
@@ -97,15 +103,15 @@ class AcceptGradialog extends StatelessWidget {
 class ChipsGradialog extends StatefulWidget {
   final Set values;
   final Set? selected;
-  final Function(Set) onPick;
-  final VoidCallback onCancel;
+  final Function(Set)? onPick;
+  final VoidCallback? onCancel;
 
   const ChipsGradialog({
     super.key,
     required this.values,
     this.selected,
-    required this.onPick,
-    required this.onCancel,
+    this.onPick,
+    this.onCancel,
   });
 
   @override
@@ -152,7 +158,10 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
         IconButton(
           iconSize: 18,
           icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
-          onPressed: () => widget.onPick(selected),
+          onPressed: () {
+            Navigator.of(context).pop();
+            widget.onPick?.call(selected);
+          },
           style: const ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(Colours.B),
             backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
@@ -161,7 +170,10 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
         IconButton(
           iconSize: 18,
           icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
-          onPressed: widget.onCancel,
+          onPressed: () {
+            Navigator.of(context).pop();
+            widget.onCancel?.call();
+          },
           style: const ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(Colours.B),
             backgroundColor: WidgetStatePropertyAll(Colours.BAD),
@@ -174,16 +186,9 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
 
 /// project gradialog widget - gradialog for project settings
 class ProjectGradialog extends StatefulWidget {
-  final ProjectDetails details;
-  final Function(ProjectDetails) onAccept;
-  final Function() onCancel;
+  final ProjectDetails? details;
 
-  const ProjectGradialog({
-    super.key,
-    required this.details,
-    required this.onAccept,
-    required this.onCancel,
-  });
+  const ProjectGradialog({super.key, this.details});
 
   @override
   State<ProjectGradialog> createState() => _ProjectGradialogState();
@@ -197,7 +202,16 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
   @override
   void initState() {
     super.initState();
-    _projectController = ProjectDetailsController(widget.details);
+    _projectController = ProjectDetailsController(
+      widget.details ??
+          ProjectDetails(
+            id: '#',
+            name: '',
+            methodology: Methodology.Kanban,
+            created: DateTime.now(),
+            owner: '',
+          ),
+    );
   }
 
   @override
@@ -206,7 +220,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
     super.dispose();
   }
 
-  Future<void> _fireProject() async {
+  Future<void> fire() async {
     if (project.name.trim().isEmpty) return;
     setState(() => _isLoading = true);
     try {
@@ -274,7 +288,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
                 )
               : const Icon(Icons.create_new_folder_rounded),
           label: Text('create'),
-          onPressed: _isLoading ? null : _fireProject,
+          onPressed: _isLoading ? null : fire,
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(Colours.BOTTOM),
             textStyle: WidgetStatePropertyAll(Styles.TEXT_BUTTON_FILLED),

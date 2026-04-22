@@ -94,17 +94,7 @@ class _MenuPageState extends State<MenuPage> {
             child: Icon(Icons.add_box_rounded),
             onPressed: () => showDialog(
               context: context,
-              builder: (context) => ProjectGradialog(
-                details: ProjectDetails(
-                  id: '#',
-                  name: '',
-                  methodology: Methodology.Kanban,
-                  created: DateTime.now(),
-                  owner: '',
-                ),
-                onAccept: (_) {},
-                onCancel: () {},
-              ),
+              builder: (context) => ProjectGradialog(),
             ),
           ),
           FloatingActionButton(

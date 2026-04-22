@@ -164,11 +164,8 @@ class _ScrumRowState extends State<ScrumRow> {
             builder: (context) => ChipsGradialog(
               values: widget.members.values.toSet(),
               selected: task.assignee.toSet(),
-              onPick: (assignee) {
-                Navigator.of(context).pop();
-                _taskController.updateAssignee(assignee as Set<String>);
-              },
-              onCancel: Navigator.of(context).pop,
+              onPick: (assignee) =>
+                  _taskController.updateAssignee(assignee as Set<String>),
             ),
           ),
         ),
@@ -190,11 +187,8 @@ class _ScrumRowState extends State<ScrumRow> {
             builder: (context) => ChipsGradialog(
               values: Tag.values.toSet(),
               selected: task.tags.toSet(),
-              onPick: (tags) {
-                Navigator.of(context).pop();
-                _taskController.updateAssignee(tags as Set<String>);
-              },
-              onCancel: Navigator.of(context).pop,
+              onPick: (tags) =>
+                  _taskController.updateAssignee(tags as Set<String>),
             ),
           ),
         ),
