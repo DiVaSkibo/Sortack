@@ -37,7 +37,7 @@ enum Status with Labeling, ComparableEnum<Status> {
 
 /// task priority enum - task priority levels
 ///
-/// [critical, very high, high, medium, low, very low]
+/// [critical, very high, high, medium, low, very low, frozen]
 enum Priority with Labeling, ComparableEnum<Priority> {
   critical,
   veryHigh,
@@ -128,11 +128,15 @@ enum PointsTShirt with Labeling, Pointing {
 
 /// task tags enum - task tags
 ///
-/// [Design, Development, QA]
+/// [feature, bug, improvement, refactor, research, test, docs,]
 enum Tag with Labeling, ComparableEnum<Tag> {
-  Design,
-  Development,
-  QA;
+  feature,
+  bug,
+  improvement,
+  refactor,
+  research,
+  test,
+  docs;
 
   @override
   String get label => name;
