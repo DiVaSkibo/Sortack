@@ -70,7 +70,7 @@ class _ProjectCardState extends State<ProjectCard> {
     onEditingComplete: () => _deckDetailsController.nameFocus.unfocus(),
     onTapOutside: (event) => _deckDetailsController.nameFocus.unfocus(),
     style: Styles.TEXT_INPUT,
-    decoration: Decorations.INPUT_FIELD(
+    decoration: Decorations.INPUT_UNFIELD(
       collapsed: true,
       hintText: 'I call it ...',
     ),
@@ -83,7 +83,7 @@ class _ProjectCardState extends State<ProjectCard> {
     maxLines: 4,
     onTapOutside: (event) => _deckDetailsController.descriptionFocus.unfocus(),
     style: Styles.TEXT_INPUT_MULTILINE,
-    decoration: Decorations.INPUT_FIELD(
+    decoration: Decorations.INPUT_UNFIELD(
       collapsed: false,
       labelText: 'Description',
     ),

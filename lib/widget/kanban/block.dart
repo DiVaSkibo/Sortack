@@ -72,7 +72,7 @@ class _KanbanCardState extends State<KanbanCard> {
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
     onTapOutside: (event) => _taskController.titleFocus.unfocus(),
     style: Styles.TEXT_INPUT,
-    decoration: Decorations.INPUT_FIELD(
+    decoration: Decorations.INPUT_UNFIELD(
       collapsed: true,
       hintText: 'I have to do ...',
     ),
@@ -85,7 +85,7 @@ class _KanbanCardState extends State<KanbanCard> {
     maxLines: 4,
     onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
     style: Styles.TEXT_INPUT_MULTILINE,
-    decoration: Decorations.INPUT_FIELD(
+    decoration: Decorations.INPUT_UNFIELD(
       collapsed: false,
       labelText: 'Description',
     ),

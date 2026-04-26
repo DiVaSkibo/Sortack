@@ -239,7 +239,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
     onEditingComplete: () => _projectController.nameFocus.unfocus(),
     onTapOutside: (event) => _projectController.nameFocus.unfocus(),
     style: Styles.TEXT_INPUT,
-    decoration: Decorations.INPUT_FIELD(collapsed: true, hintText: 'Name'),
+    decoration: Decorations.INPUT_FIELD(hintText: 'Name'),
   );
   TextFormField _buildDescription() => TextFormField(
     controller: _projectController.descriptionController,
@@ -249,10 +249,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
     maxLines: 4,
     onTapOutside: (event) => _projectController.descriptionFocus.unfocus(),
     style: Styles.TEXT_INPUT_MULTILINE,
-    decoration: Decorations.INPUT_FIELD(
-      collapsed: false,
-      labelText: 'Description',
-    ),
+    decoration: Decorations.INPUT_FIELD(labelText: 'Description'),
   );
   PopupMenuButton _buildMethodology() => PopupMenuButton<Methodology>(
     tooltip: 'methodology',

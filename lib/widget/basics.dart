@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'dart:ui_web' as ui_web;
+import 'package:bordered_text/bordered_text.dart';
 import 'package:web/web.dart' as web;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -37,6 +38,7 @@ class Surface extends StatelessWidget {
   final double? width;
   final double? height;
   final Widget child;
+  final List<Widget>? actions;
 
   const Surface({
     super.key,
@@ -44,11 +46,12 @@ class Surface extends StatelessWidget {
     this.width,
     this.height,
     required this.child,
+    this.actions,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final surface = Container(
       padding: padding,
       width: width,
       height: height,
@@ -58,6 +61,26 @@ class Surface extends StatelessWidget {
       ),
       child: child,
     );
+    return actions == null
+        ? surface
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 30.0,
+            children: [
+              surface,
+              SizedBox(
+                width: 300.0,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  runAlignment: WrapAlignment.center,
+                  spacing: 10.0,
+                  runSpacing: 10.0,
+                  children: actions!,
+                ),
+              ),
+            ],
+          );
   }
 }
 
@@ -135,13 +158,13 @@ class _AuthViewState extends State<AuthView> {
   @override
   Widget build(BuildContext context) {
     return Surface(
+      padding: EdgeInsets.symmetric(vertical: 18.0),
       width: 300,
-      height: 300,
+      // ignore: sort_child_properties_last
       child: Wrap(
-        alignment: WrapAlignment.center,
+        alignment: WrapAlignment.spaceEvenly,
         runAlignment: WrapAlignment.center,
-        spacing: 11,
-        runSpacing: 22,
+        runSpacing: 15,
         children: [
           TextField(
             keyboardType: TextInputType.emailAddress,
@@ -149,11 +172,13 @@ class _AuthViewState extends State<AuthView> {
             focusNode: _authController.emailFocus,
             onEditingComplete: () => _authController.emailFocus.unfocus(),
             onTapOutside: (event) => _authController.emailFocus.unfocus(),
-            style: Styles.TEXT_INPUT,
-            decoration: Decorations.INPUT_FIELD(
-              collapsed: true,
-              hintText: 'I have to do ...',
+            style: TextStyle(
+              fontSize: 17,
+              fontFamily: Fonts.RUBIK,
+              fontWeight: FontWeight.w500,
+              color: Colours.W,
             ),
+            decoration: Decorations.INPUT_FIELD(hintText: 'My email is ...'),
           ),
           TextField(
             keyboardType: TextInputType.visiblePassword,
@@ -162,50 +187,66 @@ class _AuthViewState extends State<AuthView> {
             focusNode: _authController.passwordFocus,
             onEditingComplete: () => _authController.passwordFocus.unfocus(),
             onTapOutside: (event) => _authController.passwordFocus.unfocus(),
-            style: Styles.TEXT_INPUT,
-            decoration: Decorations.INPUT_FIELD(
-              collapsed: true,
-              hintText: 'I have to do ...',
+            style: TextStyle(
+              fontSize: 17,
+              fontFamily: Fonts.RUBIK,
+              fontWeight: FontWeight.w500,
+              color: Colours.W,
             ),
-          ),
-          FilledButton(
-            onPressed: () async {
-              dynamic user = await _auth.signUp(
-                email: _authController.email,
-                password: _authController.password,
-              );
-              if (user == null) debugPrint('! error with signing up user...');
-            },
-            child: Text('Sign up'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              dynamic user = await _auth.signIn(
-                email: _authController.email,
-                password: _authController.password,
-              );
-              if (user == null) debugPrint('! error with signing in user...');
-            },
-            child: Text('Sign in'),
-          ),
-          OutlinedButton.icon(
-            iconAlignment: IconAlignment.end,
-            onPressed: () async {
-              try {
-                dynamic user = await _auth.signInWithGoogle();
-                if (user == null) debugPrint('! error with signing in user...');
-              } catch (exc) {
-                debugPrint('ERROR: $exc');
-              }
-            },
-            label: Text('Use'),
-            icon: SvgPicture.asset(
-              'assets/icon/foreign/Google.svg',
-              height: 16,
-            ),
+            decoration: Decorations.INPUT_FIELD(hintText: 'My password is ...'),
           ),
         ],
       ),
+      actions: [
+        FilledButton(
+          style: Styles.BUTTON_LARGE,
+          child: BorderedText(
+            strokeColor: Colours.B,
+            strokeWidth: 4,
+            child: Text(
+              'Join it',
+              style: const TextStyle(
+                fontSize: 17,
+                fontFamily: Fonts.RUBIK,
+                color: Colours.CENTER,
+              ),
+            ),
+          ),
+          onPressed: () async {
+            dynamic user = await _auth.joinIt(
+              email: _authController.email,
+              password: _authController.password,
+            );
+            if (user == null)
+              debugPrint('! ERROR: on joining it; sign in/up user');
+          },
+        ),
+        OutlinedButton.icon(
+          iconAlignment: IconAlignment.end,
+          style: Styles.BUTTON_LARGE,
+          icon: SvgPicture.asset('assets/icon/foreign/Google.svg', height: 20),
+          label: BorderedText(
+            strokeColor: Colours.B,
+            strokeWidth: 4,
+            child: Text(
+              'Use',
+              style: const TextStyle(
+                fontSize: 17,
+                fontFamily: Fonts.RUBIK,
+                color: Colours.CENTER,
+              ),
+            ),
+          ),
+          onPressed: () async {
+            try {
+              dynamic user = await _auth.signInWithGoogle();
+              if (user == null) debugPrint('! error with signing in user...');
+            } catch (exc) {
+              debugPrint('ERROR: $exc');
+            }
+          },
+        ),
+      ],
     );
   }
 }

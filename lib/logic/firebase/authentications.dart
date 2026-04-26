@@ -51,6 +51,51 @@ class AuthHandler {
     }
   }
 
+  Future<User?> joinIt({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return userCredential.user;
+    } on FirebaseAuthException catch (signInError) {
+      if (signInError.code == 'user-not-found' ||
+          signInError.code == 'invalid-credential' ||
+          signInError.code == 'wrong-password') {
+        try {
+          final userCredential = await _auth.createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+          final user = userCredential.user;
+          if (user != null) {
+            final profile = UserProfile(
+              id: user.uid,
+              name: email.split('@').first,
+              email: user.email ?? email,
+              avatar: '',
+            );
+            await FireRources.saveUserProfile(profile);
+          }
+          return user;
+        } on FirebaseAuthException catch (signUpError) {
+          if (signUpError.code == 'email-already-in-use') {
+            throw Exception('? WARNING: wrong password');
+          } else if (signUpError.code == 'weak-password') {
+            throw Exception('? WARNING: weak password');
+          }
+          throw Exception(
+            signUpError.message ?? '! ERROR: on signing up user...',
+          );
+        }
+      }
+      throw Exception(signInError.message ?? '! ERROR: on signing in...');
+    }
+  }
+
   Future<User?> signInWithGoogle() async {
     try {
       final googleAccount = await _googleSignIn.signIn();

@@ -78,10 +78,6 @@ final class Gradients {
 
 /// styles static const class - custom static const styles
 final class Styles {
-  static const TEXT_MARKER = TextStyle(
-    fontFamily: Fonts.RUBIK_MARKER_HATCH,
-    fontSize: 44,
-  );
   static const TEXT_BUTTON_FILLED = TextStyle(
     fontSize: 15,
     fontFamily: Fonts.RUBIK,
@@ -109,11 +105,37 @@ final class Styles {
     fontStyle: FontStyle.italic,
     color: Colours.FRONT,
   );
+
+  static const BUTTON_LARGE = ButtonStyle(
+    visualDensity: VisualDensity(vertical: -2.0),
+    alignment: Alignment.center,
+  );
 }
 
 /// decorations static const class - custom static const decorations
 final class Decorations {
-  static InputDecoration INPUT_FIELD({
+  static InputDecoration INPUT_FIELD({String? labelText, String? hintText}) =>
+      InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
+        filled: true,
+        fillColor: Colours.o,
+        hoverColor: Colours.SHADOW,
+        labelText: labelText,
+        labelStyle: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+          color: Colours.UNTOP,
+        ),
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          fontStyle: FontStyle.italic,
+          color: Colours.UNTOP,
+        ),
+        floatingLabelAlignment: FloatingLabelAlignment.center,
+      );
+  static InputDecoration INPUT_UNFIELD({
     required bool collapsed,
     String? labelText,
     String? hintText,

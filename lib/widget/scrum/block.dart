@@ -68,10 +68,7 @@ class _ScrumRowState extends State<ScrumRow> {
       fontWeight: FontWeight.w400,
       color: Colours.W,
     ),
-    decoration: Decorations.INPUT_FIELD(
-      collapsed: true,
-      hintText: 'I have to do ...',
-    ),
+    decoration: Decorations.INPUT_FIELD(hintText: 'I have to do ...'),
   );
   Widget _buildDescription() => TextFormField(
     controller: _taskController.descriptionController,
@@ -86,10 +83,7 @@ class _ScrumRowState extends State<ScrumRow> {
       fontWeight: FontWeight.w300,
       color: Colours.W,
     ),
-    decoration: Decorations.INPUT_FIELD(
-      collapsed: false,
-      labelText: 'Description',
-    ),
+    decoration: Decorations.INPUT_FIELD(labelText: 'Description'),
   );
   Widget _buildDeadline() => Center(
     child: TextButton(
@@ -209,7 +203,7 @@ class _ScrumRowState extends State<ScrumRow> {
       fontStyle: FontStyle.italic,
       color: Colours.W,
     ),
-    decoration: Decorations.INPUT_FIELD(collapsed: false, labelText: 'Notes'),
+    decoration: Decorations.INPUT_FIELD(labelText: 'Notes'),
   );
 
   @override
