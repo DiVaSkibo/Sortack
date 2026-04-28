@@ -1,57 +1,21 @@
+import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sortack/logic/firebase/documents.dart';
 import 'package:sortack/logic/firebase/firestores.dart';
+import 'package:sortack/tool/consts.dart';
 
 class AuthHandler {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(
     clientId:
         '441522416299-dauq6s84p2n594rv019di2lqpmfl15qb.apps.googleusercontent.com',
   );
 
-  Future<User?> signUp({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final userCredentialential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      final user = userCredentialential.user;
-      if (user != null) {
-        final profile = UserProfile(
-          id: user.uid,
-          name: email.split('@').first,
-          email: user.email ?? email,
-          avatar: '',
-        );
-        await FireRources.saveUserProfile(profile);
-      }
-      return user;
-    } on FirebaseAuthException catch (exc) {
-      throw Exception(exc.message ?? '! ERROR: on signing up user...');
-    }
-  }
+  AuthHandler._();
 
-  Future<User?> signIn({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return userCredential.user;
-    } on FirebaseAuthException catch (exc) {
-      throw Exception(exc.message ?? '! ERROR: on signing in...');
-    }
-  }
-
-  Future<User?> joinIt({
+  static Future<User?> signUpin({
     required String email,
     required String password,
   }) async {
@@ -76,7 +40,8 @@ class AuthHandler {
               id: user.uid,
               name: email.split('@').first,
               email: user.email ?? email,
-              avatar: '',
+              avatar:
+                  'assets/avatar/AVATAR_${Random().nextInt(AVATARS[0])}_${Random().nextInt(AVATARS[1])}.png',
             );
             await FireRources.saveUserProfile(profile);
           }
@@ -96,7 +61,7 @@ class AuthHandler {
     }
   }
 
-  Future<User?> signInWithGoogle() async {
+  static Future<User?> signInWithGoogle() async {
     try {
       final googleAccount = await _googleSignIn.signIn();
       if (googleAccount == null) return null;
@@ -123,12 +88,12 @@ class AuthHandler {
     }
   }
 
-  Future<void> signOut() async {
+  static Future<void> signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
   }
 
-  Future<void> resetPassword({required String email}) async {
+  static Future<void> resetPassword({required String email}) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (exc) {

@@ -11,7 +11,6 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   UserProfile? _profile;
-  final AuthHandler _auth = AuthHandler();
   bool _isLoading = true;
 
   @override
@@ -56,7 +55,7 @@ class _MenuPageState extends State<MenuPage> {
         actions: [
           IconButton(
             onPressed: () async {
-              await _auth.signOut();
+              await AuthHandler.signOut();
             },
             icon: const Icon(Icons.exit_to_app_rounded, color: Colours.FRONT),
           ),

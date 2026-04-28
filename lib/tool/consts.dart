@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:sortack/tool/abstracts.dart';
 import 'package:sortack/tool/style.dart';
 
+const AVATARS = [7, 8];
+
 /// methodologies enum
 ///
 /// [kanban, scrum]

@@ -246,7 +246,6 @@ class AuthView extends StatefulWidget {
 }
 
 class _AuthViewState extends State<AuthView> {
-  final AuthHandler _auth = AuthHandler();
   final AuthController _authController = AuthController();
 
   @override
@@ -313,7 +312,7 @@ class _AuthViewState extends State<AuthView> {
             ),
           ),
           onPressed: () async {
-            dynamic user = await _auth.joinIt(
+            dynamic user = await AuthHandler.signUpin(
               email: _authController.email,
               password: _authController.password,
             );
@@ -341,7 +340,7 @@ class _AuthViewState extends State<AuthView> {
           ),
           onPressed: () async {
             try {
-              dynamic user = await _auth.signInWithGoogle();
+              dynamic user = await AuthHandler.signInWithGoogle();
               if (user == null)
                 debugPrint(
                   '! ERROR: on signing in user with Google; user is empty...',
