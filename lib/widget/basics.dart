@@ -84,6 +84,106 @@ class Surface extends StatelessWidget {
   }
 }
 
+class Overground extends StatelessWidget implements PreferredSizeWidget {
+  final Widget? title;
+  final List<Widget>? actions;
+
+  const Overground({super.key, this.title, this.actions});
+
+  @override
+  Size get preferredSize => Size.fromHeight(80.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leadingWidth: 300.0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(gradient: Gradients.UPDECK),
+        constraints: BoxConstraints.fromViewConstraints(
+          ViewConstraints(
+            minWidth: MediaQuery.of(context).size.width,
+            minHeight: 80.0,
+          ),
+        ),
+        child: title,
+      ),
+      leading: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 15,
+          children: [
+            SvgPicture.asset('assets/icon/Sortack.svg', height: 60.0),
+            Text(
+              'Sortack',
+              style: TextStyle(
+                fontFamily: Fonts.RUBIK_MARKER_HATCH,
+                fontSize: 21,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: actions,
+    );
+  }
+}
+
+/// profile avatar widget
+class ProfileAvatar extends StatelessWidget {
+  final String name;
+  final String? avatar;
+  final double radius;
+
+  const ProfileAvatar({
+    super.key,
+    required this.name,
+    this.avatar,
+    this.radius = 30.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (avatar == null || avatar!.isEmpty)
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: Colours.SHADOW,
+        child: Text(name.isNotEmpty ? name[0] : ''),
+      );
+    if (kIsWeb) {
+      final String viewId = 'avatar-image-${avatar.hashCode}';
+      ui_web.platformViewRegistry.registerViewFactory(viewId, (int viewId) {
+        final web.HTMLImageElement img = web.HTMLImageElement()
+          ..src = avatar!
+          ..style.borderRadius = '50%'
+          ..style.width = '100%'
+          ..style.height = '100%'
+          ..style.objectFit = 'cover';
+        return img;
+      });
+      return SizedBox(
+        width: radius * 2,
+        height: radius * 2,
+        child: HtmlElementView(viewType: viewId),
+      );
+    } else
+      return CachedNetworkImage(
+        imageUrl: avatar!,
+        imageBuilder: (context, imageProvider) => CircleAvatar(
+          backgroundImage: imageProvider,
+          backgroundColor: Colours.UNFRONT,
+        ),
+        placeholder: (context, url) => const SizedBox.square(
+          dimension: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+        errorWidget: (context, url, error) =>
+            CircleAvatar(backgroundColor: Colours.BAD),
+      );
+  }
+}
+
 /// blink box widget - blinking by click and changing a value
 class BlinkBox<T extends Labeling> extends StatefulWidget {
   final List<T> values;
@@ -218,7 +318,9 @@ class _AuthViewState extends State<AuthView> {
               password: _authController.password,
             );
             if (user == null)
-              debugPrint('! ERROR: on joining it; sign in/up user');
+              debugPrint(
+                '! ERROR: on joining it; sign in/up user; user is empty...',
+              );
           },
         ),
         OutlinedButton.icon(
@@ -240,67 +342,16 @@ class _AuthViewState extends State<AuthView> {
           onPressed: () async {
             try {
               dynamic user = await _auth.signInWithGoogle();
-              if (user == null) debugPrint('! error with signing in user...');
+              if (user == null)
+                debugPrint(
+                  '! ERROR: on signing in user with Google; user is empty...',
+                );
             } catch (exc) {
-              debugPrint('ERROR: $exc');
+              debugPrint('! ERROR: $exc');
             }
           },
         ),
       ],
     );
-  }
-}
-
-/// profile avatar widget
-class ProfileAvatar extends StatelessWidget {
-  final String name;
-  final String? avatar;
-  final double radius;
-
-  const ProfileAvatar({
-    super.key,
-    required this.name,
-    this.avatar,
-    this.radius = 20.0,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (avatar == null || avatar!.isEmpty)
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colours.SHADOW,
-        child: Text(name.isNotEmpty ? name[0] : ''),
-      );
-    if (kIsWeb) {
-      final String viewId = 'avatar-image-${avatar.hashCode}';
-      ui_web.platformViewRegistry.registerViewFactory(viewId, (int viewId) {
-        final web.HTMLImageElement img = web.HTMLImageElement()
-          ..src = avatar!
-          ..style.borderRadius = '50%'
-          ..style.width = '100%'
-          ..style.height = '100%'
-          ..style.objectFit = 'cover';
-        return img;
-      });
-      return SizedBox(
-        width: radius * 2,
-        height: radius * 2,
-        child: HtmlElementView(viewType: viewId),
-      );
-    } else
-      return CachedNetworkImage(
-        imageUrl: avatar!,
-        imageBuilder: (context, imageProvider) => CircleAvatar(
-          backgroundImage: imageProvider,
-          backgroundColor: Colours.UNFRONT,
-        ),
-        placeholder: (context, url) => const SizedBox.square(
-          dimension: 24,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
-        errorWidget: (context, url, error) =>
-            CircleAvatar(backgroundColor: Colours.BAD),
-      );
   }
 }

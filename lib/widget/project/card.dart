@@ -21,6 +21,15 @@ class _ProjectCardState extends State<ProjectCard> {
   Map<String, UserProfile> membersProfiles = {};
   bool _isLoading = true;
 
+  Color get colour => switch (details.methodology) {
+    Methodology.Kanban => Colours.HIGH,
+    Methodology.Scrum => Colours.LOW,
+  };
+  Color get colourVery => switch (details.methodology) {
+    Methodology.Kanban => Colours.VERY_HIGH,
+    Methodology.Scrum => Colours.VERY_LOW,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -70,9 +79,20 @@ class _ProjectCardState extends State<ProjectCard> {
     onEditingComplete: () => _deckDetailsController.nameFocus.unfocus(),
     onTapOutside: (event) => _deckDetailsController.nameFocus.unfocus(),
     style: Styles.TEXT_INPUT,
-    decoration: Decorations.INPUT_UNFIELD(
-      collapsed: true,
+    decoration: InputDecoration(
+      floatingLabelAlignment: FloatingLabelAlignment.center,
+      contentPadding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+      filled: true,
+      fillColor: Colours.o,
+      hoverColor: colour,
       hintText: 'I call it ...',
+      hintStyle: TextStyle(
+        fontSize: 15,
+        fontFamily: Fonts.RUBIK,
+        fontWeight: FontWeight.w600,
+        fontStyle: FontStyle.italic,
+        color: colourVery,
+      ),
     ),
   );
   Widget _buildDescription() => TextFormField(
@@ -83,41 +103,117 @@ class _ProjectCardState extends State<ProjectCard> {
     maxLines: 4,
     onTapOutside: (event) => _deckDetailsController.descriptionFocus.unfocus(),
     style: Styles.TEXT_INPUT_MULTILINE,
-    decoration: Decorations.INPUT_UNFIELD(
-      collapsed: false,
+    decoration: InputDecoration(
+      floatingLabelAlignment: FloatingLabelAlignment.center,
+      contentPadding: const EdgeInsets.fromLTRB(6.0, 12.0, 10.0, 18.0),
+      filled: true,
+      fillColor: Colours.o,
+      hoverColor: colour,
       labelText: 'Description',
+      labelStyle: TextStyle(
+        fontFamily: Fonts.RUBIK,
+        fontWeight: FontWeight.w500,
+        color: colourVery,
+      ),
     ),
   );
-  Widget _buildOwner() => Center(
-    child: Row(
-      children: [
-        ProfileAvatar(
-          name: membersProfiles[details.owner]!.name,
-          avatar: membersProfiles[details.owner]!.avatar,
-          radius: 17.5,
+  Widget _buildMethodology() => Center(
+    child: Chip(
+      label: Text(
+        details.methodology.label,
+        style: TextStyle(
+          fontSize: 13,
+          fontFamily: Fonts.RUBIK,
+          fontWeight: FontWeight.w600,
+          fontStyle: FontStyle.normal,
+          color: Colours.UNFRONT,
         ),
-        Text(membersProfiles[details.owner]!.name),
-      ],
+      ),
+      backgroundColor: colour,
+      side: BorderSide(
+        strokeAlign: BorderSide.strokeAlignCenter,
+        width: 3,
+        color: colourVery,
+      ),
     ),
   );
-  Widget _buildMembers() => Center(
-    child: Wrap(
-      children: [
-        for (final member in details.members)
-          if (member != details.owner)
-            Row(
-              children: [
-                ProfileAvatar(
-                  name: membersProfiles[member]!.name,
-                  avatar: membersProfiles[member]!.avatar,
-                  radius: 12.5,
-                ),
-                Text(membersProfiles[member]!.name),
-              ],
+  Widget _buildCreated() => Wrap(
+    alignment: WrapAlignment.end,
+    runAlignment: WrapAlignment.end,
+    crossAxisAlignment: WrapCrossAlignment.center,
+    spacing: 8,
+    runSpacing: 4,
+    children: [
+      Text(
+        'in',
+        style: TextStyle(
+          fontFamily: Fonts.RUBIK,
+          fontWeight: FontWeight.w500,
+          color: colourVery,
+        ),
+      ),
+      Text(details.created.ddMMMyyyy, style: Styles.TEXT_UN),
+    ],
+  );
+  Widget _buildOwner() => Wrap(
+    alignment: WrapAlignment.start,
+    runAlignment: WrapAlignment.start,
+    crossAxisAlignment: WrapCrossAlignment.center,
+    spacing: 8,
+    runSpacing: 4,
+    children: [
+      Text(
+        'by',
+        style: TextStyle(
+          fontFamily: Fonts.RUBIK,
+          fontWeight: FontWeight.w500,
+          color: colourVery,
+        ),
+      ),
+      ProfileAvatar(
+        name: membersProfiles[details.owner]!.name,
+        avatar: membersProfiles[details.owner]!.avatar,
+        radius: 20.0,
+      ),
+      Text(membersProfiles[details.owner]!.name, style: Styles.TEXT_UN),
+    ],
+  );
+  Widget? _buildMembers() => details.members.skip(1).isNotEmpty
+      ? Wrap(
+          alignment: WrapAlignment.end,
+          runAlignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            Text(
+              'with',
+              style: TextStyle(
+                fontFamily: Fonts.RUBIK,
+                fontWeight: FontWeight.w500,
+                color: colourVery,
+              ),
             ),
-      ],
-    ),
-  );
+            for (final member in details.members)
+              if (member != details.owner)
+                Wrap(
+                  alignment: WrapAlignment.start,
+                  runAlignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  runSpacing: 3,
+                  children: [
+                    ProfileAvatar(
+                      name: membersProfiles[member]!.name,
+                      avatar: membersProfiles[member]!.avatar,
+                      radius: 12.5,
+                    ),
+                    Text(membersProfiles[member]!.name, style: Styles.TEXT_UN),
+                  ],
+                ),
+          ],
+        )
+      : null;
 
   @override
   Widget build(BuildContext context) {
@@ -132,13 +228,21 @@ class _ProjectCardState extends State<ProjectCard> {
                 horizontal: 15.0,
                 vertical: 15.0,
               ),
-              width: 275,
+              width: 321.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25.0),
                   topRight: Radius.circular(5.0),
                   bottomLeft: Radius.circular(55.0),
                   bottomRight: Radius.circular(5.0),
+                ),
+                border: BoxBorder.all(
+                  strokeAlign: BorderSide.strokeAlignCenter,
+                  width: 6,
+                  color: switch (details.methodology) {
+                    Methodology.Kanban => Colours.HIGH,
+                    Methodology.Scrum => Colours.LOW,
+                  },
                 ),
                 gradient: RadialGradient(
                   center: AlignmentGeometry.topCenter,
@@ -149,29 +253,31 @@ class _ProjectCardState extends State<ProjectCard> {
                   },
                 ),
               ),
-              child: Wrap(
-                alignment: WrapAlignment.end,
-                spacing: 10,
-                runSpacing: 15,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 15,
                 children: [
                   _buildName(),
                   _buildDescription(),
                   Row(
-                    children: [
-                      Text('created in ${details.created.ddMMMyyyy}'),
-                      Spacer(),
-                      Chip(label: Text(details.methodology.label)),
-                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 10,
+                    children: [_buildOwner(), _buildCreated()],
                   ),
-                  Container(height: 100, color: Colours.UNBACK),
-                  _buildOwner(),
-                  _buildMembers(),
+                  ?_buildMembers(),
+                  SizedBox(height: 5.0),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.link_rounded),
+                        icon: Icon(
+                          Icons.link_rounded,
+                          size: 23,
+                          color: Colours.UNFRONT,
+                        ),
                         onPressed: () async {
                           await Clipboard.setData(
                             ClipboardData(text: details.id),
@@ -185,7 +291,13 @@ class _ProjectCardState extends State<ProjectCard> {
                           }
                         },
                       ),
+                      _buildMethodology(),
                       IconButton(
+                        icon: Icon(
+                          Icons.remove_rounded,
+                          size: 23,
+                          color: Colours.UNFRONT,
+                        ),
                         onPressed: () => showDialog(
                           context: context,
                           builder: (context) => AcceptGradialog(
@@ -195,7 +307,6 @@ class _ProjectCardState extends State<ProjectCard> {
                             icon: Icons.remove_rounded,
                           ),
                         ),
-                        icon: Icon(Icons.remove_rounded),
                       ),
                     ],
                   ),

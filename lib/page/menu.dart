@@ -11,6 +11,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   UserProfile? _profile;
+  final AuthHandler _auth = AuthHandler();
   bool _isLoading = true;
 
   @override
@@ -36,7 +37,7 @@ class _MenuPageState extends State<MenuPage> {
     if (currentUser == null)
       return Center(child: Icon(Icons.error_outline_rounded));
     return Scaffold(
-      appBar: AppBar(
+      appBar: Overground(
         title: _isLoading
             ? const SizedBox(
                 width: 24,
@@ -49,9 +50,17 @@ class _MenuPageState extends State<MenuPage> {
                 spacing: 30,
                 children: [
                   ProfileAvatar(name: _profile!.name, avatar: _profile!.avatar),
-                  Text(_profile!.name),
+                  Text(_profile!.name, style: Styles.TEXT_OVER),
                 ],
               ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await _auth.signOut();
+            },
+            icon: const Icon(Icons.exit_to_app_rounded, color: Colours.FRONT),
+          ),
+        ],
       ),
       body: Ground(
         scrollable: true,
@@ -88,10 +97,18 @@ class _MenuPageState extends State<MenuPage> {
         ),
       ),
       floatingActionButton: Wrap(
+        spacing: 25,
+        runSpacing: 25,
         children: [
           FloatingActionButton(
             heroTag: 'btnCreateProject',
-            child: Icon(Icons.add_box_rounded),
+            child: Icon(
+              Icons.add_box_rounded,
+              shadows: List.generate(
+                30,
+                (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+              ),
+            ),
             onPressed: () => showDialog(
               context: context,
               builder: (context) => ProjectGradialog(),
@@ -103,7 +120,13 @@ class _MenuPageState extends State<MenuPage> {
               context: context,
               builder: (context) => JoinGradialog(),
             ),
-            child: Icon(Icons.travel_explore_rounded),
+            child: Icon(
+              Icons.travel_explore_rounded,
+              shadows: List.generate(
+                30,
+                (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+              ),
+            ),
           ),
         ],
       ),

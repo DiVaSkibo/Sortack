@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 export 'package:flutter/material.dart';
 
-/// fonts static const class - custom static const fonts
+/// static consts fonts class - custom static const fonts
 final class Fonts {
   static const RUBIK = 'Rubik';
   static const RUBIK_ONE = 'Rubik One';
@@ -9,7 +9,7 @@ final class Fonts {
   static const RUBIK_MARKER_HATCH = 'Rubik Marker Hatch';
 }
 
-/// colours static const class - custom static const colours
+/// static const colours class - custom static const colours
 final class Colours {
   static const o = Colors.transparent;
   static const W = Color(0xFF_FFFFFF);
@@ -52,11 +52,16 @@ final class Colours {
   static const WARNING = Color(0xFF_6600FF);
 }
 
-/// gradients static const class - custom static const gradients
+/// static const gradients class - custom static const gradients
 final class Gradients {
   static const DECK = RadialGradient(
     center: Alignment.bottomCenter,
     radius: 1.0,
+    colors: [Colours.BACK_GLOW, Colours.UNBACK],
+  );
+  static const UPDECK = LinearGradient(
+    begin: AlignmentGeometry.topCenter,
+    end: AlignmentGeometry.bottomCenter,
     colors: [Colours.BACK_GLOW, Colours.UNBACK],
   );
   static const PLANK = RadialGradient(
@@ -76,8 +81,18 @@ final class Gradients {
   );
 }
 
-/// styles static const class - custom static const styles
+/// static const styles class - custom static const styles
 final class Styles {
+  static const TEXT_UN = TextStyle(
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w500,
+    color: Colours.B,
+  );
+  static const TEXT_OVER = TextStyle(
+    fontSize: 20,
+    fontFamily: Fonts.RUBIK_ONE,
+    color: Colours.W,
+  );
   static const TEXT_BUTTON_FILLED = TextStyle(
     fontSize: 15,
     fontFamily: Fonts.RUBIK,
@@ -112,7 +127,7 @@ final class Styles {
   );
 }
 
-/// decorations static const class - custom static const decorations
+/// static const decorations class - custom static const decorations
 final class Decorations {
   static InputDecoration INPUT_FIELD({String? labelText, String? hintText}) =>
       InputDecoration(
