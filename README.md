@@ -1,16 +1,16 @@
-# sortack
+# Sortack
 
-A new Flutter project.
+<img width="200" height="200" alt="Sortack-Logotype" src="assets/icon/Sortack.svg" />
 
-## Getting Started
+An agile project management and issue-tracking software
 
-This project is a starting point for a Flutter application.
+> [!NOTE]
+> Sortack designed to help teams plan, track, and manage their work efficiently. It offers a centralized platform for organizing tasks, bugs, and projects, supporting various methodologies like Scrum and Kanban through features  such as agile projects, backlogs, and reports.
 
-A few resources to get you started if this is your first Flutter project:
+## tools
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* Dart + Flutter
+* Firebase
+* GitHub
+* Miro + Figma
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
