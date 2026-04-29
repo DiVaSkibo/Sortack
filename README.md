@@ -12,6 +12,5 @@
 
 * Dart + Flutter
 * Firebase
-* GitHub
 * Miro + Figma
 
