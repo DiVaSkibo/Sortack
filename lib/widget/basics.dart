@@ -132,30 +132,27 @@ class Overground extends StatelessWidget implements PreferredSizeWidget {
 
 /// profile avatar widget
 class ProfileAvatar extends StatelessWidget {
-  final String name;
-  final String? avatar;
+  final UserProfile profile;
   final double radius;
 
-  const ProfileAvatar({
-    super.key,
-    required this.name,
-    this.avatar,
-    this.radius = 30.0,
-  });
+  const ProfileAvatar({super.key, required this.profile, this.radius = 30.0});
 
   @override
   Widget build(BuildContext context) {
-    if (avatar == null || avatar!.isEmpty)
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colours.SHADOW,
-        child: Text(name.isNotEmpty ? name[0] : ''),
+    if (profile.avatar.isEmpty)
+      FireRources.saveUserProfile(
+        UserProfile(
+          id: profile.id,
+          name: profile.id,
+          email: profile.email,
+          avatar: randAvatar(),
+        ),
       );
     if (kIsWeb) {
-      final String viewId = 'avatar-image-${avatar.hashCode}';
+      final String viewId = 'avatar-image-${profile.avatar.hashCode}';
       ui_web.platformViewRegistry.registerViewFactory(viewId, (int viewId) {
         final web.HTMLImageElement img = web.HTMLImageElement()
-          ..src = avatar!
+          ..src = profile.avatar
           ..style.borderRadius = '50%'
           ..style.width = '100%'
           ..style.height = '100%'
@@ -169,7 +166,7 @@ class ProfileAvatar extends StatelessWidget {
       );
     } else
       return CachedNetworkImage(
-        imageUrl: avatar!,
+        imageUrl: profile.avatar,
         imageBuilder: (context, imageProvider) => CircleAvatar(
           backgroundImage: imageProvider,
           backgroundColor: Colours.UNFRONT,
@@ -181,59 +178,6 @@ class ProfileAvatar extends StatelessWidget {
         errorWidget: (context, url, error) =>
             CircleAvatar(backgroundColor: Colours.BAD),
       );
-  }
-}
-
-/// blink box widget - blinking by click and changing a value
-class BlinkBox<T extends Labeling> extends StatefulWidget {
-  final List<T> values;
-  final List<Color> colors;
-  final int index;
-  final Function(T)? onBlink;
-
-  const BlinkBox({
-    super.key,
-    this.index = 0,
-    required this.values,
-    required this.colors,
-    this.onBlink,
-  });
-
-  @override
-  State<BlinkBox> createState() => _BlinkBoxState<T>();
-}
-
-class _BlinkBoxState<T extends Labeling> extends State<BlinkBox> {
-  late final List<T> values = widget.values as List<T>;
-  late final List<Color> colors = widget.colors;
-  late int index = widget.index;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          index = (index + 1) % values.length;
-        });
-        widget.onBlink?.call(values[index]);
-      },
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: colors[index],
-        child: Center(
-          child: Text(
-            values[index].label,
-            style: TextStyle(
-              fontSize: 14,
-              fontFamily: Fonts.RUBIK,
-              fontWeight: FontWeight.w600,
-              color: Colours.BACK_GLOW,
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

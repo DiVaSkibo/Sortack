@@ -2,8 +2,6 @@ import 'dart:math';
 import 'package:sortack/tool/abstracts.dart';
 import 'package:sortack/tool/style.dart';
 
-const AVATARS = [7, 8];
-
 /// methodologies enum
 ///
 /// [kanban, scrum]
@@ -221,5 +219,9 @@ const List<IconData> Unicons = [
 /// scrum keys for mapping tables
 const SCRUM_KEYS = ['Product Backlog', 'Sprint Backlog', 'Increments'];
 
+/// random avatar
+String randAvatar() =>
+    'assets/avatar/AVATAR_${Random().nextInt(7)}_${Random().nextInt(8)}.png';
+
 /// random useless icon, just for fun :P
-IconData unicon() => Unicons[Random().nextInt(Unicons.length)];
+IconData randUnicon() => Unicons[Random().nextInt(Unicons.length)];

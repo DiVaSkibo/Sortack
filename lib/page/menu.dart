@@ -10,7 +10,7 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-  UserProfile? _profile;
+  UserProfile? profile;
   bool _isLoading = true;
 
   @override
@@ -22,9 +22,9 @@ class _MenuPageState extends State<MenuPage> {
   Future<void> _loadProfile() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      final profile = await FireRources.loadUserProfile(uid);
+      final loadedProfile = await FireRources.loadUserProfile(uid);
       setState(() {
-        _profile = profile;
+        profile = loadedProfile;
         _isLoading = false;
       });
     }
@@ -48,8 +48,8 @@ class _MenuPageState extends State<MenuPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 30,
                 children: [
-                  ProfileAvatar(name: _profile!.name, avatar: _profile!.avatar),
-                  Text(_profile!.name, style: Styles.TEXT_OVER),
+                  ProfileAvatar(profile: profile!),
+                  Text(profile!.name, style: Styles.TEXT_OVER),
                 ],
               ),
         actions: [

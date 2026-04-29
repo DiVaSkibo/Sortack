@@ -170,11 +170,7 @@ class _ProjectCardState extends State<ProjectCard> {
           color: colourVery,
         ),
       ),
-      ProfileAvatar(
-        name: membersProfiles[details.owner]!.name,
-        avatar: membersProfiles[details.owner]!.avatar,
-        radius: 20.0,
-      ),
+      ProfileAvatar(profile: membersProfiles[details.owner]!, radius: 20.0),
       Text(membersProfiles[details.owner]!.name, style: Styles.TEXT_UN),
     ],
   );
@@ -204,8 +200,7 @@ class _ProjectCardState extends State<ProjectCard> {
                   runSpacing: 3,
                   children: [
                     ProfileAvatar(
-                      name: membersProfiles[member]!.name,
-                      avatar: membersProfiles[member]!.avatar,
+                      profile: membersProfiles[member]!,
                       radius: 12.5,
                     ),
                     Text(membersProfiles[member]!.name, style: Styles.TEXT_UN),

@@ -1,6 +1,5 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
-import 'package:sortack/widget/basics.dart';
 import 'package:sortack/widget/dialogs.dart';
 
 /// Scrum row class - advanced task block view for scrum methodology
@@ -101,11 +100,29 @@ class _ScrumRowState extends State<ScrumRow> {
       child: Text(task.deadline != null ? task.deadline!.ddMMMyyyy : '-'),
     ),
   );
-  Widget _buildStatus() => BlinkBox<Status>(
-    index: Status.values.indexOf(task.status),
-    values: Status.values,
-    colors: [for (final value in Status.values) value.colour],
-    onBlink: (value) => _taskController.updateStatus(value),
+  Widget _buildStatus() => InkWell(
+    child: Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: task.status.colour,
+      child: Center(
+        child: Text(
+          task.status.label,
+          style: TextStyle(
+            fontSize: 14,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w600,
+            color: Colours.BACK_GLOW,
+          ),
+        ),
+      ),
+    ),
+    onTap: () {
+      setState(() {
+        task.status =
+            Status.values[(task.status.index + 1) % Status.values.length];
+      });
+    },
   );
   Widget _buildPriority() => Center(
     child: PopupMenuButton<Priority>(

@@ -46,7 +46,7 @@ final class KanbanColumn {
         gradient: Gradients.PLANK,
         borderRadius: BorderRadius.circular(15.0),
       ),
-      contentsWhenEmpty: Icon(unicon(), size: 30),
+      contentsWhenEmpty: Icon(randUnicon(), size: 30),
       header: ListenableBuilder(
         listenable: _titleController,
         builder: (context, child) => TextField(

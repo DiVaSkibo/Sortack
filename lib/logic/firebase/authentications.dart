@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -40,8 +39,7 @@ class AuthHandler {
               id: user.uid,
               name: email.split('@').first,
               email: user.email ?? email,
-              avatar:
-                  'assets/avatar/AVATAR_${Random().nextInt(AVATARS[0])}_${Random().nextInt(AVATARS[1])}.png',
+              avatar: randAvatar(),
             );
             await FireRources.saveUserProfile(profile);
           }
