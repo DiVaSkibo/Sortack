@@ -13,7 +13,7 @@ class ScrumPage extends StatefulWidget {
 
 class _ScrumPageState extends State<ScrumPage>
     with SingleTickerProviderStateMixin {
-  late final AdvancedMapDeck? board;
+  late final AdvancedMapDeck<ScrumArtefact>? board;
   Map<String, UserProfile> membersProfiles = {};
   late TabController _tabController;
   bool _isLoading = true;
@@ -32,7 +32,7 @@ class _ScrumPageState extends State<ScrumPage>
       vsync: this,
     );
     _tabController.addListener(() {
-      var newKey = ScrumArtefact.values[_tabController.index].label;
+      var newKey = ScrumArtefact.values[_tabController.index];
       if (board!.selectedKey == newKey) return;
       setState(() {
         board!.selectedKey = newKey;
@@ -50,15 +50,13 @@ class _ScrumPageState extends State<ScrumPage>
   Future<void> _loadData() async {
     try {
       // board data
-      final AdvancedMapDeck loadedMapDeck =
-          await FireRources.loadMapDeck<AdvancedMapDeck>(
-            widget.details.id,
-            keys: ScrumArtefact.values
-                .map((artefact) => artefact.label)
-                .toList(),
-          );
+      final AdvancedMapDeck<ScrumArtefact> loadedMapDeck =
+          await FireRources.loadMapDeck<
+            AdvancedMapDeck<ScrumArtefact>,
+            ScrumArtefact
+          >(widget.details.id);
       board = loadedMapDeck;
-      board!.selectedKey = ScrumArtefact.productBacklog.label;
+      board!.selectedKey = ScrumArtefact.productBacklog;
       // profiles data
       Map<String, UserProfile> loadedProfiles = {};
       for (String uid in widget.details.members) {
@@ -217,7 +215,7 @@ class _ScrumPageState extends State<ScrumPage>
       floatingActionButton: _isLoading || board == null
           ? null
           : switch (board!.selectedKey) {
-              'Product Backlog' => FloatingActionButton(
+              ScrumArtefact.productBacklog => FloatingActionButton(
                 heroTag: 'btnAddTask',
                 child: Icon(
                   Icons.add_task_rounded,
@@ -228,7 +226,7 @@ class _ScrumPageState extends State<ScrumPage>
                 ),
                 onPressed: () => addTask(),
               ),
-              'Sprint Backlog' => FloatingActionButton(
+              ScrumArtefact.sprintBacklog => FloatingActionButton(
                 heroTag: 'btnAddSprint',
                 child: Icon(
                   Icons.add_card_rounded,
@@ -239,7 +237,7 @@ class _ScrumPageState extends State<ScrumPage>
                 ),
                 onPressed: () => addTaskList(),
               ),
-              'Increments' => FloatingActionButton(
+              ScrumArtefact.increments => FloatingActionButton(
                 heroTag: 'btnAddIncrement',
                 child: Icon(
                   Icons.add_card_rounded,

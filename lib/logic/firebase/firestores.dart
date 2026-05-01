@@ -4,6 +4,7 @@ import 'package:sortack/logic/firebase/documents.dart';
 import 'package:sortack/logic/firebase/authentications.dart';
 import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/_tasks.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables
 
 /// firestore resources - get, load, save, update, delete and other resources
 final class FireRources {
@@ -34,7 +35,7 @@ final class FireRources {
       if (docSnapshot.exists && docSnapshot.data() != null)
         return docToUser(docSnapshot.data()!, docSnapshot.id);
     } catch (exc) {
-      debugPrint('! ERROR: loading user profile; $e');
+      debugPrint('! ERROR: loading user profile; $exc');
     }
     return null;
   }
@@ -58,10 +59,15 @@ final class FireRources {
   }
 
   /// load map deck resource by id
-  static Future<T> loadMapDeck<T extends MapDeck>(
-    String id, {
-    required List<String> keys,
-  }) async {
+  static Future<T> loadMapDeck<T extends MapDeck, F extends Artefact>(
+    String id,
+  ) async {
+    // keys list
+    final List<F> keys = switch (F) {
+      const (ScrumArtefact) => ScrumArtefact.values as List<F>,
+      _ => ScrumArtefact.values as List<F>,
+    };
+    // blocks and planks getters
     final deckRef = _decks.doc(id);
     final snapshots = await Future.wait([
       deckRef.get(),
@@ -71,42 +77,52 @@ final class FireRources {
     final deckSnapshot = snapshots[0] as DocumentSnapshot;
     final planksSnapshot = snapshots[1] as QuerySnapshot;
     final blocksSnapshot = snapshots[2] as QuerySnapshot;
-    if (!deckSnapshot.exists) throw Exception('? Deck is not found');
+    if (!deckSnapshot.exists) throw Exception('? MISS: Deck is not found');
 
     // map deck planks
-    final Map planks = <String, List>{
-      for (var key in keys)
-        key: switch (T) {
-          const (AdvancedMapDeck) => <AdvancedPlank>[],
-          _ => <Plank>[],
-        },
-    };
-    final Map planksMap = switch (T) {
-      const (AdvancedMapDeck) => <String, AdvancedPlank>{},
-      _ => <String, Plank>{},
-    };
+    final Map planks = Map.fromIterable(
+      keys,
+      key: (element) => element,
+      value: (element) {
+        if (T == AdvancedMapDeck<F>)
+          return <AdvancedPlank>[];
+        else
+          return <Plank>[];
+      },
+    );
+    final Map planksMap;
+    if (T == AdvancedMapDeck<F>)
+      planksMap = <String, AdvancedPlank>{};
+    else
+      planksMap = <String, Plank>{};
     for (var doc in planksSnapshot.docs) {
-      final plank = switch (T) {
-        const (AdvancedMapDeck) => loadPlank<AdvancedPlank>(doc),
-        _ => loadPlank<Plank>(doc),
-      };
+      final plank;
+      if (T == AdvancedMapDeck<F>)
+        plank = loadPlank<AdvancedPlank>(doc);
+      else
+        plank = loadPlank<Plank>(doc);
       final data = doc.data() as Document;
-      final key = data['key'] as String? ?? keys.first;
+      final key = keys.firstWhere(
+        (x) => x.label == data['key'] as String,
+        orElse: () => keys.first,
+      );
       planksMap[doc.id] = plank;
-      if (!planks.containsKey(key))
-        planks[key] = switch (T) {
-          const (AdvancedMapDeck) => <AdvancedPlank>[],
-          _ => <Plank>[],
-        };
+      if (!planks.containsKey(key)) {
+        if (T == AdvancedMapDeck<F>)
+          planks[key] = <AdvancedPlank>[];
+        else
+          planks[key] = <Plank>[];
+      }
       planks[key]!.add(plank);
     }
 
     // map deck blocks
     for (var doc in blocksSnapshot.docs) {
-      final block = switch (T) {
-        const (AdvancedMapDeck) => loadBlock<AdvancedBlock>(doc),
-        _ => loadBlock<Block>(doc),
-      };
+      final block;
+      if (T == AdvancedMapDeck<F>)
+        block = loadBlock<AdvancedBlock>(doc);
+      else
+        block = loadBlock<Block>(doc);
       final data = doc.data() as Document;
       final plankId = data['plankId'] as String?;
       if (plankId != null && planksMap.containsKey(plankId))
@@ -114,24 +130,24 @@ final class FireRources {
     }
 
     // map deck decks
-    final decks = switch (T) {
-      const (AdvancedMapDeck) => <String, AdvancedDeck>{},
-      _ => <String, Deck>{},
-    };
+    final decks;
+    if (T == AdvancedMapDeck<F>)
+      decks = <F, AdvancedDeck>{};
+    else
+      decks = <F, Deck>{};
     for (var entry in planks.entries) {
-      decks[entry.key] = switch (T) {
-        const (AdvancedMapDeck) => AdvancedDeck(
+      if (T == AdvancedMapDeck<F>)
+        decks[entry.key] = AdvancedDeck(
           planks: entry.value as List<AdvancedPlank>,
-        ),
-        _ => Deck(planks: entry.value as List<Plank>),
-      };
+        );
+      else
+        decks[entry.key] = Deck(planks: entry.value as List<Plank>);
     }
 
-    return switch (T) {
-      const (AdvancedMapDeck) =>
-        AdvancedMapDeck(decks: decks as Map<String, AdvancedDeck>) as T,
-      _ => MapDeck(decks: decks) as T,
-    };
+    if (T == AdvancedMapDeck<F>)
+      return AdvancedMapDeck<F>(decks: decks as Map<F, AdvancedDeck>) as T;
+    else
+      return MapDeck<Plank, F>(decks: decks) as T;
   }
 
   /// load deck resource by id

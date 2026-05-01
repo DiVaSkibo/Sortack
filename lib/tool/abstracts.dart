@@ -33,6 +33,11 @@ mixin Pointing on Enum implements Comparable<Pointing> {
   int compareTo(other) => value - other.value;
 }
 
+abstract interface class Artefact {
+  String get label;
+  IconData get icon;
+}
+
 abstract interface class Parameters {
   Type type();
   List parameterValues();

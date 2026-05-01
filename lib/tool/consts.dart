@@ -156,7 +156,7 @@ enum Tag with Labeling, ComparableEnum<Tag> {
 }
 
 /// scrum artefact enum - scrum artefacts
-enum ScrumArtefact with Labeling {
+enum ScrumArtefact implements Artefact {
   productBacklog,
   sprintBacklog,
   increments;
@@ -167,6 +167,7 @@ enum ScrumArtefact with Labeling {
     sprintBacklog => 'Sprint Backlog',
     increments => 'Increments',
   };
+  @override
   IconData get icon => switch (this) {
     productBacklog => Icons.all_inbox_rounded,
     sprintBacklog => Icons.history_toggle_off_rounded,
