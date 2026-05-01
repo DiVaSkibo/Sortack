@@ -36,31 +36,22 @@ class _MenuPageState extends State<MenuPage> {
     if (currentUser == null)
       return Center(child: Icon(Icons.error_outline_rounded));
     return Scaffold(
-      appBar: Overground(
-        title: _isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 30,
-                children: [
-                  ProfileAvatar(profile: profile!),
-                  Text(profile!.name, style: Styles.TEXT_OVER),
-                ],
-              ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await AuthHandler.signOut();
-            },
-            icon: const Icon(Icons.exit_to_app_rounded, color: Colours.FRONT),
-          ),
-        ],
-      ),
+      appBar: _isLoading
+          ? Overground.loading()
+          : Overground(
+              profile: profile!,
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    await AuthHandler.signOut();
+                  },
+                  icon: const Icon(
+                    Icons.exit_to_app_rounded,
+                    color: Colours.UNFRONT,
+                  ),
+                ),
+              ],
+            ),
       body: Ground(
         scrollable: true,
         child: StreamBuilder(

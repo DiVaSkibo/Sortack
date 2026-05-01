@@ -96,54 +96,69 @@ class _KanbanPageState extends State<KanbanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kanban'),
-        flexibleSpace: const Icon(
-          Icons.view_kanban_rounded,
-          color: Colours.BOTTOM,
-        ),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.keyboard_return_rounded),
-        ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () => addTaskList(),
-            icon: const Icon(Icons.add_box_outlined),
-          ),
-          PopupMenuButton<TaskParameters>(
-            tooltip: 'sort',
-            initialValue: _buf['sort'],
-            icon: const Icon(Icons.sort_rounded),
-            itemBuilder: (context) => TaskParameters.values
-                .map(
-                  (value) =>
-                      PopupMenuItem(value: value, child: Icon(value.icon())),
-                )
-                .toList(),
-            onSelected: (TaskParameters value) {
-              setState(() {
-                _buf['sort'] = value;
-                board!.sort(by: value);
-              });
-            },
-          ),
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () =>
-                  _switchDrawersController.show(context, Drawers.filter),
-              icon: const Icon(Icons.filter_list_rounded),
+      appBar: _isLoading
+          ? Overground.loading()
+          : Overground(
+              icon: Icons.view_kanban_rounded,
+              title: widget.details.name,
+              iconColor: Colours.VERY_HIGH,
+              actions: [
+                IconButton(
+                  onPressed: () => addTaskList(),
+                  icon: const Icon(
+                    Icons.add_box_outlined,
+                    color: Colours.UNTOP,
+                  ),
+                ),
+                PopupMenuButton<TaskParameters>(
+                  tooltip: 'sort',
+                  initialValue: _buf['sort'],
+                  icon: const Icon(Icons.sort_rounded),
+                  itemBuilder: (context) => TaskParameters.values
+                      .map(
+                        (value) => PopupMenuItem(
+                          value: value,
+                          child: Icon(value.icon()),
+                        ),
+                      )
+                      .toList(),
+                  onSelected: (TaskParameters value) {
+                    setState(() {
+                      _buf['sort'] = value;
+                      board!.sort(by: value);
+                    });
+                  },
+                ),
+                Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () =>
+                        _switchDrawersController.show(context, Drawers.filter),
+                    icon: const Icon(
+                      Icons.filter_alt_outlined,
+                    ), //filter_list_rounded
+                  ),
+                ),
+                Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () =>
+                        _switchDrawersController.show(context, Drawers.help),
+                    icon: const Icon(
+                      Icons.help_rounded,
+                      color: Colours.UNBOTTOM,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(
+                    Icons.exit_to_app_rounded,
+                    color: Colours.UNFRONT,
+                  ),
+                ),
+              ],
             ),
-          ),
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () =>
-                  _switchDrawersController.show(context, Drawers.help),
-              icon: const Icon(Icons.blur_on_rounded),
-            ),
-          ),
-        ],
-      ),
       endDrawer: ValueListenableBuilder(
         valueListenable: _switchDrawersController,
         builder: (context, drawer, child) => switch (drawer) {
@@ -168,11 +183,18 @@ class _KanbanPageState extends State<KanbanPage> {
                 members: membersProfiles,
               ),
       ),
-      floatingActionButton: _isLoading || board == null || board!.planks.isEmpty
+      floatingActionButton: _isLoading || board == null
           ? null
           : FloatingActionButton(
+              heroTag: 'btnAddTask',
+              child: Icon(
+                Icons.add_task_rounded,
+                shadows: List.generate(
+                  30,
+                  (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                ),
+              ),
               onPressed: () => addTask(),
-              child: const Icon(Icons.add_task_rounded),
             ),
     );
   }

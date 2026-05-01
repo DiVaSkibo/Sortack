@@ -308,19 +308,19 @@ class MyApp extends StatelessWidget {
         ),
         tabBarTheme: const TabBarThemeData(
           tabAlignment: TabAlignment.fill,
-          labelColor: Colours.UNFRONT,
+          dividerHeight: 2.25,
+          labelColor: Colours.W,
+          unselectedLabelColor: Colours.GLOSS,
+          indicatorColor: Colours.UNFRONT,
+          dividerColor: Colours.o,
           labelStyle: TextStyle(
             fontFamily: Fonts.RUBIK,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
-          indicatorColor: Colours.FRONT,
-          unselectedLabelColor: Colours.GLOSS,
           unselectedLabelStyle: TextStyle(
             fontFamily: Fonts.RUBIK,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
-          dividerHeight: 2.25,
-          dividerColor: Colours.WARNING,
         ),
         appBarTheme: const AppBarTheme(
           actionsPadding: EdgeInsets.symmetric(horizontal: 40.0),

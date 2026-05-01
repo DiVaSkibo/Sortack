@@ -85,27 +85,84 @@ class Surface extends StatelessWidget {
 }
 
 class Overground extends StatelessWidget implements PreferredSizeWidget {
-  final Widget? title;
+  final IconData? icon;
+  final UserProfile? profile;
+  final String? title;
+  final Color? iconColor;
   final List<Widget>? actions;
+  final TabController? tabController;
+  final List<IconData>? tabIcons;
+  final List<String>? tabTitles;
 
-  const Overground({super.key, this.title, this.actions});
+  const Overground({
+    super.key,
+    this.icon,
+    this.profile,
+    this.title,
+    this.iconColor = Colours.W,
+    this.actions,
+    this.tabController,
+    this.tabIcons,
+    this.tabTitles,
+  });
+
+  const Overground.loading({super.key})
+    : icon = null,
+      profile = null,
+      title = null,
+      iconColor = null,
+      actions = null,
+      tabController = null,
+      tabIcons = null,
+      tabTitles = null;
 
   @override
-  Size get preferredSize => Size.fromHeight(80.0);
+  Size get preferredSize => Size.fromHeight(
+    tabIcons != null && tabIcons!.isNotEmpty ||
+            tabTitles != null && tabTitles!.isNotEmpty
+        ? 120.0
+        : 80.0,
+  );
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
+      automaticallyImplyActions: false,
       leadingWidth: 300.0,
       flexibleSpace: Container(
         decoration: BoxDecoration(gradient: Gradients.UPDECK),
         constraints: BoxConstraints.fromViewConstraints(
           ViewConstraints(
             minWidth: MediaQuery.of(context).size.width,
-            minHeight: 80.0,
+            minHeight: preferredSize.height,
           ),
         ),
-        child: title,
+        child:
+            icon == null && profile == null && title == null && actions == null
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Align(
+                alignment: AlignmentGeometry.topCenter,
+                child: SizedBox(
+                  height: 80.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 30,
+                    children: [
+                      if (profile != null) ProfileAvatar(profile: profile!),
+                      if (profile != null)
+                        Text(profile!.name, style: Styles.TEXT_OVER),
+                      if (icon != null) Icon(icon, size: 50, color: iconColor),
+                      if (title != null) Text(title!, style: Styles.TEXT_OVER),
+                    ],
+                  ),
+                ),
+              ),
       ),
       leading: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40.0),
@@ -126,6 +183,38 @@ class Overground extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: actions,
+      bottom:
+          tabIcons != null && tabIcons!.isNotEmpty ||
+              tabTitles != null && tabTitles!.isNotEmpty
+          ? TabBar(
+              controller: tabController,
+              tabs: [
+                for (
+                  int i = 0;
+                  i < min(tabIcons!.length, tabTitles!.length);
+                  i++
+                )
+                  Tab(
+                    height: 35.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 20,
+                      children: [
+                        Icon(tabIcons![i]),
+                        Text(
+                          tabTitles![i],
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: Fonts.RUBIK,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            )
+          : null,
     );
   }
 }

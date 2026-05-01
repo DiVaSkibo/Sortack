@@ -2,6 +2,19 @@ import 'dart:math';
 import 'package:sortack/tool/abstracts.dart';
 import 'package:sortack/tool/style.dart';
 
+/// easter egg icons
+const List<IconData> EASTER_EGG_ICONS = [
+  Icons.cruelty_free_outlined,
+  Icons.flutter_dash_outlined,
+  Icons.emoji_events_outlined,
+  Icons.diamond_outlined,
+  Icons.auto_awesome_outlined,
+  Icons.catching_pokemon_outlined,
+  Icons.golf_course_rounded,
+  Icons.local_pizza_rounded,
+  Icons.cake_outlined,
+];
+
 /// methodologies enum
 ///
 /// [kanban, scrum]
@@ -142,6 +155,25 @@ enum Tag with Labeling, ComparableEnum<Tag> {
   String get label => name;
 }
 
+/// scrum artefact enum - scrum artefacts
+enum ScrumArtefact with Labeling {
+  productBacklog,
+  sprintBacklog,
+  increments;
+
+  @override
+  String get label => switch (this) {
+    productBacklog => 'Product Backlog',
+    sprintBacklog => 'Sprint Backlog',
+    increments => 'Increments',
+  };
+  IconData get icon => switch (this) {
+    productBacklog => Icons.all_inbox_rounded,
+    sprintBacklog => Icons.history_toggle_off_rounded,
+    increments => Icons.extension_rounded,
+  };
+}
+
 /// task parameters enum - parameters of a task class
 ///
 /// [id, title, description, status, priority, points, role, assignee, notes]
@@ -199,29 +231,10 @@ enum TaskParameters implements Parameters {
 /// [help, info, control, filter]
 enum Drawers { help, info, control, filter }
 
-/// useless icons, just for fun :P
-const List<IconData> Unicons = [
-  Icons.outlined_flag_rounded,
-  Icons.auto_awesome_outlined,
-  Icons.pets_rounded,
-  Icons.flutter_dash_rounded,
-  Icons.catching_pokemon_rounded,
-  Icons.local_pizza_rounded,
-  Icons.cake_rounded,
-  Icons.rocket_launch_rounded,
-  Icons.golf_course_rounded,
-  Icons.bolt_rounded,
-  Icons.whatshot_rounded,
-  Icons.emoji_events_outlined,
-  Icons.diamond_outlined,
-];
-
-/// scrum keys for mapping tables
-const SCRUM_KEYS = ['Product Backlog', 'Sprint Backlog', 'Increments'];
-
 /// random avatar
 String randAvatar() =>
     'assets/avatar/AVATAR_${Random().nextInt(7)}_${Random().nextInt(8)}.png';
 
-/// random useless icon, just for fun :P
-IconData randUnicon() => Unicons[Random().nextInt(Unicons.length)];
+/// random easter egg icon
+IconData randEasterEggIcon() =>
+    EASTER_EGG_ICONS[Random().nextInt(EASTER_EGG_ICONS.length)];

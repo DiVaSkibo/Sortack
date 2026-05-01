@@ -27,9 +27,12 @@ class _ScrumPageState extends State<ScrumPage>
     super.initState();
     _loadData();
     // tab controller
-    _tabController = TabController(length: SCRUM_KEYS.length, vsync: this);
+    _tabController = TabController(
+      length: ScrumArtefact.values.length,
+      vsync: this,
+    );
     _tabController.addListener(() {
-      var newKey = SCRUM_KEYS[_tabController.index];
+      var newKey = ScrumArtefact.values[_tabController.index].label;
       if (board!.selectedKey == newKey) return;
       setState(() {
         board!.selectedKey = newKey;
@@ -50,10 +53,12 @@ class _ScrumPageState extends State<ScrumPage>
       final AdvancedMapDeck loadedMapDeck =
           await FireRources.loadMapDeck<AdvancedMapDeck>(
             widget.details.id,
-            keys: SCRUM_KEYS,
+            keys: ScrumArtefact.values
+                .map((artefact) => artefact.label)
+                .toList(),
           );
       board = loadedMapDeck;
-      board!.selectedKey = SCRUM_KEYS.first;
+      board!.selectedKey = ScrumArtefact.productBacklog.label;
       // profiles data
       Map<String, UserProfile> loadedProfiles = {};
       for (String uid in widget.details.members) {
@@ -117,59 +122,67 @@ class _ScrumPageState extends State<ScrumPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scrum'),
-        flexibleSpace: const Icon(Icons.cyclone_rounded, color: Colours.BOTTOM),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.keyboard_return_rounded),
-        ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () => addTaskList(),
-            icon: const Icon(Icons.add_box_outlined),
-          ),
-          PopupMenuButton<TaskParameters>(
-            tooltip: 'sort',
-            initialValue: _buf['sort'],
-            icon: const Icon(Icons.sort_rounded),
-            itemBuilder: (context) => TaskParameters.values
-                .map(
-                  (value) =>
-                      PopupMenuItem(value: value, child: Icon(value.icon())),
-                )
-                .toList(),
-            onSelected: (TaskParameters value) {
-              setState(() {
-                _buf['sort'] = value;
-                board!.sort(by: value);
-              });
-            },
-          ),
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () =>
-                  _switchDrawersController.show(context, Drawers.filter),
-              icon: const Icon(Icons.filter_list_rounded),
+      appBar: _isLoading
+          ? Overground.loading()
+          : Overground(
+              icon: Icons.change_circle_rounded,
+              iconColor: Colours.VERY_LOW,
+              title: widget.details.name,
+              actions: [
+                PopupMenuButton<TaskParameters>(
+                  tooltip: 'sort',
+                  initialValue: _buf['sort'],
+                  icon: const Icon(Icons.sort_rounded),
+                  itemBuilder: (context) => TaskParameters.values
+                      .map(
+                        (value) => PopupMenuItem(
+                          value: value,
+                          child: Icon(value.icon()),
+                        ),
+                      )
+                      .toList(),
+                  onSelected: (TaskParameters value) {
+                    setState(() {
+                      _buf['sort'] = value;
+                      board!.sort(by: value);
+                    });
+                  },
+                ),
+                Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () =>
+                        _switchDrawersController.show(context, Drawers.filter),
+                    icon: const Icon(Icons.filter_alt_outlined),
+                  ),
+                ),
+                Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () =>
+                        _switchDrawersController.show(context, Drawers.help),
+                    icon: const Icon(
+                      Icons.help_rounded,
+                      color: Colours.UNBOTTOM,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(
+                    Icons.exit_to_app_rounded,
+                    color: Colours.UNFRONT,
+                  ),
+                ),
+              ],
+              tabController: _tabController,
+              tabIcons: ScrumArtefact.values
+                  .map((artefact) => artefact.icon)
+                  .toList(),
+              tabTitles: ScrumArtefact.values
+                  .map((artefact) => artefact.label)
+                  .toList(),
             ),
-          ),
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () =>
-                  _switchDrawersController.show(context, Drawers.help),
-              icon: const Icon(Icons.blur_on_rounded),
-            ),
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(icon: Icon(Icons.production_quantity_limits_rounded)),
-            Tab(icon: Icon(Icons.swap_horizontal_circle_outlined)),
-            Tab(icon: Icon(Icons.text_increase_rounded)),
-          ],
-        ),
-      ),
       endDrawer: ValueListenableBuilder(
         valueListenable: _switchDrawersController,
         builder: (context, drawer, child) => switch (drawer) {
@@ -201,12 +214,44 @@ class _ScrumPageState extends State<ScrumPage>
                     .toList(),
               ),
       ),
-      floatingActionButton: _isLoading || board == null || board!.planks.isEmpty
+      floatingActionButton: _isLoading || board == null
           ? null
-          : FloatingActionButton(
-              onPressed: () => addTask(),
-              child: const Icon(Icons.add_task_rounded),
-            ),
+          : switch (board!.selectedKey) {
+              'Product Backlog' => FloatingActionButton(
+                heroTag: 'btnAddTask',
+                child: Icon(
+                  Icons.add_task_rounded,
+                  shadows: List.generate(
+                    30,
+                    (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                  ),
+                ),
+                onPressed: () => addTask(),
+              ),
+              'Sprint Backlog' => FloatingActionButton(
+                heroTag: 'btnAddSprint',
+                child: Icon(
+                  Icons.add_card_rounded,
+                  shadows: List.generate(
+                    30,
+                    (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                  ),
+                ),
+                onPressed: () => addTaskList(),
+              ),
+              'Increments' => FloatingActionButton(
+                heroTag: 'btnAddIncrement',
+                child: Icon(
+                  Icons.add_card_rounded,
+                  shadows: List.generate(
+                    30,
+                    (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                  ),
+                ),
+                onPressed: () => addTaskList(),
+              ),
+              _ => null,
+            },
     );
   }
 }
