@@ -393,3 +393,7 @@ class _AuthViewState extends State<AuthView> {
     );
   }
 }
+
+/// build random easter egg icon
+Icon buildEasterEgg({double? size}) =>
+    Icon(randEasterEggIcon(), size: size, color: Colours.HIGH);

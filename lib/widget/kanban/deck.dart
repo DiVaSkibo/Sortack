@@ -2,6 +2,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
+import 'package:sortack/widget/basics.dart';
 import 'package:sortack/widget/kanban/plank.dart';
 import 'package:sortack/widget/dialogs.dart';
 
@@ -86,6 +87,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           axis: Axis.horizontal,
           horizontalAlignment: MainAxisAlignment.center,
           verticalAlignment: CrossAxisAlignment.center,
+          contentsWhenEmpty: buildEasterEgg(size: 90),
           // Item
           lastItemTargetHeight: 133.3,
           itemDragOnLongPress: false,

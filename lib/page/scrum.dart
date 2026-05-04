@@ -121,7 +121,7 @@ class _ScrumPageState extends State<ScrumPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _isLoading
-          ? Overground.loading()
+          ? const Overground.loading()
           : Overground(
               icon: Icons.change_circle_rounded,
               iconColor: Colours.VERY_LOW,
@@ -198,7 +198,7 @@ class _ScrumPageState extends State<ScrumPage>
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : (board == null || board!.planks.isEmpty)
-            ? const Center(child: Icon(Icons.clear_rounded))
+            ? Center(child: buildEasterEgg(size: 90))
             : TabBarView(
                 controller: _tabController,
                 children: board!.values

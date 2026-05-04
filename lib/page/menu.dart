@@ -37,7 +37,7 @@ class _MenuPageState extends State<MenuPage> {
       return Center(child: Icon(Icons.error_outline_rounded));
     return Scaffold(
       appBar: _isLoading
-          ? Overground.loading()
+          ? const Overground.loading()
           : Overground(
               profile: profile!,
               actions: [
@@ -67,7 +67,7 @@ class _MenuPageState extends State<MenuPage> {
                 ),
               );
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
-              return Icon(Icons.cabin_rounded);
+              return Center(child: buildEasterEgg(size: 90));
             return Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,

@@ -1,6 +1,7 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
+import 'package:sortack/widget/basics.dart';
 import 'package:sortack/widget/dialogs.dart';
 import 'package:sortack/widget/kanban/block.dart';
 
@@ -101,7 +102,7 @@ final class KanbanColumn {
       verticalAlignment: CrossAxisAlignment.center,
       contentsWhenEmpty: Padding(
         padding: const EdgeInsets.only(top: 12.5),
-        child: Icon(randEasterEggIcon(), size: 45, color: Colours.HIGH),
+        child: buildEasterEgg(size: 45),
       ),
       decoration: BoxDecoration(
         gradient: Gradients.PLANK,
