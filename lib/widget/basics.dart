@@ -310,7 +310,10 @@ class _AuthViewState extends State<AuthView> {
               fontWeight: FontWeight.w500,
               color: Colours.W,
             ),
-            decoration: Decorations.INPUT_FIELD(hintText: 'My email is ...'),
+            decoration: Decorations.INPUT_FIELD(
+              hintText: 'My email is ...',
+              tipColor: Colours.FRONT,
+            ),
           ),
           TextField(
             keyboardType: TextInputType.visiblePassword,
@@ -325,7 +328,10 @@ class _AuthViewState extends State<AuthView> {
               fontWeight: FontWeight.w500,
               color: Colours.W,
             ),
-            decoration: Decorations.INPUT_FIELD(hintText: 'My password is ...'),
+            decoration: Decorations.INPUT_FIELD(
+              hintText: 'My password is ...',
+              tipColor: Colours.FRONT,
+            ),
           ),
         ],
       ),
@@ -363,7 +369,7 @@ class _AuthViewState extends State<AuthView> {
             strokeColor: Colours.B,
             strokeWidth: 4,
             child: Text(
-              'Use',
+              ' Use',
               style: const TextStyle(
                 fontSize: 17,
                 fontFamily: Fonts.RUBIK,

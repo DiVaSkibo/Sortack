@@ -66,7 +66,7 @@ class _KanbanPageState extends State<KanbanPage> {
         board!.length - 1,
       );
     } catch (exc) {
-      debugPrint('! ERROR: creating new tasklist; $exc');
+      debugPrint('! ERROR: on creating new tasklist; $exc');
     }
   }
 
@@ -89,7 +89,7 @@ class _KanbanPageState extends State<KanbanPage> {
         board!.first.length - 1,
       );
     } catch (exc) {
-      debugPrint('! ERROR: creating new task; $exc');
+      debugPrint('! ERROR: on creating new task; $exc');
     }
   }
 
@@ -97,7 +97,7 @@ class _KanbanPageState extends State<KanbanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _isLoading
-          ? Overground.loading()
+          ? const Overground.loading()
           : Overground(
               icon: Icons.view_kanban_rounded,
               title: widget.details.name,
@@ -174,7 +174,7 @@ class _KanbanPageState extends State<KanbanPage> {
       ),
       body: Ground(
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : (board == null || board!.planks.isEmpty)
             ? const Center(child: Icon(Icons.clear_rounded))
             : KanbanBoard(

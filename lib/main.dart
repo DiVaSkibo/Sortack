@@ -111,8 +111,9 @@ class MyApp extends StatelessWidget {
         ),
         iconButtonTheme: IconButtonThemeData(
           style: IconButton.styleFrom(
+            visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
             iconSize: 20,
-            visualDensity: VisualDensity.compact,
             foregroundColor: Colours.CENTER,
             disabledForegroundColor: Colours.UNCENTER,
             hoverColor: Colours.GLOSS,
@@ -121,11 +122,11 @@ class MyApp extends StatelessWidget {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            alignment: AlignmentGeometry.centerRight,
+            alignment: AlignmentGeometry.center,
             textStyle: const TextStyle(
               fontFamily: Fonts.RUBIK,
               fontWeight: FontWeight.w500,
-              fontSize: 13,
+              fontSize: 12,
             ),
             foregroundColor: Colours.TOP,
             overlayColor: Colours.UNTOP,
@@ -235,23 +236,26 @@ class MyApp extends StatelessWidget {
         ),
         expansionTileTheme: const ExpansionTileThemeData(
           expandedAlignment: Alignment.center,
-          childrenPadding: EdgeInsets.only(bottom: 7.5),
-          collapsedBackgroundColor: Colours.TOP,
-          backgroundColor: Colours.ACTOP,
-          collapsedTextColor: Colours.BACK_GLOW,
-          textColor: Colours.B,
-          collapsedIconColor: Colours.CENTER,
-          iconColor: Colours.CENTER,
+          //tilePadding: EdgeInsets.zero,
+          // childrenPadding: EdgeInsets.zero,
+          collapsedBackgroundColor: Colours.WARNING,
+          backgroundColor: Colours.WARNING,
+          // collapsedTextColor: Colours.BACK_GLOW,
+          // textColor: Colours.B,
+          // collapsedIconColor: Colours.CENTER,
+          // iconColor: Colours.CENTER,
         ),
         popupMenuTheme: const PopupMenuThemeData(
           position: PopupMenuPosition.under,
           color: Colours.BACK_GLOW,
-          surfaceTintColor: Colours.BACK,
+          surfaceTintColor: Colours.o,
           shadowColor: Colours.o,
           iconColor: Colours.CENTER,
           iconSize: 20,
-          textStyle: TextStyle(color: Colours.CENTER),
-          labelTextStyle: WidgetStatePropertyAll(TextStyle(color: Colours.TOP)),
+          textStyle: TextStyle(color: Colours.WARNING),
+          labelTextStyle: WidgetStatePropertyAll(
+            TextStyle(fontFamily: Fonts.RUBIK, color: Colours.W),
+          ),
         ),
         dropdownMenuTheme: const DropdownMenuThemeData(
           menuStyle: MenuStyle(
@@ -269,6 +273,72 @@ class MyApp extends StatelessWidget {
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        datePickerTheme: DatePickerThemeData(
+          backgroundColor: Colours.BACK,
+          headerBackgroundColor: Colours.BACK_GLOW,
+          headerForegroundColor: Colours.W,
+          subHeaderForegroundColor: Colours.FRONT,
+          dividerColor: Colours.o,
+          shadowColor: Colours.o,
+          dayBackgroundColor: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.selected) ? Colours.CENTER : null,
+          ),
+          dayForegroundColor: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.selected) ? Colours.B : null,
+          ),
+          yearBackgroundColor: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.selected) ? Colours.CENTER : null,
+          ),
+          yearForegroundColor: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.selected) ? Colours.B : null,
+          ),
+          todayBackgroundColor: WidgetStatePropertyAll(Colours.BOTTOM),
+          todayForegroundColor: WidgetStatePropertyAll(Colours.B),
+          todayBorder: const BorderSide(width: 0, color: Colours.o),
+          cancelButtonStyle: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(Colours.BAD),
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            textStyle: WidgetStatePropertyAll(
+              TextStyle(fontFamily: Fonts.RUBIK, fontWeight: FontWeight.w600),
+            ),
+          ),
+          confirmButtonStyle: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
+            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            textStyle: WidgetStatePropertyAll(
+              TextStyle(fontFamily: Fonts.RUBIK, fontWeight: FontWeight.w600),
+            ),
+          ),
+          headerHelpStyle: const TextStyle(
+            fontSize: 16,
+            fontFamily: Fonts.RUBIK,
+            fontStyle: FontStyle.italic,
+            color: Colours.UNFRONT,
+          ),
+          headerHeadlineStyle: const TextStyle(
+            fontSize: 33,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w700,
+            color: Colours.CENTER,
+          ),
+          weekdayStyle: const TextStyle(
+            fontFamily: Fonts.RUBIK_ONE,
+            color: Colours.UNFRONT,
+          ),
+          dayStyle: const TextStyle(
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w500,
+          ),
+          yearStyle: const TextStyle(
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w500,
+          ),
+          rangeSelectionOverlayColor: WidgetStatePropertyAll(Colours.CENTER),
         ),
         dialogTheme: const DialogThemeData(
           alignment: Alignment.centerRight,
@@ -291,20 +361,20 @@ class MyApp extends StatelessWidget {
           scrimColor: Colours.o,
         ),
         scrollbarTheme: ScrollbarThemeData(
-          interactive: true,
-          thumbVisibility: WidgetStateProperty.all(false),
-          trackVisibility: WidgetStateProperty.all(false),
-          thickness: WidgetStateProperty.all(4),
-          radius: const Radius.circular(4),
           crossAxisMargin: 2,
           mainAxisMargin: 20,
+          radius: const Radius.circular(4),
           minThumbLength: 20,
+          thickness: const WidgetStatePropertyAll(4),
+          interactive: true,
+          thumbVisibility: const WidgetStatePropertyAll(false),
+          trackVisibility: const WidgetStatePropertyAll(false),
           thumbColor: WidgetStateProperty.resolveWith(
             (states) => states.contains(WidgetState.dragged)
-                ? Colours.BOTTOM
-                : Colours.FRONT,
+                ? Colours.FRONT
+                : Colours.UNFRONT,
           ),
-          trackColor: WidgetStateProperty.all(Colours.BACK),
+          trackColor: WidgetStatePropertyAll(Colours.GLOSS),
         ),
         tabBarTheme: const TabBarThemeData(
           tabAlignment: TabAlignment.fill,

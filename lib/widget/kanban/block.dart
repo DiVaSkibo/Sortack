@@ -1,5 +1,6 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
+import 'package:sortack/widget/basics.dart';
 import 'package:sortack/widget/dialogs.dart';
 
 /// Kanban card widget - task block view
@@ -43,7 +44,7 @@ class _KanbanCardState extends State<KanbanCard> {
             widget.order,
           );
         } catch (exc) {
-          debugPrint('? ERROR: saving task changes; $exc');
+          debugPrint('? ERROR: on saving task changes; $exc');
         }
       },
     );
@@ -62,7 +63,7 @@ class _KanbanCardState extends State<KanbanCard> {
     try {
       await FireRources.deleteBlock(widget.deckId, task.id);
     } catch (exc) {
-      debugPrint('? ERROR: deleting task; $exc');
+      debugPrint('? ERROR: on deleting task; $exc');
     }
   }
 
@@ -72,9 +73,11 @@ class _KanbanCardState extends State<KanbanCard> {
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
     onTapOutside: (event) => _taskController.titleFocus.unfocus(),
     style: Styles.TEXT_INPUT,
-    decoration: Decorations.INPUT_UNFIELD(
-      collapsed: true,
+    decoration: Decorations.INPUT_FIELD(
+      padding: EdgeInsets.all(6.0),
       hintText: 'I have to do ...',
+      hoverColor: Colours.ACTOP,
+      tipColor: Colours.UNTOP,
     ),
   );
   Widget _buildDescription() => TextFormField(
@@ -85,104 +88,195 @@ class _KanbanCardState extends State<KanbanCard> {
     maxLines: 4,
     onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
     style: Styles.TEXT_INPUT_MULTILINE,
-    decoration: Decorations.INPUT_UNFIELD(
-      collapsed: false,
+    decoration: Decorations.INPUT_FIELD(
+      padding: EdgeInsets.all(12.0),
       labelText: 'Description',
-    ),
-  );
-  Widget _buildDeadline() => TextButton(
-    onPressed: () async {
-      DateTime? deadline = await showDatePicker(
-        context: context,
-        initialDate: task.deadline,
-        firstDate: DateTime(1800),
-        lastDate: DateTime(3000),
-      );
-      if (deadline != null) {
-        _taskController.updateDeadline(deadline);
-      }
-    },
-    child: Text(
-      task.deadline != null ? task.deadline!.ddMMMyyyy : '-',
-      style: Styles.TEXT_INPUT_MULTILINE,
+      hoverColor: Colours.ACTOP,
+      tipColor: Colours.UNTOP,
     ),
   );
   Widget _buildPoints() => PopupMenuButton<PointsTShirt>(
     tooltip: 'points',
     initialValue: task.points,
-    icon: Text(
-      task.points != null ? task.points!.label : '?',
-      style: Styles.TEXT_INPUT,
+    icon: SizedBox(
+      width: 40.0,
+      child: Center(
+        child: task.points != null
+            ? Text(task.points!.label, style: Styles.TEXT_INFO)
+            : const Icon(Icons.style_outlined, color: Colours.UNFRONT),
+      ),
     ),
-    itemBuilder: (context) => PointsTShirt.values
-        .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
-        .toList(),
+    itemBuilder: (context) => [
+      for (final value in PointsTShirt.values)
+        PopupMenuItem(
+          height: 30.0,
+          value: value,
+          child: Center(child: Text(value.label)),
+        ),
+    ],
+    constraints: const BoxConstraints.tightFor(),
     onSelected: (points) {
       _taskController.updatePoints(points);
     },
   );
+  Widget _buildDeadline() => SizedBox(
+    width: 110.0,
+    child: task.deadline != null
+        ? TextButton(
+            onPressed: () async {
+              DateTime? deadline = await showDatePicker(
+                context: context,
+                initialDate: task.deadline,
+                firstDate: DateTime(1800),
+                lastDate: DateTime(3000),
+              );
+              if (deadline != null) {
+                _taskController.updateDeadline(deadline);
+              }
+            },
+            child: Text(task.deadline!.ddMMMyyyy, style: Styles.TEXT_INFO),
+          )
+        : IconButton(
+            icon: const Icon(
+              Icons.alarm_rounded, //event_rounded
+              color: Colours.UNFRONT,
+            ),
+            onPressed: () async {
+              DateTime? deadline = await showDatePicker(
+                context: context,
+                initialDate: task.deadline,
+                firstDate: DateTime(1800),
+                lastDate: DateTime(3000),
+              );
+              if (deadline != null) {
+                _taskController.updateDeadline(deadline);
+              }
+            },
+          ),
+  );
   Widget _buildAssignee() => Wrap(
+    alignment: WrapAlignment.center,
+    runAlignment: WrapAlignment.center,
     crossAxisAlignment: WrapCrossAlignment.center,
+    spacing: 8,
+    runSpacing: 4,
     children: [
-      for (final assignee in task.assignee)
-        if (widget.members.containsKey(assignee))
-          ChoiceChip(
-            label: Text(widget.members[assignee]!.name),
-            selected: true,
-          ),
-      InputChip(
-        label: Icon(Icons.settings_input_composite_outlined),
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => ChipsGradialog(
-            values: widget.members.values.toSet(),
-            selected: task.assignee.toSet(),
-            onPick: (assignee) =>
-                _taskController.updateAssignee(assignee as Set<String>),
-          ),
+      const Text(
+        'to',
+        style: TextStyle(
+          fontSize: 13,
+          fontFamily: Fonts.RUBIK,
+          fontWeight: FontWeight.w500,
         ),
       ),
+      if (task.assignee.isEmpty)
+        IconButton(
+          icon: const Icon(Icons.person_add_rounded, size: 15),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => ChipsGradialog(
+              values: widget.members.values.toSet(),
+              selected: task.assignee.toSet(),
+              onPick: (assignee) =>
+                  _taskController.updateAssignee(assignee as Set<String>),
+            ),
+          ),
+        ),
+      for (final asign in task.assignee)
+        TextButton(
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => ChipsGradialog(
+              values: widget.members.values.toSet(),
+              selected: task.assignee.toSet(),
+              onPick: (assignee) =>
+                  _taskController.updateAssignee(assignee as Set<String>),
+            ),
+          ),
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 3,
+            children: [
+              ProfileAvatar(profile: widget.members[asign]!, radius: 12.5),
+              Text(widget.members[asign]!.name, style: Styles.TEXT_UN),
+            ],
+          ),
+        ),
     ],
   );
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _taskController,
-      builder: (context, child) => ExpansionTile(
-        maintainState: true,
-        expandedCrossAxisAlignment: CrossAxisAlignment.center,
-        collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(34),
-          side: BorderSide.none,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(34),
-          side: BorderSide.none,
-        ),
-        leading: const Icon(Icons.task_rounded),
-        title: _buildTitle(),
-        subtitle: _buildAssignee(),
-        trailing: IconButton(
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => AcceptGradialog(
-              icon: Icons.delete_sweep_rounded,
-              message: 'Do you realy want to delete this task?...',
-              onAccept: () => delete(),
+    return Padding(
+      padding: const EdgeInsets.all(2.5),
+      child: ListenableBuilder(
+        listenable: _taskController,
+        builder: (context, child) => ExpansionTile(
+          maintainState: true,
+          expandedCrossAxisAlignment: CrossAxisAlignment.center,
+          tilePadding: const EdgeInsets.only(
+            left: 10.0,
+            right: 10.0,
+            top: 0.0,
+            bottom: 7.5,
+          ),
+          childrenPadding: const EdgeInsets.only(bottom: 7.5),
+          collapsedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(34),
+            side: BorderSide.none,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(34),
+            side: BorderSide.none,
+          ),
+          collapsedBackgroundColor: Colours.TOP,
+          backgroundColor: Colours.MEDIUM,
+          collapsedIconColor: Colours.UNFRONT,
+          iconColor: Colours.UNFRONT,
+          collapsedTextColor: Colours.UNTOP,
+          textColor: Colours.UNTOP,
+          leading: const Icon(
+            Icons.drag_indicator_outlined,
+            size: 17,
+            color: Colours.FRONT,
+          ),
+          title: _buildTitle(),
+          subtitle: _buildAssignee(),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.delete_forever_rounded,
+              size: 18,
+              color: Colours.CENTER,
+              shadows: List.generate(
+                20,
+                (index) => Shadow(blurRadius: 0.75, color: Colours.B),
+              ),
+            ),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => AcceptGradialog(
+                icon: Icons.delete_sweep_rounded,
+                message: 'Do you realy want to delete this task?...',
+                onAccept: () => delete(),
+              ),
             ),
           ),
-          icon: const Icon(Icons.delete_sweep_outlined),
+          children: [
+            _buildDescription(),
+            const SizedBox(height: 9.0),
+            SizedBox(
+              width: double.infinity,
+              child: Wrap(
+                alignment: WrapAlignment.spaceEvenly,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [_buildPoints(), _buildDeadline()],
+              ),
+            ),
+          ],
         ),
-        children: [
-          _buildDescription(),
-          Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: MediaQuery.of(context).size.width / 18,
-            children: [_buildPoints(), _buildDeadline()],
-          ),
-        ],
       ),
     );
   }

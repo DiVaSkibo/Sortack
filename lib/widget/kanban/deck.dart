@@ -5,7 +5,7 @@ import 'package:sortack/_logics.dart';
 import 'package:sortack/widget/kanban/plank.dart';
 import 'package:sortack/widget/dialogs.dart';
 
-/// Kanban board widget - task board view with Kanban column children
+/// Kanban board widget - task deck view with Kanban column children
 class KanbanBoard extends StatefulWidget {
   final String id;
   final Deck columns;
@@ -38,7 +38,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
     try {
       await FireRources.savePlank(id, board[index], index);
     } catch (exc) {
-      debugPrint('? ERROR: saving column changes; $exc');
+      debugPrint('? ERROR: on saving column changes; $exc');
     }
   }
 
@@ -54,6 +54,26 @@ class _KanbanBoardState extends State<KanbanBoard> {
     await FireRources.deletePlank(id, taskList.id);
   }
 
+  List<DragAndDropList> _buildColumns() => List.generate(
+    board.length,
+    (index) => KanbanColumn(
+      deckId: id,
+      tasks: board[index],
+      order: index,
+      members: widget.members,
+      onChanged: () => setState(() {}),
+      onUnfocus: () => updateTaskList(index),
+      onDelete: (plank) => showDialog(
+        context: context,
+        builder: (context) => AcceptGradialog(
+          message: 'Do you realy want to delete this column?...',
+          onAccept: () => deleteTaskList(plank),
+          icon: Icons.remove_rounded,
+        ),
+      ),
+    ).build(),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
@@ -66,79 +86,68 @@ class _KanbanBoardState extends State<KanbanBoard> {
           axis: Axis.horizontal,
           horizontalAlignment: MainAxisAlignment.center,
           verticalAlignment: CrossAxisAlignment.center,
-          lastItemTargetHeight: 200,
+          // Item
+          lastItemTargetHeight: 133.3,
           itemDragOnLongPress: false,
-          listDragOnLongPress: false,
           itemDragHandle: DragHandle(
             onLeft: true,
             verticalAlignment: DragHandleVerticalAlignment.top,
-            child: Container(
-              width: 44,
-              height: 58,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadiusGeometry.only(
-                  topLeft: Radius.circular(34.0),
-                ),
-              ),
-            ),
+            child: Container(width: 38, height: 58, color: Colours.o),
           ),
-          itemGhostOpacity: 0.6,
+          itemGhostOpacity: 1.0,
           itemGhost: const DottedBorder(
             options: RoundedRectDottedBorderOptions(
+              borderPadding: EdgeInsets.all(6.0),
               strokeCap: StrokeCap.round,
+              strokeWidth: 3,
               radius: Radius.circular(36.0),
-              strokeWidth: 2,
-              dashPattern: <double>[18.0, 8.0],
-              color: Colours.CENTER,
+              dashPattern: <double>[10.0, 15.0],
+              gradient: LinearGradient(
+                begin: AlignmentGeometry.topCenter,
+                end: AlignmentGeometry.bottomLeft,
+                colors: [Colours.CENTER, Colours.ACCENTER],
+              ),
             ),
-            child: CircleAvatar(backgroundColor: Colours.o),
+            child: SizedBox(width: double.infinity, height: 45.0),
           ),
+          // List
           listPadding: const EdgeInsets.all(8.0),
           listWidth: MediaQuery.of(context).size.width / 3.3,
+          lastListTargetSize: 15.0,
+          listDragOnLongPress: false,
+          listDividerOnLastChild: false,
           listDragHandle: DragHandle(
             onLeft: true,
             verticalAlignment: DragHandleVerticalAlignment.top,
             child: Container(
-              width: 44,
-              height: 52,
+              width: 38.0,
+              height: 44.0,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadiusGeometry.only(
                   topLeft: Radius.circular(16.0),
                 ),
+                color: Colours.o,
               ),
             ),
           ),
-          listGhostOpacity: 0.6,
+          listGhostOpacity: 1.0,
           listGhost: const DottedBorder(
             options: RoundedRectDottedBorderOptions(
-              radius: Radius.circular(47.5),
-              strokeWidth: 2,
-              dashPattern: <double>[36.0, 16.0],
-              color: Colours.BOTTOM,
-            ),
-            child: CircleAvatar(radius: 47.5, backgroundColor: Colours.o),
-          ),
-          children: List.generate(
-            board.length,
-            (index) => KanbanColumn(
-              deckId: id,
-              tasks: board[index],
-              order: index,
-              members: widget.members,
-              onChanged: () {
-                setState(() {});
-              },
-              onUnfocus: () => updateTaskList(index),
-              onDelete: (plank) => showDialog(
-                context: context,
-                builder: (context) => AcceptGradialog(
-                  message: 'Do you realy want to delete this column?...',
-                  onAccept: () => deleteTaskList(plank),
-                  icon: Icons.remove_rounded,
-                ),
+              borderPadding: EdgeInsets.all(6.0),
+              strokeCap: StrokeCap.round,
+              strokeWidth: 3,
+              radius: Radius.circular(20.0),
+              dashPattern: <double>[10.0, 15.0],
+              gradient: LinearGradient(
+                begin: AlignmentGeometry.topCenter,
+                end: AlignmentGeometry.centerLeft,
+                colors: [Colours.BOTTOM, Colours.ACBOTTOM],
               ),
-            ).build(),
+            ),
+            child: SizedBox(width: 111.0, height: 222.0),
           ),
+          // Master
+          children: _buildColumns(),
           onItemReorder:
               (oldItemIndex, oldListIndex, newItemIndex, newListIndex) async {
                 if (oldListIndex == newListIndex) {

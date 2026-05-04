@@ -79,20 +79,11 @@ class _ProjectCardState extends State<ProjectCard> {
     onEditingComplete: () => _deckDetailsController.nameFocus.unfocus(),
     onTapOutside: (event) => _deckDetailsController.nameFocus.unfocus(),
     style: Styles.TEXT_INPUT,
-    decoration: InputDecoration(
-      floatingLabelAlignment: FloatingLabelAlignment.center,
-      contentPadding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-      filled: true,
-      fillColor: Colours.o,
-      hoverColor: colour,
+    decoration: Decorations.INPUT_FIELD(
+      padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
       hintText: 'I call it ...',
-      hintStyle: TextStyle(
-        fontSize: 15,
-        fontFamily: Fonts.RUBIK,
-        fontWeight: FontWeight.w600,
-        fontStyle: FontStyle.italic,
-        color: colourVery,
-      ),
+      hoverColor: colour,
+      tipColor: colourVery,
     ),
   );
   Widget _buildDescription() => TextFormField(
@@ -103,18 +94,11 @@ class _ProjectCardState extends State<ProjectCard> {
     maxLines: 4,
     onTapOutside: (event) => _deckDetailsController.descriptionFocus.unfocus(),
     style: Styles.TEXT_INPUT_MULTILINE,
-    decoration: InputDecoration(
-      floatingLabelAlignment: FloatingLabelAlignment.center,
-      contentPadding: const EdgeInsets.fromLTRB(6.0, 12.0, 10.0, 18.0),
-      filled: true,
-      fillColor: Colours.o,
-      hoverColor: colour,
+    decoration: Decorations.INPUT_FIELD(
+      padding: const EdgeInsets.fromLTRB(6.0, 12.0, 10.0, 18.0),
       labelText: 'Description',
-      labelStyle: TextStyle(
-        fontFamily: Fonts.RUBIK,
-        fontWeight: FontWeight.w500,
-        color: colourVery,
-      ),
+      hoverColor: colour,
+      tipColor: colourVery,
     ),
   );
   Widget _buildMethodology() => Center(

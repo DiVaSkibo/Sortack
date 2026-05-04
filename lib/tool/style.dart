@@ -50,6 +50,19 @@ final class Colours {
   static const FROZEN = Color(0xFF_66FFFF);
 
   static const WARNING = Color(0xFF_6600FF);
+
+  static const RAINBOW = [
+    Colours.CRITICAL,
+    Colours.VERY_HIGH,
+    Colours.HIGH,
+    Colours.MEDIUM,
+    Colours.FROZEN,
+    Colours.LOW,
+    Colours.VERY_LOW,
+  ];
+  static const TRAFFIC = [Colours.NOTOK, Colours.INOK, Colours.OK];
+  static const BINARY = [Colours.BAD, Colours.GOOD];
+  static const STATIC = [Colours.W, Colours.B];
 }
 
 /// static const gradients class - custom static const gradients
@@ -112,6 +125,12 @@ final class Styles {
     fontWeight: FontWeight.w500,
     color: Colours.BACK_GLOW,
   );
+  static const TEXT_INFO = TextStyle(
+    fontSize: 13,
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w600,
+    color: Colours.UNFRONT,
+  );
   static const TEXT_INPUT_ITALIC = TextStyle(
     height: 1.4,
     fontSize: 11,
@@ -129,51 +148,31 @@ final class Styles {
 
 /// static const decorations class - custom static const decorations
 final class Decorations {
-  static InputDecoration INPUT_FIELD({String? labelText, String? hintText}) =>
-      InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
-        filled: true,
-        fillColor: Colours.o,
-        hoverColor: Colours.SHADOW,
-        labelText: labelText,
-        labelStyle: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-          color: Colours.UNTOP,
-        ),
-        hintText: hintText,
-        hintStyle: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          fontStyle: FontStyle.italic,
-          color: Colours.UNTOP,
-        ),
-        floatingLabelAlignment: FloatingLabelAlignment.center,
-      );
-  static InputDecoration INPUT_UNFIELD({
-    required bool collapsed,
+  static InputDecoration INPUT_FIELD({
+    EdgeInsetsGeometry? padding,
     String? labelText,
     String? hintText,
+    Color? hoverColor,
+    Color? tipColor,
   }) => InputDecoration(
-    contentPadding: collapsed
-        ? EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0)
-        : EdgeInsets.fromLTRB(20.0, 12.0, 10.0, 18.0),
+    floatingLabelAlignment: FloatingLabelAlignment.center,
+    contentPadding:
+        padding ?? EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
     filled: true,
     fillColor: Colours.o,
-    hoverColor: Colours.CENTER,
+    hoverColor: hoverColor ?? Colours.SHADOW,
     labelText: labelText,
+    hintText: hintText,
     labelStyle: TextStyle(
       fontSize: 13,
-      fontWeight: FontWeight.w600,
-      color: Colours.UNTOP,
+      fontWeight: FontWeight.w500,
+      color: tipColor,
     ),
-    hintText: hintText,
     hintStyle: TextStyle(
       fontSize: 15,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       fontStyle: FontStyle.italic,
-      color: Colours.UNTOP,
+      color: tipColor,
     ),
-    floatingLabelAlignment: FloatingLabelAlignment.center,
   );
 }

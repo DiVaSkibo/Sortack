@@ -1,10 +1,10 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/logic/firebase/documents.dart';
 import 'package:sortack/logic/firebase/authentications.dart';
 import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/_tasks.dart';
-// ignore_for_file: prefer_typing_uninitialized_variables
 
 /// firestore resources - get, load, save, update, delete and other resources
 final class FireRources {

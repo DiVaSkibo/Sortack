@@ -24,10 +24,10 @@ class AuthController extends ChangeNotifier {
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
     emailFocus.dispose();
     passwordFocus.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -70,10 +70,10 @@ class BlockController extends ChangeNotifier {
 
   @override
   void dispose() {
-    titleController.dispose();
-    descriptionController.dispose();
     titleFocus.dispose();
     descriptionFocus.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
@@ -145,12 +145,12 @@ class AdvancedBlockController extends ChangeNotifier {
 
   @override
   void dispose() {
-    titleController.dispose();
-    descriptionController.dispose();
-    notesController.dispose();
     titleFocus.dispose();
     descriptionFocus.dispose();
     notesFocus.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
+    notesController.dispose();
     super.dispose();
   }
 
@@ -253,12 +253,12 @@ class ProjectDetailsController extends ChangeNotifier {
 
   @override
   void dispose() {
-    nameController.dispose();
-    descriptionController.dispose();
-    ownerController.dispose();
     nameFocus.dispose();
     descriptionFocus.dispose();
     ownerFocus.dispose();
+    nameController.dispose();
+    descriptionController.dispose();
+    ownerController.dispose();
     super.dispose();
   }
 

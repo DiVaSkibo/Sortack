@@ -48,6 +48,64 @@ class Gradialog extends StatelessWidget {
   }
 }
 
+/// colour gradialog widget - gradialog for colour picking
+class ColourGradialog extends StatelessWidget {
+  const ColourGradialog({super.key});
+
+  Widget _buildColour(BuildContext context, Color colour) => GestureDetector(
+    onTap: () {
+      Navigator.of(context).pop(colour);
+    },
+    child: Container(
+      width: 36.0,
+      height: 36.0,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: colour),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Gradialog(
+      title: 'What colour do you prefer?...',
+      content: Wrap(
+        direction: Axis.vertical,
+        crossAxisAlignment: WrapCrossAlignment.end,
+        spacing: 7,
+        children: [
+          Row(
+            spacing: 7,
+            children: [
+              for (final colour in Colours.RAINBOW.reversed)
+                _buildColour(context, colour),
+            ],
+          ),
+          Row(
+            spacing: 7,
+            children: [
+              for (final colour in Colours.TRAFFIC.reversed)
+                _buildColour(context, colour),
+            ],
+          ),
+          Row(
+            spacing: 7,
+            children: [
+              for (final colour in Colours.BINARY.reversed)
+                _buildColour(context, colour),
+            ],
+          ),
+          Row(
+            spacing: 7,
+            children: [
+              for (final colour in Colours.STATIC)
+                _buildColour(context, colour),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// accept gradialog widget - gradialog for accept action
 class AcceptGradialog extends StatelessWidget {
   final String? message;
