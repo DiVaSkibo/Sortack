@@ -143,16 +143,17 @@ enum PointsTShirt with Labeling, Pointing {
 ///
 /// [feature, bug, improvement, refactor, research, test, docs,]
 enum Tag with Labeling, ComparableEnum<Tag> {
-  feature,
   bug,
-  improvement,
-  refactor,
-  research,
+  docs,
   test,
-  docs;
+  improvement,
+  feature,
+  research,
+  refactor;
 
   @override
   String get label => name;
+  Color get colour => Colours.RAINBOW[index];
 }
 
 /// scrum artefact enum - scrum artefacts

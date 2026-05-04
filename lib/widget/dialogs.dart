@@ -199,8 +199,16 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
           } else
             text = value.toString();
           return ChoiceChip(
-            label: Text(text),
             selected: selected.contains(val),
+            color: val is Tag
+                ? WidgetStateColor.resolveWith((states) {
+                    if (states.contains(WidgetState.selected))
+                      return val.colour;
+                    else
+                      return (val.colour as Color).withAlpha(125);
+                  })
+                : null,
+            label: Text(text),
             onSelected: (v) {
               setState(() {
                 if (v)

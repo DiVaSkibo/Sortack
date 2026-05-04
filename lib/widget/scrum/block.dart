@@ -190,7 +190,11 @@ class _ScrumRowState extends State<ScrumRow> {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         for (final tag in task.tags)
-          ChoiceChip(label: Text(tag.label), selected: true),
+          ChoiceChip(
+            selected: true,
+            label: Text(tag.label),
+            color: WidgetStatePropertyAll(tag.colour),
+          ),
         InputChip(
           label: Icon(Icons.settings_input_composite_outlined),
           onPressed: () => showDialog(
