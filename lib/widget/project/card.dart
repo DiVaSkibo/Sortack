@@ -197,10 +197,7 @@ class _ProjectCardState extends State<ProjectCard> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? SizedBox.square(
-            dimension: 24,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          )
+        ? Center(child: buildLoading())
         : InkWell(
             child: Container(
               padding: const EdgeInsets.symmetric(

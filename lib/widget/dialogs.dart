@@ -344,12 +344,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
       ),
       actions: [
         FilledButton.icon(
-          icon: _isLoading
-              ? const SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.create_new_folder_rounded),
+          icon: Icon(Icons.create_new_folder_rounded),
           label: Text('create'),
           onPressed: _isLoading ? null : fire,
           style: ButtonStyle(

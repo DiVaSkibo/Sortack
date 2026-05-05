@@ -196,7 +196,7 @@ class _ScrumPageState extends State<ScrumPage>
       ),
       body: Ground(
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: buildLoading())
             : (board == null || board!.planks.isEmpty)
             ? Center(child: buildEasterEgg(size: 90))
             : TabBarView(

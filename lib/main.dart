@@ -73,23 +73,8 @@ class MyApp extends StatelessWidget {
             color: Colours.BOTTOM,
           ),
           border: InputBorder.none,
-          // OutlineInputBorder(
-          //   gapPadding: 0.0,
-          //   borderSide: BorderSide(color: Colours.o, width: 0),
-          //   borderRadius: BorderRadius.all(Radius.circular(4)),
-          // ),
           enabledBorder: InputBorder.none,
-          // OutlineInputBorder(
-          //   gapPadding: 0.0,
-          //   borderSide: BorderSide(color: Colours.o, width: 0),
-          //   borderRadius: BorderRadius.all(Radius.circular(4)),
-          // ),
           focusedBorder: InputBorder.none,
-          // OutlineInputBorder(
-          //   gapPadding: 0.0,
-          //   borderSide: BorderSide(color: Colours.o, width: 0),
-          //   borderRadius: BorderRadius.all(Radius.circular(4)),
-          // ),
           errorBorder: OutlineInputBorder(
             gapPadding: 0.0,
             borderSide: BorderSide(color: Colours.NOTOK, width: 2),
@@ -105,6 +90,18 @@ class MyApp extends StatelessWidget {
         primaryTextTheme: const TextTheme(labelLarge: TextStyle(fontSize: 20)),
         iconTheme: const IconThemeData(size: 20, color: Colours.BOTTOM),
         primaryIconTheme: const IconThemeData(size: 20, color: Colours.BOTTOM),
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          strokeAlign: -1,
+          strokeWidth: 20,
+          strokeCap: StrokeCap.round,
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          stopIndicatorRadius: 40.0,
+          color: Colours.CENTER,
+          stopIndicatorColor: Colours.TOP,
+          linearTrackColor: Colours.BACK_GLOW,
+          circularTrackColor: Colours.BACK_GLOW,
+          refreshBackgroundColor: Colours.BACK_GLOW,
+        ),
         buttonTheme: const ButtonThemeData(
           buttonColor: Colours.TOP,
           hoverColor: Colours.UNTOP,

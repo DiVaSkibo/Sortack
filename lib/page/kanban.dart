@@ -174,7 +174,7 @@ class _KanbanPageState extends State<KanbanPage> {
       ),
       body: Ground(
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(child: buildLoading())
             : (board == null || board!.planks.isEmpty)
             ? Center(child: buildEasterEgg(size: 90))
             : KanbanBoard(

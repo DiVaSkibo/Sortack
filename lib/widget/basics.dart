@@ -8,6 +8,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 
+/// build progress indicator
+Widget buildLoading({double size = 90.0}) => SizedBox.square(
+  dimension: size,
+  child: CircularProgressIndicator(strokeWidth: size / 5.0),
+);
+
+/// build random easter egg icon
+Icon buildEasterEgg({double size = 90.0}) =>
+    Icon(randEasterEggIcon(), size: size, color: Colours.HIGH);
+
 /// ground widget - filled page background
 class Ground extends StatelessWidget {
   final bool scrollable;
@@ -140,11 +150,7 @@ class Overground extends StatelessWidget implements PreferredSizeWidget {
         ),
         child:
             icon == null && profile == null && title == null && actions == null
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
+            ? Center(child: buildLoading(size: 40.0))
             : Align(
                 alignment: AlignmentGeometry.topCenter,
                 child: SizedBox(
@@ -258,12 +264,9 @@ class ProfileAvatar extends StatelessWidget {
         imageUrl: profile.avatar,
         imageBuilder: (context, imageProvider) => CircleAvatar(
           backgroundImage: imageProvider,
-          backgroundColor: Colours.UNFRONT,
+          backgroundColor: Colours.UNBACK,
         ),
-        placeholder: (context, url) => const SizedBox.square(
-          dimension: 24,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
+        placeholder: (context, url) => buildLoading(size: 24.0),
         errorWidget: (context, url, error) =>
             CircleAvatar(backgroundColor: Colours.BAD),
       );
@@ -393,7 +396,3 @@ class _AuthViewState extends State<AuthView> {
     );
   }
 }
-
-/// build random easter egg icon
-Icon buildEasterEgg({double? size}) =>
-    Icon(randEasterEggIcon(), size: size, color: Colours.HIGH);

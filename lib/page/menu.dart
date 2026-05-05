@@ -58,7 +58,7 @@ class _MenuPageState extends State<MenuPage> {
           stream: FireRources.getUserDecks(currentUser).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: buildLoading());
             if (snapshot.hasError)
               return Center(
                 child: ListTile(
@@ -67,7 +67,7 @@ class _MenuPageState extends State<MenuPage> {
                 ),
               );
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
-              return Center(child: buildEasterEgg(size: 90));
+              return Center(child: buildEasterEgg());
             return Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,
