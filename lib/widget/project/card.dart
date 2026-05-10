@@ -78,7 +78,7 @@ class _ProjectCardState extends State<ProjectCard> {
     focusNode: _deckDetailsController.nameFocus,
     onEditingComplete: () => _deckDetailsController.nameFocus.unfocus(),
     onTapOutside: (event) => _deckDetailsController.nameFocus.unfocus(),
-    style: Styles.TEXT_INPUT,
+    style: Styles.TEXT_UNINPUT,
     decoration: Decorations.INPUT_FIELD(
       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
       hintText: 'I call it ...',
@@ -93,7 +93,7 @@ class _ProjectCardState extends State<ProjectCard> {
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _deckDetailsController.descriptionFocus.unfocus(),
-    style: Styles.TEXT_INPUT_MULTILINE,
+    style: Styles.TEXT_UNINPUT_MULTILINE,
     decoration: Decorations.INPUT_FIELD(
       padding: const EdgeInsets.fromLTRB(6.0, 12.0, 10.0, 18.0),
       labelText: 'Description',
@@ -110,10 +110,10 @@ class _ProjectCardState extends State<ProjectCard> {
           fontFamily: Fonts.RUBIK,
           fontWeight: FontWeight.w600,
           fontStyle: FontStyle.normal,
-          color: Colours.UNFRONT,
+          color: Colours.INK_UN,
         ),
       ),
-      backgroundColor: colour,
+      color: WidgetStatePropertyAll(colour),
       side: BorderSide(
         strokeAlign: BorderSide.strokeAlignCenter,
         width: 3,
@@ -252,7 +252,7 @@ class _ProjectCardState extends State<ProjectCard> {
                         icon: Icon(
                           Icons.link_rounded,
                           size: 23,
-                          color: Colours.UNFRONT,
+                          color: Colours.INK_UN,
                         ),
                         onPressed: () async {
                           await Clipboard.setData(
@@ -272,7 +272,7 @@ class _ProjectCardState extends State<ProjectCard> {
                         icon: Icon(
                           Icons.remove_rounded,
                           size: 23,
-                          color: Colours.UNFRONT,
+                          color: Colours.INK_UN,
                         ),
                         onPressed: () => showDialog(
                           context: context,

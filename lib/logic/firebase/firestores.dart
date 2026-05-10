@@ -222,7 +222,8 @@ final class FireRources {
   /// save project details resource
   static Future<void> saveProject(ProjectDetails details) async {
     final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) throw Exception('? User is not authorised...');
+    if (currentUser == null)
+      throw Exception('? ERROR: user is not authorised...');
     final isNew = details.id.isEmpty || details.id == '#';
     final deckRef = isNew ? _decks.doc() : _decks.doc(details.id);
     final batch = FirebaseFirestore.instance.batch();
@@ -243,7 +244,11 @@ final class FireRources {
         ],
         Methodology.Scrum => [
           plankToDoc(
-            Plank(id: '#', title: 'Product Backlog', color: Colours.INOK),
+            Plank(
+              id: '#',
+              title: ScrumArtefact.productBacklog.label,
+              color: ScrumArtefact.productBacklog.colour,
+            ),
             0,
             key: 'Product Backlog',
           ),

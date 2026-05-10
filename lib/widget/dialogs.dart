@@ -136,7 +136,7 @@ class AcceptGradialog extends StatelessWidget {
             onAccept?.call();
           },
           style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
             backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
           ),
         ),
@@ -148,7 +148,7 @@ class AcceptGradialog extends StatelessWidget {
             onCancel?.call();
           },
           style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
             backgroundColor: WidgetStatePropertyAll(Colours.BAD),
           ),
         ),
@@ -229,7 +229,7 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
             widget.onPick?.call(selected);
           },
           style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
             backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
           ),
         ),
@@ -241,7 +241,7 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
             widget.onCancel?.call();
           },
           style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
             backgroundColor: WidgetStatePropertyAll(Colours.BAD),
           ),
         ),
@@ -304,7 +304,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
     focusNode: _projectController.nameFocus,
     onEditingComplete: () => _projectController.nameFocus.unfocus(),
     onTapOutside: (event) => _projectController.nameFocus.unfocus(),
-    style: Styles.TEXT_INPUT,
+    style: Styles.TEXT_UNINPUT,
     decoration: Decorations.INPUT_FIELD(hintText: 'Name'),
   );
   TextFormField _buildDescription() => TextFormField(
@@ -314,7 +314,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _projectController.descriptionFocus.unfocus(),
-    style: Styles.TEXT_INPUT_MULTILINE,
+    style: Styles.TEXT_UNINPUT_MULTILINE,
     decoration: Decorations.INPUT_FIELD(labelText: 'Description'),
   );
   PopupMenuButton _buildMethodology() => PopupMenuButton<Methodology>(
@@ -348,7 +348,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
           label: Text('create'),
           onPressed: _isLoading ? null : fire,
           style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(Colours.BOTTOM),
+            backgroundColor: WidgetStatePropertyAll(Colours.ANCHOR),
             textStyle: WidgetStatePropertyAll(Styles.TEXT_BUTTON_FILLED),
           ),
         ),
@@ -392,7 +392,7 @@ class _JoinGradialogState extends State<JoinGradialog> {
             Navigator.pop(context);
           },
           style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
             backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
           ),
         ),
@@ -401,7 +401,7 @@ class _JoinGradialogState extends State<JoinGradialog> {
           icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
           onPressed: () => Navigator.pop(context),
           style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.B),
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
             backgroundColor: WidgetStatePropertyAll(Colours.BAD),
           ),
         ),

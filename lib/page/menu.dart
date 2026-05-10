@@ -47,10 +47,16 @@ class _MenuPageState extends State<MenuPage> {
                   },
                   icon: const Icon(
                     Icons.exit_to_app_rounded,
-                    color: Colours.UNFRONT,
+                    color: Colours.INK_UN,
                   ),
                 ),
               ],
+              onRender: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => MenuPage()),
+                );
+              },
             ),
       body: Ground(
         scrollable: true,
@@ -96,7 +102,7 @@ class _MenuPageState extends State<MenuPage> {
               Icons.add_box_rounded,
               shadows: List.generate(
                 30,
-                (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                (index) => Shadow(blurRadius: 1.15, color: Colours.O),
               ),
             ),
             onPressed: () => showDialog(
@@ -106,16 +112,16 @@ class _MenuPageState extends State<MenuPage> {
           ),
           FloatingActionButton(
             heroTag: 'btnJoinProject',
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => JoinGradialog(),
-            ),
             child: Icon(
               Icons.travel_explore_rounded,
               shadows: List.generate(
                 30,
-                (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                (index) => Shadow(blurRadius: 1.15, color: Colours.O),
               ),
+            ),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => JoinGradialog(),
             ),
           ),
         ],

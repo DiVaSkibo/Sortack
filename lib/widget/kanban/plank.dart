@@ -55,8 +55,8 @@ final class KanbanColumn {
       decoration: const InputDecoration(
         contentPadding: EdgeInsets.all(15.0),
         filled: true,
-        fillColor: Colours.o,
-        hoverColor: Colours.BACK_GLOW,
+        fillColor: Colours.a,
+        hoverColor: Colours.CANVAS_AC,
       ),
       onEditingComplete: () {
         _titleFocus.unfocus();
@@ -67,7 +67,7 @@ final class KanbanColumn {
     ),
   );
   Widget _buildColour(BuildContext context) => IconButton(
-    icon: const Icon(Icons.colorize_rounded, size: 16, color: Colours.FRONT),
+    icon: const Icon(Icons.colorize_rounded, size: 16, color: Colours.INK),
     onPressed: () async {
       final selected = await showDialog<Color>(
         context: context,
@@ -121,7 +121,7 @@ final class KanbanColumn {
                 child: Icon(
                   Icons.drag_indicator_outlined,
                   size: 17,
-                  color: Colours.UNFRONT,
+                  color: Colours.INK_UN,
                 ),
               ),
             ),

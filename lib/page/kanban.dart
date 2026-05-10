@@ -107,7 +107,7 @@ class _KanbanPageState extends State<KanbanPage> {
                   onPressed: () => addTaskList(),
                   icon: const Icon(
                     Icons.add_box_outlined,
-                    color: Colours.UNTOP,
+                    color: Colours.DRIVE_UN,
                   ),
                 ),
                 PopupMenuButton<TaskParameters>(
@@ -144,7 +144,7 @@ class _KanbanPageState extends State<KanbanPage> {
                         _switchDrawersController.show(context, Drawers.help),
                     icon: const Icon(
                       Icons.help_rounded,
-                      color: Colours.UNBOTTOM,
+                      color: Colours.ANCHOR_UN,
                     ),
                   ),
                 ),
@@ -154,10 +154,18 @@ class _KanbanPageState extends State<KanbanPage> {
                   },
                   icon: const Icon(
                     Icons.exit_to_app_rounded,
-                    color: Colours.UNFRONT,
+                    color: Colours.INK_UN,
                   ),
                 ),
               ],
+              onRender: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => KanbanPage(details: widget.details),
+                  ),
+                );
+              },
             ),
       endDrawer: ValueListenableBuilder(
         valueListenable: _switchDrawersController,
@@ -191,7 +199,7 @@ class _KanbanPageState extends State<KanbanPage> {
                 Icons.add_task_rounded,
                 shadows: List.generate(
                   30,
-                  (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                  (index) => Shadow(blurRadius: 1.15, color: Colours.O),
                 ),
               ),
               onPressed: () => addTask(),

@@ -94,7 +94,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           itemDragHandle: DragHandle(
             onLeft: true,
             verticalAlignment: DragHandleVerticalAlignment.top,
-            child: Container(width: 38, height: 58, color: Colours.o),
+            child: Container(width: 38, height: 58, color: Colours.a),
           ),
           itemGhostOpacity: 1.0,
           itemGhost: const DottedBorder(
@@ -107,7 +107,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
               gradient: LinearGradient(
                 begin: AlignmentGeometry.topCenter,
                 end: AlignmentGeometry.bottomLeft,
-                colors: [Colours.CENTER, Colours.ACCENTER],
+                colors: [Colours.SHIFT, Colours.SHIFT_AC],
               ),
             ),
             child: SizedBox(width: double.infinity, height: 45.0),
@@ -128,7 +128,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
                 borderRadius: BorderRadiusGeometry.only(
                   topLeft: Radius.circular(16.0),
                 ),
-                color: Colours.o,
+                color: Colours.a,
               ),
             ),
           ),
@@ -143,7 +143,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
               gradient: LinearGradient(
                 begin: AlignmentGeometry.topCenter,
                 end: AlignmentGeometry.centerLeft,
-                colors: [Colours.BOTTOM, Colours.ACBOTTOM],
+                colors: [Colours.ANCHOR, Colours.ANCHOR_AC],
               ),
             ),
             child: SizedBox(width: 111.0, height: 222.0),

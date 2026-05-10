@@ -31,7 +31,7 @@ Document blockToDoc(Block block, String plankId, int order) =>
       'assignee': block.assignee,
       if (block is AdvancedBlock) 'status': block.status.name,
       if (block is AdvancedBlock) 'priority': block.priority.name,
-      if (block is AdvancedBlock) 'tags': block.tags,
+      if (block is AdvancedBlock) 'tags': block.tags.map((tag) => tag.label),
       if (block is AdvancedBlock) 'notes': block.notes,
       'order': order,
     };
@@ -60,16 +60,18 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     description: doc['description'] ?? '',
     deadline: doc['deadline'] != null
         ? (doc['deadline'] as Timestamp).toDate()
-        : DateTime.now().add(Duration(days: 1)),
+        : null,
     status: Status.values.asNameMap()[doc['status']] ?? Status.toDo,
     priority: Priority.values.asNameMap()[doc['priority']] ?? Priority.medium,
     points: doc['points'] != null
         ? PointsTShirt.values.asNameMap()[doc['points']]
         : null,
     assignee: Set<String>.from(doc['assignee'] ?? []),
-    tags: doc['tags'].isNotEmpty
-        ? doc['tags']?.map((value) => Tag.values.asNameMap()[value])
-        : null,
+    tags: Set<Tag>.from(
+      doc['tags'].isNotEmpty
+          ? doc['tags']?.map((value) => Tag.values.asNameMap()[value])
+          : [],
+    ),
     notes: doc['notes'] ?? '',
   ),
   _ => Block(
@@ -91,7 +93,7 @@ Plank docToPlank<T extends Plank>(Document doc, String id) => switch (T) {
     title: doc['title'] ?? '',
     color: doc['color'] != null
         ? ColorExtension.fromHex(doc['color'])
-        : Colours.W,
+        : Colours.F,
     blocks: [],
   ),
   _ => Plank(
@@ -99,7 +101,7 @@ Plank docToPlank<T extends Plank>(Document doc, String id) => switch (T) {
     title: doc['title'] ?? '',
     color: doc['color'] != null
         ? ColorExtension.fromHex(doc['color'])
-        : Colours.W,
+        : Colours.F,
     blocks: [],
   ),
 };

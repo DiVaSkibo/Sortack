@@ -72,12 +72,12 @@ class _KanbanCardState extends State<KanbanCard> {
     focusNode: _taskController.titleFocus,
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
     onTapOutside: (event) => _taskController.titleFocus.unfocus(),
-    style: Styles.TEXT_INPUT,
+    style: Styles.TEXT_UNINPUT,
     decoration: Decorations.INPUT_FIELD(
       padding: EdgeInsets.all(6.0),
       hintText: 'I have to do ...',
-      hoverColor: Colours.ACTOP,
-      tipColor: Colours.UNTOP,
+      hoverColor: Colours.DRIVE_AC,
+      tipColor: Colours.DRIVE_UN,
     ),
   );
   Widget _buildDescription() => TextFormField(
@@ -87,12 +87,12 @@ class _KanbanCardState extends State<KanbanCard> {
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
-    style: Styles.TEXT_INPUT_MULTILINE,
+    style: Styles.TEXT_UNINPUT_MULTILINE,
     decoration: Decorations.INPUT_FIELD(
       padding: EdgeInsets.all(12.0),
       labelText: 'Description',
-      hoverColor: Colours.ACTOP,
-      tipColor: Colours.UNTOP,
+      hoverColor: Colours.DRIVE_AC,
+      tipColor: Colours.DRIVE_UN,
     ),
   );
   Widget _buildPoints() => PopupMenuButton<PointsTShirt>(
@@ -102,16 +102,16 @@ class _KanbanCardState extends State<KanbanCard> {
       width: 40.0,
       child: Center(
         child: task.points != null
-            ? Text(task.points!.label, style: Styles.TEXT_INFO)
-            : const Icon(Icons.style_outlined, color: Colours.UNFRONT),
+            ? Text(task.points!.label, style: Styles.TEXT_UNINFO)
+            : const Icon(Icons.style_outlined, color: Colours.INK_UN),
       ),
     ),
     itemBuilder: (context) => [
-      for (final value in PointsTShirt.values)
+      for (final point in PointsTShirt.values)
         PopupMenuItem(
           height: 30.0,
-          value: value,
-          child: Center(child: Text(value.label)),
+          value: point,
+          child: Center(child: Text(point.label)),
         ),
     ],
     constraints: const BoxConstraints.tightFor(),
@@ -134,13 +134,10 @@ class _KanbanCardState extends State<KanbanCard> {
                 _taskController.updateDeadline(deadline);
               }
             },
-            child: Text(task.deadline!.ddMMMyyyy, style: Styles.TEXT_INFO),
+            child: Text(task.deadline!.ddMMMyyyy, style: Styles.TEXT_UNINFO),
           )
         : IconButton(
-            icon: const Icon(
-              Icons.alarm_rounded, //event_rounded
-              color: Colours.UNFRONT,
-            ),
+            icon: const Icon(Icons.alarm_rounded, color: Colours.INK_UN),
             onPressed: () async {
               DateTime? deadline = await showDatePicker(
                 context: context,
@@ -171,7 +168,7 @@ class _KanbanCardState extends State<KanbanCard> {
       ),
       if (task.assignee.isEmpty)
         IconButton(
-          icon: const Icon(Icons.person_add_rounded, size: 15),
+          icon: const Icon(Icons.person_add_outlined, size: 15),
           onPressed: () => showDialog(
             context: context,
             builder: (context) => ChipsGradialog(
@@ -224,24 +221,24 @@ class _KanbanCardState extends State<KanbanCard> {
             bottom: 7.5,
           ),
           childrenPadding: const EdgeInsets.only(bottom: 7.5),
-          collapsedShape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(34),
+          collapsedShape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(26)),
             side: BorderSide.none,
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(34),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(26)),
             side: BorderSide.none,
           ),
-          collapsedBackgroundColor: Colours.TOP,
+          collapsedBackgroundColor: Colours.DRIVE,
           backgroundColor: Colours.MEDIUM,
-          collapsedIconColor: Colours.UNFRONT,
-          iconColor: Colours.UNFRONT,
-          collapsedTextColor: Colours.UNTOP,
-          textColor: Colours.UNTOP,
+          collapsedIconColor: Colours.INK_UN,
+          iconColor: Colours.INK_UN,
+          collapsedTextColor: Colours.DRIVE_UN,
+          textColor: Colours.DRIVE_UN,
           leading: const Icon(
             Icons.drag_indicator_outlined,
             size: 17,
-            color: Colours.FRONT,
+            color: Colours.INK,
           ),
           title: _buildTitle(),
           subtitle: _buildAssignee(),
@@ -249,10 +246,10 @@ class _KanbanCardState extends State<KanbanCard> {
             icon: Icon(
               Icons.delete_forever_rounded,
               size: 18,
-              color: Colours.CENTER,
+              color: Colours.SHIFT,
               shadows: List.generate(
                 20,
-                (index) => Shadow(blurRadius: 0.75, color: Colours.B),
+                (index) => Shadow(blurRadius: 0.75, color: Colours.O),
               ),
             ),
             onPressed: () => showDialog(

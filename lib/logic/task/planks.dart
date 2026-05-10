@@ -16,7 +16,7 @@ interface class Plank<T extends Block> extends Collector<T>
   Plank({
     required this.id,
     this.title = '',
-    this.color = Colours.BOTTOM,
+    this.color = Colours.ANCHOR,
     List<T>? blocks,
     super.listenable,
   }) : blocks = blocks ?? [];
@@ -39,7 +39,7 @@ interface class Plank<T extends Block> extends Collector<T>
 //   TitledPlank({
 //     required super.id,
 //     this.title = '',
-//     this.color = Colours.BOTTOM,
+//     this.color = Colours.ANCHOR,
 //     super.blocks,
 //     super.listenable,
 //   });

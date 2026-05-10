@@ -36,6 +36,7 @@ mixin Pointing on Enum implements Comparable<Pointing> {
 abstract interface class Artefact {
   String get label;
   IconData get icon;
+  Color get colour;
 }
 
 abstract interface class Parameters {
@@ -92,9 +93,10 @@ abstract class Collector<T> with ChangeNotifier {
 
   void move(int oldIndex, int newIndex) {
     if (oldIndex == newIndex) return;
-    var temp = collection[oldIndex];
-    collection[oldIndex] = collection[newIndex];
-    collection[newIndex] = temp;
+    // var temp = collection[oldIndex];
+    // collection[oldIndex] = collection[newIndex];
+    // collection[newIndex] = temp;
+    collection.insert(newIndex, collection.removeAt(oldIndex));
     if (listenable) notifyListeners();
   }
 }

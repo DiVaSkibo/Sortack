@@ -77,7 +77,10 @@ class _ScrumPageState extends State<ScrumPage>
   void addTaskList() async {
     // generate
     final docRef = FireRources.getPlanks(widget.details.id).doc();
-    final newTaskList = AdvancedPlank(id: docRef.id);
+    final newTaskList = AdvancedPlank(
+      id: docRef.id,
+      color: board!.selectedKey!.colour,
+    );
     // display
     setState(() {
       board!.push(newTaskList);
@@ -88,6 +91,7 @@ class _ScrumPageState extends State<ScrumPage>
         widget.details.id,
         newTaskList,
         board!.length - 1,
+        key: board!.selectedKey!.label,
       );
     } catch (exc) {
       debugPrint('! ERROR: creating new tasklist; $exc');
@@ -159,7 +163,7 @@ class _ScrumPageState extends State<ScrumPage>
                         _switchDrawersController.show(context, Drawers.help),
                     icon: const Icon(
                       Icons.help_rounded,
-                      color: Colours.UNBOTTOM,
+                      color: Colours.ANCHOR_UN,
                     ),
                   ),
                 ),
@@ -169,7 +173,7 @@ class _ScrumPageState extends State<ScrumPage>
                   },
                   icon: const Icon(
                     Icons.exit_to_app_rounded,
-                    color: Colours.UNFRONT,
+                    color: Colours.INK_UN,
                   ),
                 ),
               ],
@@ -180,6 +184,14 @@ class _ScrumPageState extends State<ScrumPage>
               tabTitles: ScrumArtefact.values
                   .map((artefact) => artefact.label)
                   .toList(),
+              onRender: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ScrumPage(details: widget.details),
+                  ),
+                );
+              },
             ),
       endDrawer: ValueListenableBuilder(
         valueListenable: _switchDrawersController,
@@ -203,9 +215,9 @@ class _ScrumPageState extends State<ScrumPage>
                 controller: _tabController,
                 children: board!.values
                     .map(
-                      (value) => ScrumBoard(
+                      (deck) => ScrumBoard(
                         id: widget.details.id,
-                        tables: value,
+                        tables: deck,
                         members: membersProfiles,
                       ),
                     )
@@ -221,7 +233,7 @@ class _ScrumPageState extends State<ScrumPage>
                   Icons.add_task_rounded,
                   shadows: List.generate(
                     30,
-                    (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                    (index) => Shadow(blurRadius: 1.15, color: Colours.O),
                   ),
                 ),
                 onPressed: () => addTask(),
@@ -232,18 +244,7 @@ class _ScrumPageState extends State<ScrumPage>
                   Icons.add_card_rounded,
                   shadows: List.generate(
                     30,
-                    (index) => Shadow(blurRadius: 1.15, color: Colours.B),
-                  ),
-                ),
-                onPressed: () => addTaskList(),
-              ),
-              ScrumArtefact.increments => FloatingActionButton(
-                heroTag: 'btnAddIncrement',
-                child: Icon(
-                  Icons.add_card_rounded,
-                  shadows: List.generate(
-                    30,
-                    (index) => Shadow(blurRadius: 1.15, color: Colours.B),
+                    (index) => Shadow(blurRadius: 1.15, color: Colours.O),
                   ),
                 ),
                 onPressed: () => addTaskList(),

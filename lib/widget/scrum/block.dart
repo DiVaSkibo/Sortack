@@ -1,5 +1,6 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
+import 'package:sortack/widget/basics.dart';
 import 'package:sortack/widget/dialogs.dart';
 
 /// Scrum row class - advanced task block view for scrum methodology
@@ -56,18 +57,28 @@ class _ScrumRowState extends State<ScrumRow> {
     super.dispose();
   }
 
+  void delete() async {
+    // call parent
+    widget.onDelete(task);
+    // fire
+    try {
+      await FireRources.deleteBlock(widget.deckId, task.id);
+    } catch (exc) {
+      debugPrint('? ERROR: on deleting task; $exc');
+    }
+  }
+
   Widget _buildTitle() => TextField(
     controller: _taskController.titleController,
     focusNode: _taskController.titleFocus,
+    style: Styles.TEXT_INPUT,
+    decoration: Decorations.INPUT_FIELD(
+      hintText: 'I have to do ...',
+      hoverColor: Colours.CANVAS_AC,
+      tipColor: Colours.INK_UN,
+    ),
     onEditingComplete: () => _taskController.titleFocus.unfocus(),
     onTapOutside: (event) => _taskController.titleFocus.unfocus(),
-    style: TextStyle(
-      fontSize: 16,
-      fontFamily: Fonts.RUBIK,
-      fontWeight: FontWeight.w400,
-      color: Colours.W,
-    ),
-    decoration: Decorations.INPUT_FIELD(hintText: 'I have to do ...'),
   );
   Widget _buildDescription() => TextFormField(
     controller: _taskController.descriptionController,
@@ -75,47 +86,51 @@ class _ScrumRowState extends State<ScrumRow> {
     keyboardType: TextInputType.multiline,
     minLines: 1,
     maxLines: 4,
-    onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
-    style: TextStyle(
-      fontSize: 14,
-      fontFamily: Fonts.RUBIK,
-      fontWeight: FontWeight.w300,
-      color: Colours.W,
+    style: Styles.TEXT_INPUT_MULTILINE,
+    decoration: Decorations.INPUT_FIELD(
+      hintText: '...',
+      hoverColor: Colours.CANVAS_AC,
+      tipColor: Colours.INK_UN,
     ),
-    decoration: Decorations.INPUT_FIELD(labelText: 'Description'),
+    onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
   );
   Widget _buildDeadline() => Center(
-    child: TextButton(
-      onPressed: () async {
-        DateTime? deadline = await showDatePicker(
-          context: context,
-          initialDate: task.deadline,
-          firstDate: DateTime(1800),
-          lastDate: DateTime(3000),
-        );
-        if (deadline != null) {
-          _taskController.updateDeadline(deadline);
-        }
-      },
-      child: Text(task.deadline != null ? task.deadline!.ddMMMyyyy : '-'),
-    ),
+    child: task.deadline != null
+        ? TextButton(
+            onPressed: () async {
+              DateTime? deadline = await showDatePicker(
+                context: context,
+                initialDate: task.deadline,
+                firstDate: DateTime(1800),
+                lastDate: DateTime(3000),
+              );
+              if (deadline != null) {
+                _taskController.updateDeadline(deadline);
+              }
+            },
+            child: Text(task.deadline!.ddMMMyyyy, style: Styles.TEXT_INFO),
+          )
+        : IconButton(
+            icon: const Icon(Icons.alarm_rounded, color: Colours.INK_UN),
+            onPressed: () async {
+              DateTime? deadline = await showDatePicker(
+                context: context,
+                initialDate: task.deadline,
+                firstDate: DateTime(1800),
+                lastDate: DateTime(3000),
+              );
+              if (deadline != null) {
+                _taskController.updateDeadline(deadline);
+              }
+            },
+          ),
   );
   Widget _buildStatus() => InkWell(
     child: Container(
       width: double.infinity,
       height: double.infinity,
       color: task.status.colour,
-      child: Center(
-        child: Text(
-          task.status.label,
-          style: TextStyle(
-            fontSize: 14,
-            fontFamily: Fonts.RUBIK,
-            fontWeight: FontWeight.w600,
-            color: Colours.BACK_GLOW,
-          ),
-        ),
-      ),
+      child: Center(child: Text(task.status.label, style: Styles.TEXT_UNINFO)),
     ),
     onTap: () {
       setState(() {
@@ -128,18 +143,23 @@ class _ScrumRowState extends State<ScrumRow> {
     child: PopupMenuButton<Priority>(
       tooltip: 'priority',
       initialValue: task.priority,
-      icon: Icon(task.priority.icon, size: 25, color: task.priority.colour),
-      itemBuilder: (context) => Priority.values
-          .map(
-            (value) => PopupMenuItem(
-              value: value,
-              child: ListTile(
-                leading: Icon(value.icon, size: 25, color: value.colour),
-                title: Text(value.label),
-              ),
+      icon: Icon(task.priority.icon, size: 26, color: task.priority.colour),
+      itemBuilder: (context) => [
+        for (final prior in Priority.values)
+          PopupMenuItem(
+            height: 35.0,
+            value: prior,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 6,
+              children: [
+                Icon(prior.icon, size: 22, color: prior.colour),
+                Text(prior.label),
+              ],
             ),
-          )
-          .toList(),
+          ),
+      ],
+      constraints: const BoxConstraints.tightFor(),
       onSelected: (value) {
         _taskController.updatePriority(value);
       },
@@ -149,27 +169,37 @@ class _ScrumRowState extends State<ScrumRow> {
     child: PopupMenuButton<PointsTShirt>(
       tooltip: 'points',
       initialValue: task.points,
-      child: Text(task.points != null ? task.points!.label : '?'),
-      itemBuilder: (context) => PointsTShirt.values
-          .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
-          .toList(),
-      onSelected: (value) {
-        _taskController.updatePoints(value);
+      icon: task.points != null
+          ? Text(task.points!.label, style: Styles.TEXT_INFO)
+          : const Icon(Icons.style_outlined, color: Colours.INK),
+      itemBuilder: (context) => [
+        for (final point in PointsTShirt.values)
+          PopupMenuItem(
+            height: 30.0,
+            value: point,
+            child: Center(child: Text(point.label)),
+          ),
+      ],
+      constraints: const BoxConstraints.tightFor(),
+      onSelected: (points) {
+        _taskController.updatePoints(points);
       },
     ),
   );
-  Widget _buildAssignee() => Center(
-    child: Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        for (final assignee in task.assignee)
-          if (widget.members.containsKey(assignee))
-            ChoiceChip(
-              label: Text(widget.members[assignee]!.name),
-              selected: true,
-            ),
-        InputChip(
-          label: Icon(Icons.settings_input_composite_outlined),
+  Widget _buildAssignee() => Wrap(
+    alignment: WrapAlignment.center,
+    runAlignment: WrapAlignment.center,
+    crossAxisAlignment: WrapCrossAlignment.center,
+    spacing: 8,
+    runSpacing: 4,
+    children: [
+      if (task.assignee.isEmpty)
+        IconButton(
+          icon: const Icon(
+            Icons.person_add_outlined,
+            size: 15,
+            color: Colours.INK,
+          ),
           onPressed: () => showDialog(
             context: context,
             builder: (context) => ChipsGradialog(
@@ -180,33 +210,77 @@ class _ScrumRowState extends State<ScrumRow> {
             ),
           ),
         ),
-      ],
-    ),
+      for (final asign in task.assignee)
+        TextButton(
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => ChipsGradialog(
+              values: widget.members.values.toSet(),
+              selected: task.assignee.toSet(),
+              onPick: (assignee) =>
+                  _taskController.updateAssignee(assignee as Set<String>),
+            ),
+          ),
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 3,
+            children: [
+              ProfileAvatar(profile: widget.members[asign]!, radius: 12.5),
+              Text(widget.members[asign]!.name, style: Styles.TEXT),
+            ],
+          ),
+        ),
+    ],
   );
-  Widget _buildTags() => Center(
+  Widget _buildTags() => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
     child: Wrap(
       alignment: WrapAlignment.center,
       runAlignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 8,
+      runSpacing: 6,
       children: [
+        if (task.tags.isEmpty)
+          IconButton(
+            icon: const Icon(
+              Icons.bookmark_add_outlined,
+              size: 15,
+              color: Colours.INK,
+            ),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => ChipsGradialog(
+                values: Tag.values.toSet(),
+                selected: task.tags.toSet(),
+                onPick: (tags) => _taskController.updateTags(tags as Set<Tag>),
+              ),
+            ),
+          ),
         for (final tag in task.tags)
-          ChoiceChip(
+          InputChip(
             selected: true,
             label: Text(tag.label),
             color: WidgetStatePropertyAll(tag.colour),
-          ),
-        InputChip(
-          label: Icon(Icons.settings_input_composite_outlined),
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => ChipsGradialog(
-              values: Tag.values.toSet(),
-              selected: task.tags.toSet(),
-              onPick: (tags) =>
-                  _taskController.updateAssignee(tags as Set<String>),
+            labelStyle: const TextStyle(
+              fontSize: 10,
+              fontFamily: Fonts.RUBIK,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.italic,
+              color: Colours.O,
+            ),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => ChipsGradialog(
+                values: Tag.values.toSet(),
+                selected: task.tags.toSet(),
+                onPick: (tags) => _taskController.updateTags(tags as Set<Tag>),
+              ),
             ),
           ),
-        ),
       ],
     ),
   );
@@ -216,56 +290,64 @@ class _ScrumRowState extends State<ScrumRow> {
     keyboardType: TextInputType.multiline,
     minLines: 1,
     maxLines: 2,
-    onTapOutside: (event) => _taskController.notesFocus.unfocus(),
-    style: TextStyle(
-      fontSize: 14,
-      fontFamily: Fonts.RUBIK,
-      fontWeight: FontWeight.w300,
-      fontStyle: FontStyle.italic,
-      color: Colours.W,
+    style: Styles.TEXT_INPUT_ITALIC,
+    decoration: Decorations.INPUT_FIELD(
+      hintText: '...',
+      hoverColor: Colours.CANVAS_AC,
+      tipColor: Colours.INK_UN,
     ),
-    decoration: Decorations.INPUT_FIELD(labelText: 'Notes'),
+    onTapOutside: (event) => _taskController.notesFocus.unfocus(),
   );
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(task.id),
-      direction: DismissDirection.startToEnd,
-      background: Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20.0),
-        color: Colours.NOTOK,
-        child: const Icon(Icons.delete, color: Colours.W),
-      ),
-      child: ReorderableDragStartListener(
-        index: widget.order,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-          ),
-          child: IntrinsicHeight(
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(flex: 3, child: _buildTitle()),
-                Expanded(flex: 4, child: _buildDescription()),
-                Expanded(flex: 2, child: _buildDeadline()),
-                Expanded(flex: 2, child: _buildStatus()),
-                Expanded(flex: 2, child: _buildPriority()),
-                Expanded(flex: 2, child: _buildPoints()),
-                Expanded(flex: 2, child: _buildAssignee()),
-                Expanded(flex: 2, child: _buildTags()),
-                Expanded(flex: 3, child: _buildNotes()),
-              ],
-            ),
+    return ReorderableDragStartListener(
+      index: widget.order,
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(width: 2, color: Colours.GLOSS)),
+          color: Colours.CANVAS,
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: TextButton(
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => AcceptGradialog(
+                        icon: Icons.delete_sweep_rounded,
+                        message: 'Do you realy want to delete this task?...',
+                        onAccept: () => delete(),
+                      ),
+                    ),
+                    child: Text(
+                      '${widget.order + 1}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: Fonts.RUBIK_MONO_ONE,
+                        color: Colours.INK_UN,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(flex: 3, child: _buildTitle()),
+              Expanded(flex: 4, child: _buildDescription()),
+              Expanded(flex: 2, child: _buildDeadline()),
+              Expanded(flex: 2, child: _buildStatus()),
+              Expanded(flex: 2, child: _buildPriority()),
+              Expanded(flex: 2, child: _buildPoints()),
+              Expanded(flex: 2, child: _buildAssignee()),
+              Expanded(flex: 2, child: _buildTags()),
+              Expanded(flex: 3, child: _buildNotes()),
+            ],
           ),
         ),
       ),
-      onDismissed: (direction) async {
-        widget.onDelete(task);
-        await FireRources.deleteBlock(widget.deckId, task.id);
-      },
     );
   }
 }

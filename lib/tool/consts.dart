@@ -74,7 +74,7 @@ enum Priority with Labeling, ComparableEnum<Priority> {
     critical => Icons.whatshot_rounded,
     veryHigh => Icons.keyboard_double_arrow_up_rounded,
     high => Icons.keyboard_arrow_up_rounded,
-    medium => Icons.wifi_1_bar_rounded, //remove_rounded,
+    medium => Icons.remove_rounded, //wifi_1_bar_rounded
     low => Icons.keyboard_arrow_down_rounded,
     veryLow => Icons.keyboard_double_arrow_down_rounded,
     frozen => Icons.ac_unit_rounded,
@@ -157,6 +157,8 @@ enum Tag with Labeling, ComparableEnum<Tag> {
 }
 
 /// scrum artefact enum - scrum artefacts
+///
+/// [Product Backlog, Sprint Backlog, Increments]
 enum ScrumArtefact implements Artefact {
   productBacklog,
   sprintBacklog,
@@ -173,6 +175,12 @@ enum ScrumArtefact implements Artefact {
     productBacklog => Icons.all_inbox_rounded,
     sprintBacklog => Icons.history_toggle_off_rounded,
     increments => Icons.extension_rounded,
+  };
+  @override
+  Color get colour => switch (this) {
+    productBacklog => Colours.SHIFT,
+    sprintBacklog => Colours.DRIVE,
+    increments => Colours.ANCHOR,
   };
 }
 

@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'dart:ui_web' as ui_web;
-import 'package:bordered_text/bordered_text.dart';
 import 'package:web/web.dart' as web;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:bordered_text/bordered_text.dart';
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 
@@ -103,17 +103,19 @@ class Overground extends StatelessWidget implements PreferredSizeWidget {
   final TabController? tabController;
   final List<IconData>? tabIcons;
   final List<String>? tabTitles;
+  final VoidCallback? onRender;
 
   const Overground({
     super.key,
     this.icon,
     this.profile,
     this.title,
-    this.iconColor = Colours.W,
+    this.iconColor = Colours.F,
     this.actions,
     this.tabController,
     this.tabIcons,
     this.tabTitles,
+    this.onRender,
   });
 
   const Overground.loading({super.key})
@@ -124,7 +126,8 @@ class Overground extends StatelessWidget implements PreferredSizeWidget {
       actions = null,
       tabController = null,
       tabIcons = null,
-      tabTitles = null;
+      tabTitles = null,
+      onRender = null;
 
   @override
   Size get preferredSize => Size.fromHeight(
@@ -185,6 +188,15 @@ class Overground extends StatelessWidget implements PreferredSizeWidget {
                 fontSize: 21,
               ),
             ),
+            if (onRender != null)
+              IconButton(
+                icon: Icon(
+                  Icons.autorenew_rounded,
+                  size: 17,
+                  color: Colours.INK_AC,
+                ),
+                onPressed: onRender,
+              ),
           ],
         ),
       ),
@@ -264,7 +276,7 @@ class ProfileAvatar extends StatelessWidget {
         imageUrl: profile.avatar,
         imageBuilder: (context, imageProvider) => CircleAvatar(
           backgroundImage: imageProvider,
-          backgroundColor: Colours.UNBACK,
+          backgroundColor: Colours.CANVAS_UN,
         ),
         placeholder: (context, url) => buildLoading(size: 24.0),
         errorWidget: (context, url, error) =>
@@ -311,11 +323,11 @@ class _AuthViewState extends State<AuthView> {
               fontSize: 17,
               fontFamily: Fonts.RUBIK,
               fontWeight: FontWeight.w500,
-              color: Colours.W,
+              color: Colours.F,
             ),
             decoration: Decorations.INPUT_FIELD(
               hintText: 'My email is ...',
-              tipColor: Colours.FRONT,
+              tipColor: Colours.INK,
             ),
           ),
           TextField(
@@ -329,11 +341,11 @@ class _AuthViewState extends State<AuthView> {
               fontSize: 17,
               fontFamily: Fonts.RUBIK,
               fontWeight: FontWeight.w500,
-              color: Colours.W,
+              color: Colours.F,
             ),
             decoration: Decorations.INPUT_FIELD(
               hintText: 'My password is ...',
-              tipColor: Colours.FRONT,
+              tipColor: Colours.INK,
             ),
           ),
         ],
@@ -342,14 +354,14 @@ class _AuthViewState extends State<AuthView> {
         FilledButton(
           style: Styles.BUTTON_LARGE,
           child: BorderedText(
-            strokeColor: Colours.B,
+            strokeColor: Colours.O,
             strokeWidth: 4,
             child: Text(
               'Join it',
               style: const TextStyle(
                 fontSize: 17,
                 fontFamily: Fonts.RUBIK,
-                color: Colours.CENTER,
+                color: Colours.SHIFT,
               ),
             ),
           ),
@@ -369,14 +381,14 @@ class _AuthViewState extends State<AuthView> {
           style: Styles.BUTTON_LARGE,
           icon: SvgPicture.asset('assets/icon/foreign/Google.svg', height: 20),
           label: BorderedText(
-            strokeColor: Colours.B,
+            strokeColor: Colours.O,
             strokeWidth: 4,
             child: Text(
               ' Use',
               style: const TextStyle(
                 fontSize: 17,
                 fontFamily: Fonts.RUBIK,
-                color: Colours.CENTER,
+                color: Colours.SHIFT,
               ),
             ),
           ),

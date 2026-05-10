@@ -16,7 +16,7 @@ class HelpDrawer extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   radius: 1,
-                  colors: [Colours.BACK, Colours.UNFRONT],
+                  colors: [Colours.CANVAS, Colours.INK_UN],
                 ),
               ),
               padding: EdgeInsetsGeometry.all(0),
