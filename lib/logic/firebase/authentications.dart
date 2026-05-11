@@ -6,8 +6,8 @@ import 'package:sortack/logic/firebase/firestores.dart';
 import 'package:sortack/tool/consts.dart';
 
 class AuthHandler {
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final GoogleSignIn _googleSignIn = GoogleSignIn(
+  static FirebaseAuth get _auth => FirebaseAuth.instance;
+  static GoogleSignIn get _googleSignIn => GoogleSignIn(
     clientId:
         '441522416299-dauq6s84p2n594rv019di2lqpmfl15qb.apps.googleusercontent.com',
   );

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sortack/_tools.dart';
+import 'package:sortack/_widgets.dart';
 import 'package:sortack/_pages.dart';
 
 class Rooter extends StatelessWidget {
@@ -11,11 +12,11 @@ class Rooter extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting)
-          return Icon(Icons.timelapse_rounded);
+          return Ground(child: Center(child: buildLoading()));
         else if (snapshot.hasData)
           return MenuPage();
         else
-          return MyHomePage();
+          return const MyHomePage();
       },
     );
   }
