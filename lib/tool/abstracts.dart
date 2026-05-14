@@ -84,6 +84,10 @@ abstract class Collector<T> with ChangeNotifier {
     return poped;
   }
 
+  T popAt(int where) {
+    return collection.removeAt(where);
+  }
+
   void insert(T what, int where) {
     //debugPrint('${what.toString()} is inserted at $where');
     collection.insert(where, what);
@@ -99,4 +103,18 @@ abstract class Collector<T> with ChangeNotifier {
     collection.insert(newIndex, collection.removeAt(oldIndex));
     if (listenable) notifyListeners();
   }
+
+  void clear() {
+    collection.clear();
+  }
+}
+
+@immutable
+interface class Iction {
+  final IconData icon;
+  final VoidCallback callback;
+
+  const Iction({required this.icon, required this.callback});
+
+  void call() => callback();
 }

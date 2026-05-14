@@ -55,26 +55,6 @@ class _KanbanBoardState extends State<KanbanBoard> {
     await FireRources.deletePlank(id, taskList.id);
   }
 
-  List<DragAndDropList> _buildColumns() => List.generate(
-    board.length,
-    (index) => KanbanColumn(
-      deckId: id,
-      tasks: board[index],
-      order: index,
-      members: widget.members,
-      onChanged: () => setState(() {}),
-      onUnfocus: () => updateTaskList(index),
-      onDelete: (plank) => showDialog(
-        context: context,
-        builder: (context) => AcceptGradialog(
-          message: 'Do you realy want to delete this column?...',
-          onAccept: () => deleteTaskList(plank),
-          icon: Icons.remove_rounded,
-        ),
-      ),
-    ).build(),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
@@ -149,7 +129,25 @@ class _KanbanBoardState extends State<KanbanBoard> {
             child: SizedBox(width: 111.0, height: 222.0),
           ),
           // Master
-          children: _buildColumns(),
+          children: List.generate(
+            board.length,
+            (index) => KanbanColumn(
+              deckId: id,
+              tasks: board[index],
+              order: index,
+              members: widget.members,
+              onChanged: () => setState(() {}),
+              onUnfocus: () => updateTaskList(index),
+              onDelete: () => showDialog(
+                context: context,
+                builder: (context) => AcceptGradialog(
+                  message: 'Do you realy want to delete this column?...',
+                  onAccept: () => deleteTaskList(board[index]),
+                  icon: Icons.remove_rounded,
+                ),
+              ),
+            ).build(),
+          ),
           onItemReorder:
               (oldItemIndex, oldListIndex, newItemIndex, newListIndex) async {
                 if (oldListIndex == newListIndex) {

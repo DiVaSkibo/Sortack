@@ -182,6 +182,11 @@ enum ScrumArtefact implements Artefact {
     sprintBacklog => Colours.DRIVE,
     increments => Colours.ANCHOR,
   };
+  ScrumArtefact get next => switch (this) {
+    productBacklog => sprintBacklog,
+    sprintBacklog => increments,
+    increments => sprintBacklog,
+  };
 }
 
 /// task parameters enum - parameters of a task class

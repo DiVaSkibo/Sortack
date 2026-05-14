@@ -213,12 +213,14 @@ class _ScrumPageState extends State<ScrumPage>
             ? Center(child: buildEasterEgg(size: 90))
             : TabBarView(
                 controller: _tabController,
-                children: board!.values
+                children: board!.entries
                     .map(
-                      (deck) => ScrumBoard(
+                      (entry) => ScrumBoard(
                         id: widget.details.id,
-                        tables: deck,
+                        tables: entry.value,
+                        nextTables: board!.decks[entry.key.next]!,
                         members: membersProfiles,
+                        artefact: entry.key,
                       ),
                     )
                     .toList(),

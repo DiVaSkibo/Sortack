@@ -16,7 +16,7 @@ Widget buildLoading({double size = 90.0}) => SizedBox.square(
 
 /// build random easter egg icon
 Icon buildEasterEgg({double size = 90.0}) =>
-    Icon(randEasterEggIcon(), size: size, color: Colours.HIGH);
+    Icon(randEasterEggIcon(), size: size, color: Colours.INK);
 
 /// ground widget - filled page background
 class Ground extends StatelessWidget {

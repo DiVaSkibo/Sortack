@@ -45,6 +45,7 @@ interface class MapDeck<T extends Plank, F extends Artefact> extends Deck<T> {
   MapDeck({this.selectedKey, Map<F, Deck<T>>? decks, super.listenable})
     : decks = decks ?? {};
 
+  Iterable<MapEntry<F, Deck<T>>> get entries => decks.entries;
   Iterable<F> get keys => decks.keys;
   Iterable<Deck<T>> get values => decks.values;
 

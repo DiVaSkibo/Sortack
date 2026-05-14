@@ -12,8 +12,8 @@ final class KanbanColumn {
   final int order;
   final Map<String, UserProfile>? members;
   final VoidCallback onChanged;
-  final Function()? onUnfocus;
-  final Function(Plank) onDelete;
+  final VoidCallback? onUnfocus;
+  final VoidCallback onDelete;
 
   List<Block> get visibleTasks => tasks.visibleBlocks;
   final TextEditingController _titleController;
@@ -80,22 +80,6 @@ final class KanbanColumn {
       }
     },
   );
-  List<DragAndDropItem> _buildTasks() => List.generate(
-    visibleTasks.length,
-    (index) => DragAndDropItem(
-      child: KanbanCard(
-        deckId: deckId,
-        plankId: tasks.id,
-        task: visibleTasks[index],
-        order: index,
-        members: members,
-        onDelete: (what) {
-          tasks.pop(what);
-          onChanged();
-        },
-      ),
-    ),
-  );
 
   DragAndDropList build() {
     return DragAndDropList(
@@ -130,9 +114,24 @@ final class KanbanColumn {
           ],
         ),
       ),
-      children: _buildTasks(),
+      children: List.generate(
+        visibleTasks.length,
+        (index) => DragAndDropItem(
+          child: KanbanCard(
+            deckId: deckId,
+            plankId: tasks.id,
+            task: visibleTasks[index],
+            order: index,
+            members: members,
+            onDelete: () {
+              tasks.pop(visibleTasks[index]);
+              onChanged();
+            },
+          ),
+        ),
+      ),
       footer: IconButton(
-        onPressed: () => onDelete(tasks),
+        onPressed: () => onDelete(),
         icon: const Icon(Icons.remove_rounded, size: 15, color: Colours.GLOSS),
       ),
     );

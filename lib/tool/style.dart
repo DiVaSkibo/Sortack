@@ -25,7 +25,7 @@ final class Colours {
   static const SHIFT_UN = Color(0xFF_B2B262);
   static const SHIFT_AC = Color(0xFF_FFFF00);
 
-  static const INK = Color(0xFF_089191); //0B7373
+  static const INK = Color(0xFF_089191);
   static const INK_UN = Color(0xFF_0F4C4C);
   static const INK_AC = Color(0xFF_B8E0E0);
   static const CANVAS = Color(0xFF_002424);

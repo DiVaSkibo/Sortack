@@ -9,7 +9,7 @@ class ScrumRow extends StatefulWidget {
   final AdvancedBlock task;
   final int order;
   final Map<String, UserProfile> members;
-  final Function(AdvancedBlock) onDelete;
+  final VoidCallback onDelete;
 
   ScrumRow({
     Key? key,
@@ -59,7 +59,7 @@ class _ScrumRowState extends State<ScrumRow> {
 
   void delete() async {
     // call parent
-    widget.onDelete(task);
+    widget.onDelete();
     // fire
     try {
       await FireRources.deleteBlock(widget.deckId, task.id);
@@ -133,10 +133,9 @@ class _ScrumRowState extends State<ScrumRow> {
       child: Center(child: Text(task.status.label, style: Styles.TEXT_UNINFO)),
     ),
     onTap: () {
-      setState(() {
-        task.status =
-            Status.values[(task.status.index + 1) % Status.values.length];
-      });
+      var newStatus =
+          Status.values[(task.status.index + 1) % Status.values.length];
+      _taskController.updateStatus(newStatus);
     },
   );
   Widget _buildPriority() => Center(

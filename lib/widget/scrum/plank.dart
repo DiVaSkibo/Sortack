@@ -9,7 +9,9 @@ class ScrumTable extends StatefulWidget {
   final Plank<AdvancedBlock> tasks;
   final int order;
   final Map<String, UserProfile>? members;
-  final Function(Plank<AdvancedBlock>)? onDelete;
+  final List<Iction>? ictions;
+  final bool constant;
+  final VoidCallback? onDelete;
 
   ScrumTable({
     Key? key,
@@ -17,6 +19,8 @@ class ScrumTable extends StatefulWidget {
     required this.tasks,
     required this.order,
     this.members,
+    this.ictions,
+    this.constant = false,
     this.onDelete,
   }) : super(key: key ?? ObjectKey(tasks));
 
@@ -71,12 +75,24 @@ class _ScrumTableState extends State<ScrumTable> {
     }
   }
 
+  void clean() async {
+    var tasksIds = tasks.blocks.map((block) => block.id).toList();
+    // display
+    setState(() {
+      tasks.clear();
+    });
+    // fire
+    for (final taskId in tasksIds) {
+      await FireRources.deleteBlock(widget.deckId, taskId);
+    }
+  }
+
   void delete() async {
     // delete tasks inside
     for (final task in tasks.blocks)
       await FireRources.deleteBlock(widget.deckId, task.id);
     // display
-    widget.onDelete?.call(tasks);
+    widget.onDelete?.call();
     // fire
     await FireRources.deletePlank(widget.deckId, tasks.id);
   }
@@ -155,12 +171,58 @@ class _ScrumTableState extends State<ScrumTable> {
       textColor: Colours.CANVAS,
       leading: _buildColour(context),
       title: _buildTitle(),
-      trailing: widget.onDelete != null
-          ? IconButton(
+      trailing: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
+        runSpacing: 6,
+        children: [
+          if (widget.ictions != null && widget.ictions!.isNotEmpty)
+            for (final iction in widget.ictions!)
+              IconButton(
+                icon: Icon(
+                  iction.icon,
+                  size: 18,
+                  color: Colours.SHIFT,
+                  shadows: List.generate(
+                    20,
+                    (index) => Shadow(blurRadius: 0.75, color: Colours.O),
+                  ),
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AcceptGradialog(
+                    message: 'Do you realy want to clean this table?...',
+                    onAccept: () => iction.call(),
+                    icon: Icons.playlist_remove_rounded,
+                  ),
+                ),
+              ),
+          if (widget.constant)
+            IconButton(
+              icon: Icon(
+                Icons.playlist_remove_rounded,
+                size: 18,
+                color: Colours.DRIVE_AC,
+                shadows: List.generate(
+                  20,
+                  (index) => Shadow(blurRadius: 0.75, color: Colours.O),
+                ),
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => AcceptGradialog(
+                  message: 'Do you realy want to clean this table?...',
+                  onAccept: () => clean(),
+                  icon: Icons.playlist_remove_rounded,
+                ),
+              ),
+            ),
+          if (widget.onDelete != null)
+            IconButton(
               icon: Icon(
                 Icons.delete_forever_rounded,
                 size: 18,
-                color: Colours.SHIFT,
+                color: Colours.DRIVE_AC,
                 shadows: List.generate(
                   20,
                   (index) => Shadow(blurRadius: 0.75, color: Colours.O),
@@ -174,8 +236,9 @@ class _ScrumTableState extends State<ScrumTable> {
                   icon: Icons.remove_rounded,
                 ),
               ),
-            )
-          : null,
+            ),
+        ],
+      ),
       subtitle: SizedBox(height: 10.0),
       children: [
         LayoutBuilder(
@@ -226,18 +289,18 @@ class _ScrumTableState extends State<ScrumTable> {
                     task: visibleTasks[index],
                     order: index,
                     members: widget.members,
-                    onDelete: (what) {
+                    onDelete: () {
                       setState(() {
-                        tasks.pop(what);
+                        tasks.pop(visibleTasks[index]);
                       });
                     },
                   ),
-                  onReorder: (oldIndex, newIndex) {
+                  onReorder: (oldIndex, newIndex) async {
                     if (newIndex > oldIndex) newIndex -= 1;
                     setState(() {
                       tasks.move(oldIndex, newIndex);
                     });
-                    FireRources.updateBlocksOrder(widget.deckId, tasks);
+                    await FireRources.updateBlocksOrder(widget.deckId, tasks);
                   },
                 ),
               ),

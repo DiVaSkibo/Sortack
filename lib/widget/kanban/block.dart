@@ -9,7 +9,7 @@ class KanbanCard extends StatefulWidget {
   final Block task;
   final int order;
   final Map<String, UserProfile> members;
-  final Function(Block) onDelete;
+  final VoidCallback onDelete;
 
   KanbanCard({
     Key? key,
@@ -58,7 +58,7 @@ class _KanbanCardState extends State<KanbanCard> {
 
   void delete() async {
     // call parent
-    widget.onDelete(task);
+    widget.onDelete();
     // fire
     try {
       await FireRources.deleteBlock(widget.deckId, task.id);
