@@ -55,6 +55,11 @@ class _ScrumPageState extends State<ScrumPage>
             AdvancedMapDeck<ScrumArtefact>,
             ScrumArtefact
           >(widget.details.id);
+      if (loadedMapDeck.decks[ScrumArtefact.increments] != null &&
+          loadedMapDeck.decks[ScrumArtefact.increments]!.isNotEmpty)
+        for (final plank
+            in loadedMapDeck.decks[ScrumArtefact.increments]!.planks)
+          for (final block in plank.blocks) block.enabled = false;
       board = loadedMapDeck;
       board!.selectedKey = ScrumArtefact.productBacklog;
       // profiles data
@@ -79,6 +84,7 @@ class _ScrumPageState extends State<ScrumPage>
     final docRef = FireRources.getPlanks(widget.details.id).doc();
     final newTaskList = AdvancedPlank(
       id: docRef.id,
+      title: 'Sprint ${DateTime.now().ddMMMyyyy}',
       color: board!.selectedKey!.colour,
     );
     // display

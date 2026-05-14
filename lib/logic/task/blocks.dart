@@ -4,6 +4,7 @@ import 'package:sortack/_tools.dart';
 @immutable
 interface class Block with Parameterizable<TaskParameters> {
   final String id;
+  bool enabled;
   String title;
   String description;
   PointsTShirt? points;
@@ -12,6 +13,7 @@ interface class Block with Parameterizable<TaskParameters> {
 
   Block({
     required this.id,
+    this.enabled = true,
     this.title = '',
     this.description = '',
     this.points,
@@ -63,6 +65,7 @@ interface class AdvancedBlock extends Block {
 
   AdvancedBlock({
     required super.id,
+    super.enabled = true,
     super.title = '',
     super.description = '',
     super.points,

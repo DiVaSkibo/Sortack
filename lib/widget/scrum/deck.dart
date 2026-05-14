@@ -35,6 +35,29 @@ class _ScrumBoardState extends State<ScrumBoard> {
     super.dispose();
   }
 
+  void _sprintToIncrement(int index) async {
+    // pop
+    final AdvancedPlank sprint = board.popAt(index);
+    // modify information for the next artefact
+    if (sprint.title.isEmpty) {
+      sprint.title = 'Increment ${DateTime.now().ddMMMyyyy}';
+    } else {
+      sprint.title = sprint.title.replaceAll('Sprint', 'Increment');
+      sprint.title = sprint.title.replaceAll('sprint', 'increment');
+    }
+    sprint.color = ScrumArtefact.increments.colour;
+    for (var task in sprint.blocks) task.enabled = false;
+    // push
+    nextBoard.push(sprint, front: true);
+    // fire
+    await FireRources.savePlank(
+      id,
+      sprint,
+      nextBoard.length,
+      key: ScrumArtefact.increments.label,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -54,33 +77,7 @@ class _ScrumBoardState extends State<ScrumBoard> {
                 ScrumArtefact.sprintBacklog => [
                   Iction(
                     icon: Icons.flag_outlined,
-                    callback: () async {
-                      // pop
-                      final AdvancedPlank sprint = board.popAt(index);
-                      // modify information for the next artefact
-                      if (sprint.title.isEmpty) {
-                        sprint.title = 'Increment ${DateTime.now().ddMMMyyyy}';
-                      } else {
-                        sprint.title = sprint.title.replaceAll(
-                          'Sprint',
-                          'Increment',
-                        );
-                        sprint.title = sprint.title.replaceAll(
-                          'sprint',
-                          'increment',
-                        );
-                      }
-                      sprint.color = ScrumArtefact.increments.colour;
-                      // push
-                      nextBoard.push(sprint, front: true);
-                      // fire
-                      await FireRources.savePlank(
-                        id,
-                        sprint,
-                        nextBoard.length,
-                        key: ScrumArtefact.increments.label,
-                      );
-                    },
+                    callback: () => _sprintToIncrement(index),
                   ),
                 ],
                 _ => null,
