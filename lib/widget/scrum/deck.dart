@@ -48,7 +48,7 @@ class _ScrumBoardState extends State<ScrumBoard> {
     sprint.color = ScrumArtefact.increments.colour;
     for (var task in sprint.blocks) task.enabled = false;
     // push
-    nextBoard.push(sprint, front: true);
+    nextBoard.push(sprint, 0);
     // fire
     await FireRources.savePlank(
       id,

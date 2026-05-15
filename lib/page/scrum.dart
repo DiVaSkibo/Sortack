@@ -60,6 +60,18 @@ class _ScrumPageState extends State<ScrumPage>
         for (final plank
             in loadedMapDeck.decks[ScrumArtefact.increments]!.planks)
           for (final block in plank.blocks) block.enabled = false;
+      //
+      // ?????????????
+      var productPlank =
+          loadedMapDeck.decks[ScrumArtefact.productBacklog]!.first;
+      final sprintDeck = loadedMapDeck.decks[ScrumArtefact.sprintBacklog]!;
+      final incrementDeck = loadedMapDeck.decks[ScrumArtefact.increments]!;
+      for (final plank in sprintDeck.planks)
+        for (final block in plank.blocks) productPlank.push(block, 0);
+      for (final plank in incrementDeck.planks)
+        for (final block in plank.blocks) productPlank.push(block);
+      // ?????????????
+      //
       board = loadedMapDeck;
       board!.selectedKey = ScrumArtefact.productBacklog;
       // profiles data

@@ -68,9 +68,9 @@ abstract class Collector<T> with ChangeNotifier {
 
   T operator [](int index) => collection.elementAt(index);
 
-  void push(T what, {bool front = false}) {
-    if (front)
-      collection.insert(0, what);
+  void push(T what, [int? where]) {
+    if (where != null)
+      collection.insert(where, what);
     else
       collection.add(what);
     if (listenable) notifyListeners();
@@ -91,11 +91,6 @@ abstract class Collector<T> with ChangeNotifier {
     var poped = collection.removeAt(where);
     if (listenable) notifyListeners();
     return poped;
-  }
-
-  void insert(T what, int where) {
-    collection.insert(where, what);
-    if (listenable) notifyListeners();
   }
 
   void move(int oldIndex, int newIndex) {

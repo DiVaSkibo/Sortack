@@ -397,6 +397,7 @@ class _ScrumRowState extends State<ScrumRow> {
   @override
   Widget build(BuildContext context) {
     return ReorderableDragStartListener(
+      enabled: enabled,
       index: widget.order,
       child: Container(
         decoration: const BoxDecoration(

@@ -159,7 +159,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
                   var task = board[oldListIndex].blocks[oldItemIndex];
                   setState(() {
                     board[oldListIndex].pop(task);
-                    board[newListIndex].insert(task, newItemIndex);
+                    board[newListIndex].push(task, newItemIndex);
                   });
                   FireRources.updateBlocksOrder(id, board[oldListIndex]);
                   FireRources.updateBlocksOrder(id, board[newListIndex]);
