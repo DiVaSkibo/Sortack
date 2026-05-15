@@ -60,6 +60,7 @@ class _MenuPageState extends State<MenuPage> {
             ),
       body: Ground(
         scrollable: true,
+        over: true,
         child: StreamBuilder(
           stream: FireRources.getUserDecks(currentUser).snapshots(),
           builder: (context, snapshot) {
@@ -93,8 +94,8 @@ class _MenuPageState extends State<MenuPage> {
         ),
       ),
       floatingActionButton: Wrap(
-        spacing: 25,
-        runSpacing: 25,
+        spacing: 20,
+        runSpacing: 20,
         children: [
           FloatingActionButton(
             heroTag: 'btnCreateProject',

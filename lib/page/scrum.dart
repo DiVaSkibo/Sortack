@@ -225,10 +225,12 @@ class _ScrumPageState extends State<ScrumPage>
         },
       ),
       body: Ground(
+        over: true,
+        tabs: true,
         child: _isLoading
             ? Center(child: buildLoading())
             : (board == null || board!.planks.isEmpty)
-            ? Center(child: buildEasterEgg(size: 90))
+            ? Center(child: buildEasterEgg())
             : TabBarView(
                 controller: _tabController,
                 children: board!.entries

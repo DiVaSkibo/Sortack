@@ -67,7 +67,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
           axis: Axis.horizontal,
           horizontalAlignment: MainAxisAlignment.center,
           verticalAlignment: CrossAxisAlignment.center,
-          contentsWhenEmpty: buildEasterEgg(size: 90),
+          contentsWhenEmpty: buildEasterEgg(),
           // Item
           lastItemTargetHeight: 133.3,
           itemDragOnLongPress: false,

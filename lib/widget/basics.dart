@@ -15,82 +15,44 @@ Widget buildLoading({double size = 90.0}) => SizedBox.square(
 );
 
 /// build random easter egg icon
-Icon buildEasterEgg({double size = 90.0}) =>
-    Icon(randEasterEggIcon(), size: size, color: Colours.INK);
+Icon buildEasterEgg({double size = 120.0}) =>
+    Icon(randEasterEggIcon(), size: size, color: Colours.CANVAS_AC);
 
 /// ground widget - filled page background
 class Ground extends StatelessWidget {
   final bool scrollable;
+  final bool over;
+  final bool tabs;
   final Widget child;
 
-  const Ground({super.key, this.scrollable = false, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    final widget = Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(gradient: Gradients.DECK),
-      constraints: BoxConstraints.fromViewConstraints(
-        ViewConstraints(
-          minWidth: MediaQuery.of(context).size.width,
-          minHeight: MediaQuery.of(context).size.height,
-        ),
-      ),
-      child: child,
-    );
-    return scrollable ? SingleChildScrollView(child: widget) : widget;
-  }
-}
-
-/// surface widget - filled container background
-class Surface extends StatelessWidget {
-  final EdgeInsetsGeometry? padding;
-  final double? width;
-  final double? height;
-  final Widget child;
-  final List<Widget>? actions;
-
-  const Surface({
+  const Ground({
     super.key,
-    this.padding,
-    this.width,
-    this.height,
+    this.scrollable = false,
+    this.over = false,
+    this.tabs = false,
     required this.child,
-    this.actions,
   });
 
+  double xWidth(BuildContext context) => MediaQuery.of(context).size.width;
+  double xHeight(BuildContext context) =>
+      MediaQuery.of(context).size.height -
+      (over
+          ? tabs
+                ? 120.0
+                : 80.0
+          : 0.0);
+
   @override
   Widget build(BuildContext context) {
-    final surface = Container(
-      padding: padding,
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        gradient: Gradients.SURFACE,
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+    final parent = Container(
+      padding: const EdgeInsets.all(24.0),
+      decoration: const BoxDecoration(gradient: Gradients.DECK),
+      constraints: BoxConstraints.fromViewConstraints(
+        ViewConstraints(minWidth: xWidth(context), minHeight: xHeight(context)),
       ),
       child: child,
     );
-    return actions == null
-        ? surface
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 30.0,
-            children: [
-              surface,
-              SizedBox(
-                width: 300.0,
-                child: Wrap(
-                  alignment: WrapAlignment.spaceEvenly,
-                  runAlignment: WrapAlignment.center,
-                  spacing: 10.0,
-                  runSpacing: 10.0,
-                  children: actions!,
-                ),
-              ),
-            ],
-          );
+    return scrollable ? SingleChildScrollView(child: parent) : parent;
   }
 }
 
@@ -234,6 +196,58 @@ class Overground extends StatelessWidget implements PreferredSizeWidget {
             )
           : null,
     );
+  }
+}
+
+/// surface widget - filled container background
+class Surface extends StatelessWidget {
+  final EdgeInsetsGeometry? padding;
+  final double? width;
+  final double? height;
+  final Widget child;
+  final List<Widget>? actions;
+
+  const Surface({
+    super.key,
+    this.padding,
+    this.width,
+    this.height,
+    required this.child,
+    this.actions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Container(
+      padding: padding,
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        gradient: Gradients.SURFACE,
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+      ),
+      child: child,
+    );
+    return actions == null
+        ? surface
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 30.0,
+            children: [
+              surface,
+              SizedBox(
+                width: 300.0,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  runAlignment: WrapAlignment.center,
+                  spacing: 10.0,
+                  runSpacing: 10.0,
+                  children: actions!,
+                ),
+              ),
+            ],
+          );
   }
 }
 

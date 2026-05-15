@@ -86,7 +86,7 @@ final class KanbanColumn {
       verticalAlignment: CrossAxisAlignment.center,
       contentsWhenEmpty: Padding(
         padding: const EdgeInsets.only(top: 12.5),
-        child: buildEasterEgg(size: 45),
+        child: buildEasterEgg(size: 60),
       ),
       decoration: BoxDecoration(
         gradient: Gradients.PLANK,
