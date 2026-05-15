@@ -199,7 +199,7 @@ class _KanbanPageState extends State<KanbanPage> {
                 Icons.add_task_rounded,
                 shadows: List.generate(
                   30,
-                  (index) => Shadow(blurRadius: 1.15, color: Colours.O),
+                  (index) => const Shadow(blurRadius: 1.15, color: Colours.O),
                 ),
               ),
               onPressed: () => addTask(),

@@ -102,7 +102,7 @@ class _MenuPageState extends State<MenuPage> {
               Icons.add_box_rounded,
               shadows: List.generate(
                 30,
-                (index) => Shadow(blurRadius: 1.15, color: Colours.O),
+                (index) => const Shadow(blurRadius: 1.15, color: Colours.O),
               ),
             ),
             onPressed: () => showDialog(
@@ -116,7 +116,7 @@ class _MenuPageState extends State<MenuPage> {
               Icons.travel_explore_rounded,
               shadows: List.generate(
                 30,
-                (index) => Shadow(blurRadius: 1.15, color: Colours.O),
+                (index) => const Shadow(blurRadius: 1.15, color: Colours.O),
               ),
             ),
             onPressed: () => showDialog(

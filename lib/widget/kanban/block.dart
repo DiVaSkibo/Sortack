@@ -249,7 +249,7 @@ class _KanbanCardState extends State<KanbanCard> {
               color: Colours.SHIFT,
               shadows: List.generate(
                 20,
-                (index) => Shadow(blurRadius: 0.75, color: Colours.O),
+                (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
               ),
             ),
             onPressed: () => showDialog(

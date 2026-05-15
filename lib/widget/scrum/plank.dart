@@ -185,7 +185,7 @@ class _ScrumTableState extends State<ScrumTable> {
                   color: Colours.SHIFT,
                   shadows: List.generate(
                     20,
-                    (index) => Shadow(blurRadius: 0.75, color: Colours.O),
+                    (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
                   ),
                 ),
                 onPressed: () => showDialog(
@@ -205,7 +205,7 @@ class _ScrumTableState extends State<ScrumTable> {
                 color: Colours.DRIVE_AC,
                 shadows: List.generate(
                   20,
-                  (index) => Shadow(blurRadius: 0.75, color: Colours.O),
+                  (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
                 ),
               ),
               onPressed: () => showDialog(
@@ -225,7 +225,7 @@ class _ScrumTableState extends State<ScrumTable> {
                 color: Colours.DRIVE_AC,
                 shadows: List.generate(
                   20,
-                  (index) => Shadow(blurRadius: 0.75, color: Colours.O),
+                  (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
                 ),
               ),
               onPressed: () => showDialog(
@@ -239,7 +239,7 @@ class _ScrumTableState extends State<ScrumTable> {
             ),
         ],
       ),
-      subtitle: SizedBox(height: 10.0),
+      subtitle: const SizedBox(height: 10.0),
       children: [
         LayoutBuilder(
           builder: (context, constraints) => Scrollbar(
