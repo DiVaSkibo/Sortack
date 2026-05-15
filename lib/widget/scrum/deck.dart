@@ -58,6 +58,29 @@ class _ScrumBoardState extends State<ScrumBoard> {
     );
   }
 
+  void _incrementToSprint(int index) async {
+    // pop
+    final AdvancedPlank increment = board.popAt(index);
+    // modify information for the next artefact
+    if (increment.title.isEmpty) {
+      increment.title = 'Sprint ${DateTime.now().ddMMMyyyy}';
+    } else {
+      increment.title = increment.title.replaceAll('Increment', 'Sprint');
+      increment.title = increment.title.replaceAll('increment', 'sprint');
+    }
+    increment.color = ScrumArtefact.sprintBacklog.colour;
+    for (var task in increment.blocks) task.enabled = true;
+    // push
+    nextBoard.push(increment, 0);
+    // fire
+    await FireRources.savePlank(
+      id,
+      increment,
+      nextBoard.length,
+      key: ScrumArtefact.sprintBacklog.label,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -76,8 +99,14 @@ class _ScrumBoardState extends State<ScrumBoard> {
               ictions: switch (widget.artefact) {
                 ScrumArtefact.sprintBacklog => [
                   Iction(
-                    icon: Icons.flag_outlined,
+                    icon: Icons.outlined_flag_rounded,
                     callback: () => _sprintToIncrement(index),
+                  ),
+                ],
+                ScrumArtefact.increments => [
+                  Iction(
+                    icon: Icons.emoji_flags_rounded,
+                    callback: () => _incrementToSprint(index),
                   ),
                 ],
                 _ => null,

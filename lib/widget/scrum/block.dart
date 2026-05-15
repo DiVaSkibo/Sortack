@@ -105,6 +105,7 @@ class _ScrumRowState extends State<ScrumRow> {
           focusNode: _taskController?.titleFocus,
           style: Styles.TEXT_INPUT,
           decoration: Decorations.INPUT_FIELD(
+            padding: EdgeInsets.zero,
             hintText: 'I have to do ...',
             hoverColor: Colours.CANVAS_AC,
             tipColor: Colours.INK_UN,
@@ -112,7 +113,10 @@ class _ScrumRowState extends State<ScrumRow> {
           onEditingComplete: () => _taskController?.titleFocus.unfocus(),
           onTapOutside: (event) => _taskController?.titleFocus.unfocus(),
         )
-      : Text(task.title, style: Styles.TEXT_INPUT);
+      : Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 9.0),
+          child: Text(task.title, style: Styles.TEXT_INPUT_DISABLED),
+        );
   Widget _buildDescription() => enabled
       ? TextFormField(
           controller: _taskController?.descriptionController,
@@ -122,13 +126,17 @@ class _ScrumRowState extends State<ScrumRow> {
           maxLines: 4,
           style: Styles.TEXT_INPUT_MULTILINE,
           decoration: Decorations.INPUT_FIELD(
+            padding: EdgeInsets.zero,
             hintText: '...',
             hoverColor: Colours.CANVAS_AC,
             tipColor: Colours.INK_UN,
           ),
           onTapOutside: (event) => _taskController?.descriptionFocus.unfocus(),
         )
-      : Text(task.description, style: Styles.TEXT_INPUT_MULTILINE);
+      : Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 9.0),
+          child: Text(task.description, style: Styles.TEXT_INPUT_MULTILINE),
+        );
   Widget _buildDeadline() => Center(
     child: enabled
         ? task.deadline != null
@@ -386,6 +394,7 @@ class _ScrumRowState extends State<ScrumRow> {
           maxLines: 2,
           style: Styles.TEXT_INPUT_ITALIC,
           decoration: Decorations.INPUT_FIELD(
+            padding: EdgeInsets.zero,
             hintText: '...',
             hoverColor: Colours.CANVAS_AC,
             tipColor: Colours.INK_UN,

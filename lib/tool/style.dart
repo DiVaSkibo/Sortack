@@ -124,6 +124,14 @@ final class Styles {
     fontWeight: FontWeight.w400,
     color: Colours.F,
   );
+  static const TEXT_INPUT_DISABLED = TextStyle(
+    fontSize: 15,
+    fontFamily: Fonts.RUBIK,
+    fontWeight: FontWeight.w400,
+    decoration: TextDecoration.lineThrough,
+    decorationThickness: 3,
+    color: Colours.F,
+  );
   static const TEXT_UNINPUT = TextStyle(
     fontSize: 17,
     fontFamily: Fonts.RUBIK,
