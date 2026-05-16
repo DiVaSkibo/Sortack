@@ -256,51 +256,68 @@ class _ScrumRowState extends State<ScrumRow> {
         ? Text(task.points!.label, style: Styles.TEXT_INFO)
         : const Icon(Icons.style_outlined, color: Colours.INK_UN),
   );
-  Widget _buildAssignee() => Wrap(
-    alignment: WrapAlignment.center,
-    runAlignment: WrapAlignment.center,
-    crossAxisAlignment: WrapCrossAlignment.center,
-    spacing: 8,
-    runSpacing: 4,
-    children: [
-      if (task.assignee.isEmpty)
-        enabled
-            ? IconButton(
-                icon: const Icon(
+  Widget _buildAssignee() => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6.0),
+    child: Wrap(
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 8,
+      runSpacing: 4,
+      children: [
+        if (task.assignee.isEmpty)
+          enabled
+              ? IconButton(
+                  icon: const Icon(
+                    Icons.person_add_outlined,
+                    size: 15,
+                    color: Colours.INK,
+                  ),
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => ChipsGradialog(
+                      values: widget.members.values.toSet(),
+                      selected: task.assignee.toSet(),
+                      onPick: (assignee) => _taskController?.updateAssignee(
+                        assignee as Set<String>,
+                      ),
+                    ),
+                  ),
+                )
+              : const Icon(
                   Icons.person_add_outlined,
                   size: 15,
-                  color: Colours.INK,
+                  color: Colours.INK_UN,
                 ),
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => ChipsGradialog(
-                    values: widget.members.values.toSet(),
-                    selected: task.assignee.toSet(),
-                    onPick: (assignee) => _taskController?.updateAssignee(
-                      assignee as Set<String>,
+        for (final asign in task.assignee)
+          enabled
+              ? TextButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => ChipsGradialog(
+                      values: widget.members.values.toSet(),
+                      selected: task.assignee.toSet(),
+                      onPick: (assignee) => _taskController?.updateAssignee(
+                        assignee as Set<String>,
+                      ),
                     ),
                   ),
-                ),
-              )
-            : const Icon(
-                Icons.person_add_outlined,
-                size: 15,
-                color: Colours.INK_UN,
-              ),
-      for (final asign in task.assignee)
-        enabled
-            ? TextButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => ChipsGradialog(
-                    values: widget.members.values.toSet(),
-                    selected: task.assignee.toSet(),
-                    onPick: (assignee) => _taskController?.updateAssignee(
-                      assignee as Set<String>,
-                    ),
+                  child: Wrap(
+                    alignment: WrapAlignment.start,
+                    runAlignment: WrapAlignment.start,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    runSpacing: 3,
+                    children: [
+                      ProfileAvatar(
+                        profile: widget.members[asign]!,
+                        radius: 12.5,
+                      ),
+                      Text(widget.members[asign]!.name, style: Styles.TEXT),
+                    ],
                   ),
-                ),
-                child: Wrap(
+                )
+              : Wrap(
                   alignment: WrapAlignment.start,
                   runAlignment: WrapAlignment.start,
                   crossAxisAlignment: WrapCrossAlignment.center,
@@ -314,19 +331,8 @@ class _ScrumRowState extends State<ScrumRow> {
                     Text(widget.members[asign]!.name, style: Styles.TEXT),
                   ],
                 ),
-              )
-            : Wrap(
-                alignment: WrapAlignment.start,
-                runAlignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 6,
-                runSpacing: 3,
-                children: [
-                  ProfileAvatar(profile: widget.members[asign]!, radius: 12.5),
-                  Text(widget.members[asign]!.name, style: Styles.TEXT),
-                ],
-              ),
-    ],
+      ],
+    ),
   );
   Widget _buildTags() => Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
