@@ -141,9 +141,9 @@ class _KanbanBoardState extends State<KanbanBoard> {
               onDelete: () => showDialog(
                 context: context,
                 builder: (context) => AcceptGradialog(
-                  message: 'Do you realy want to delete this column?...',
+                  icon: Icons.delete_sweep_rounded,
+                  message: 'This will permanently remove the column...',
                   onAccept: () => deleteTaskList(board[index]),
-                  icon: Icons.remove_rounded,
                 ),
               ),
             ).build(),

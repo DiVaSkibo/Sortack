@@ -69,7 +69,7 @@ final class Colours {
 /// static const gradients class - custom static const gradients
 final class Gradients {
   static const DECK = RadialGradient(
-    center: Alignment.bottomCenter,
+    center: AlignmentGeometry.bottomCenter,
     radius: 1.0,
     colors: [Colours.CANVAS_AC, Colours.CANVAS_UN],
   );
@@ -79,19 +79,24 @@ final class Gradients {
     colors: [Colours.CANVAS_AC, Colours.CANVAS_UN],
   );
   static const PLANK = RadialGradient(
-    center: Alignment.topLeft,
+    center: AlignmentGeometry.topStart,
     radius: 1.5,
     colors: [Colours.CANVAS_AC, Colours.CANVAS],
   );
   static const SURFACE = RadialGradient(
-    center: Alignment.centerRight,
+    center: AlignmentGeometry.centerEnd,
     radius: 1.25,
     colors: [Colours.CANVAS_AC, Colours.CANVAS],
   );
   static const BLOCK = RadialGradient(
-    center: Alignment.centerRight,
-    radius: 5.0,
+    center: AlignmentGeometry.centerEnd,
+    radius: 2.0,
     colors: [Colours.CANVAS_AC, Colours.CANVAS],
+  );
+  static const BUBBLE = RadialGradient(
+    center: AlignmentGeometry.bottomStart,
+    radius: 2.0,
+    colors: [Colours.F, Colours.INK_AC],
   );
 }
 

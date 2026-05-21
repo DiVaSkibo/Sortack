@@ -256,7 +256,7 @@ class _KanbanCardState extends State<KanbanCard> {
               context: context,
               builder: (context) => AcceptGradialog(
                 icon: Icons.delete_sweep_rounded,
-                message: 'Do you realy want to delete this task?...',
+                message: 'This will permanently remove the task...',
                 onAccept: () => delete(),
               ),
             ),

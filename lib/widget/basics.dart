@@ -18,6 +18,60 @@ Widget buildLoading({double size = 90.0}) => SizedBox.square(
 Icon buildEasterEgg({double size = 120.0}) =>
     Icon(randEasterEggIcon(), size: size, color: Colours.CANVAS_AC);
 
+Widget buildMethodologyChip(
+  Methodology methodology, {
+  VoidCallback? onPressed,
+}) => onPressed != null
+    ? InputChip(
+        label: Text(
+          methodology.label,
+          style: TextStyle(
+            fontSize: 13,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.normal,
+            color: Colours.INK_UN,
+          ),
+        ),
+        color: WidgetStatePropertyAll(switch (methodology) {
+          Methodology.Kanban => Colours.HIGH,
+          Methodology.Scrum => Colours.LOW,
+        }),
+        side: BorderSide(
+          strokeAlign: BorderSide.strokeAlignCenter,
+          width: 3,
+          color: switch (methodology) {
+            Methodology.Kanban => Colours.VERY_HIGH,
+            Methodology.Scrum => Colours.VERY_LOW,
+          },
+        ),
+        onPressed: onPressed,
+      )
+    : Chip(
+        label: Text(
+          methodology.label,
+          style: TextStyle(
+            fontSize: 13,
+            fontFamily: Fonts.RUBIK,
+            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.normal,
+            color: Colours.INK_UN,
+          ),
+        ),
+        color: WidgetStatePropertyAll(switch (methodology) {
+          Methodology.Kanban => Colours.HIGH,
+          Methodology.Scrum => Colours.LOW,
+        }),
+        side: BorderSide(
+          strokeAlign: BorderSide.strokeAlignCenter,
+          width: 3,
+          color: switch (methodology) {
+            Methodology.Kanban => Colours.VERY_HIGH,
+            Methodology.Scrum => Colours.VERY_LOW,
+          },
+        ),
+      );
+
 /// ground widget - filled page background
 class Ground extends StatelessWidget {
   final bool scrollable;

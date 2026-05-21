@@ -77,13 +77,13 @@ class _ScrumRowState extends State<ScrumRow> {
               context: context,
               builder: (context) => AcceptGradialog(
                 icon: Icons.delete_sweep_rounded,
-                message: 'Do you realy want to delete this task?...',
+                message: 'This will permanently remove the task...',
                 onAccept: () => delete(),
               ),
             ),
             child: Text(
               '${widget.order + 1}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 fontFamily: Fonts.RUBIK_MONO_ONE,
                 color: Colours.INK_UN,

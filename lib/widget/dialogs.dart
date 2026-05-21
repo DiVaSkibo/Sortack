@@ -1,8 +1,10 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
+import 'package:sortack/_widgets.dart';
 
 /// gradialog - dialog with gradient
 class Gradialog extends StatelessWidget {
+  final double width;
   final IconData? icon;
   final String? title;
   final Widget? content;
@@ -10,6 +12,7 @@ class Gradialog extends StatelessWidget {
 
   const Gradialog({
     super.key,
+    this.width = double.infinity,
     this.icon,
     this.title,
     this.content,
@@ -20,29 +23,38 @@ class Gradialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Container(
+        width: width,
+        alignment: AlignmentGeometry.center,
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25.0),
-          gradient: Gradients.BLOCK,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+          gradient: Gradients.BUBBLE,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 15,
+        child: Wrap(
+          direction: Axis.vertical,
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 5,
           children: [
-            if (title != null) Text(title!),
-            if (icon != null) Icon(icon),
+            if (icon != null) Icon(icon, color: Colours.INK_UN),
+            if (title != null) Text(title!, style: Styles.TEXT_UN),
           ],
         ),
       ),
-      content: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15.0),
-          gradient: Gradients.BLOCK,
-        ),
-        child: content,
-      ),
+      content: content != null
+          ? Container(
+              width: width,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 30.0,
+              ),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                gradient: Gradients.BLOCK,
+              ),
+              child: content,
+            )
+          : null,
       actions: actions,
     );
   }
@@ -66,7 +78,8 @@ class ColourGradialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Gradialog(
-      title: 'What colour do you prefer?...',
+      icon: Icons.color_lens_rounded,
+      title: 'Which color are we choosing?...',
       content: Wrap(
         direction: Axis.vertical,
         crossAxisAlignment: WrapCrossAlignment.end,
@@ -96,7 +109,7 @@ class ColourGradialog extends StatelessWidget {
           Row(
             spacing: 7,
             children: [
-              for (final colour in Colours.STATIC)
+              for (final colour in Colours.STATIC.reversed)
                 _buildColour(context, colour),
             ],
           ),
@@ -125,8 +138,9 @@ class AcceptGradialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Gradialog(
       icon: icon,
-      title: 'Sure?',
-      content: Text(message ?? 'are you sure?...'),
+      title: message != null && message!.isNotEmpty
+          ? '$message\nconfirm action?'
+          : 'confirm action?',
       actions: [
         IconButton(
           iconSize: 18,
@@ -183,9 +197,15 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
   @override
   Widget build(BuildContext context) {
     return Gradialog(
-      icon: Icons.catching_pokemon_rounded,
-      title: 'Pick what you want',
+      width: 300.0,
+      icon: Icons.rule_folder_rounded,
+      title: 'Pick everything that applies!',
       content: Wrap(
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8,
+        runSpacing: 10,
         children: values.map((value) {
           String text;
           dynamic val = value;
@@ -263,7 +283,6 @@ class ProjectGradialog extends StatefulWidget {
 class _ProjectGradialogState extends State<ProjectGradialog> {
   late final ProjectDetailsController _projectController;
   ProjectDetails get project => _projectController.project;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -288,45 +307,40 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
 
   Future<void> fire() async {
     if (project.name.trim().isEmpty) return;
-    setState(() => _isLoading = true);
     try {
       FireRources.saveProject(project);
       if (mounted) Navigator.pop(context);
     } catch (exc) {
       debugPrint('! ERROR: $exc');
-    } finally {
-      setState(() => _isLoading = false);
     }
   }
 
-  TextField _buildName() => TextField(
+  Widget _buildName() => TextField(
     controller: _projectController.nameController,
     focusNode: _projectController.nameFocus,
     onEditingComplete: () => _projectController.nameFocus.unfocus(),
     onTapOutside: (event) => _projectController.nameFocus.unfocus(),
-    style: Styles.TEXT_UNINPUT,
-    decoration: Decorations.INPUT_FIELD(hintText: 'Name'),
+    style: Styles.TEXT_INPUT,
+    decoration: Decorations.INPUT_FIELD(labelText: 'Name'),
   );
-  TextFormField _buildDescription() => TextFormField(
+  Widget _buildDescription() => TextFormField(
     controller: _projectController.descriptionController,
     focusNode: _projectController.descriptionFocus,
     keyboardType: TextInputType.multiline,
     minLines: 1,
     maxLines: 4,
     onTapOutside: (event) => _projectController.descriptionFocus.unfocus(),
-    style: Styles.TEXT_UNINPUT_MULTILINE,
+    style: Styles.TEXT_INPUT_MULTILINE,
     decoration: Decorations.INPUT_FIELD(labelText: 'Description'),
   );
-  PopupMenuButton _buildMethodology() => PopupMenuButton<Methodology>(
-    tooltip: 'methodology',
-    initialValue: project.methodology,
-    child: Text(project.methodology.label),
-    itemBuilder: (context) => Methodology.values
-        .map((value) => PopupMenuItem(value: value, child: Text(value.label)))
-        .toList(),
-    onSelected: (Methodology value) {
+  Widget _buildMethodology() => buildMethodologyChip(
+    project.methodology,
+    onPressed: () {
       setState(() {
-        _projectController.updateMethodology(value);
+        _projectController.updateMethodology(
+          Methodology.values[(project.methodology.index + 1) %
+              Methodology.values.length],
+        );
       });
     },
   );
@@ -335,20 +349,24 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
   Widget build(BuildContext context) {
     return Gradialog(
       icon: Icons.new_label_rounded,
-      title: 'Project setting',
+      title: 'Let`s set up your new project...',
       content: Wrap(
         alignment: WrapAlignment.center,
         runAlignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
+        runSpacing: 15,
         children: [_buildName(), _buildDescription(), _buildMethodology()],
       ),
       actions: [
         FilledButton.icon(
-          icon: Icon(Icons.create_new_folder_rounded),
-          label: Text('create'),
-          onPressed: _isLoading ? null : fire,
-          style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(Colours.ANCHOR),
+          icon: const Icon(Icons.add_rounded, size: 20),
+          label: const Text('create'),
+          onPressed: fire,
+          style: const ButtonStyle(
+            padding: WidgetStatePropertyAll(
+              EdgeInsetsGeometry.symmetric(horizontal: 10.0, vertical: 20.0),
+            ),
+            backgroundColor: WidgetStatePropertyAll(Colours.DRIVE_AC),
             textStyle: WidgetStatePropertyAll(Styles.TEXT_BUTTON_FILLED),
           ),
         ),
@@ -367,42 +385,33 @@ class JoinGradialog extends StatefulWidget {
 class _JoinGradialogState extends State<JoinGradialog> {
   final TextEditingController _codeController = TextEditingController();
 
+  Future<void> fire() async {
+    final code = _codeController.text.trim();
+    if (code.isEmpty) return;
+    FireRources.joinProject(code, FirebaseAuth.instance.currentUser!.uid);
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Gradialog(
-      title: 'Join the project',
+      icon: Icons.label_important_rounded,
+      title: 'Let`s connect to an existing project...',
       content: TextField(
         controller: _codeController,
-        decoration: const InputDecoration(
-          hintText: 'Введіть код...',
-          border: OutlineInputBorder(),
-        ),
+        decoration: Decorations.INPUT_FIELD(labelText: 'Code'),
       ),
       actions: [
-        IconButton(
-          iconSize: 18,
-          icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
-          onPressed: () {
-            final code = _codeController.text.trim();
-            if (code.isEmpty) return;
-            FireRources.joinProject(
-              code,
-              FirebaseAuth.instance.currentUser!.uid,
-            );
-            Navigator.pop(context);
-          },
+        FilledButton.icon(
+          icon: const Icon(Icons.connect_without_contact_rounded, size: 20),
+          label: const Text('join'),
+          onPressed: fire,
           style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.O),
-            backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
-          ),
-        ),
-        IconButton(
-          iconSize: 18,
-          icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
-          onPressed: () => Navigator.pop(context),
-          style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.O),
-            backgroundColor: WidgetStatePropertyAll(Colours.BAD),
+            padding: WidgetStatePropertyAll(
+              EdgeInsetsGeometry.symmetric(horizontal: 10.0, vertical: 20.0),
+            ),
+            backgroundColor: WidgetStatePropertyAll(Colours.SHIFT_AC),
+            textStyle: WidgetStatePropertyAll(Styles.TEXT_BUTTON_FILLED),
           ),
         ),
       ],

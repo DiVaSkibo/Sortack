@@ -191,9 +191,8 @@ class _ScrumTableState extends State<ScrumTable> {
                 onPressed: () => showDialog(
                   context: context,
                   builder: (context) => AcceptGradialog(
-                    message: 'Do you realy want to clean this table?...',
+                    icon: Icons.remove_red_eye_outlined,
                     onAccept: () => iction.call(),
-                    icon: Icons.playlist_remove_rounded,
                   ),
                 ),
               ),
@@ -211,7 +210,7 @@ class _ScrumTableState extends State<ScrumTable> {
               onPressed: () => showDialog(
                 context: context,
                 builder: (context) => AcceptGradialog(
-                  message: 'Do you realy want to clean this table?...',
+                  message: 'This will empty the table completely...',
                   onAccept: () => clean(),
                   icon: Icons.playlist_remove_rounded,
                 ),
@@ -231,9 +230,9 @@ class _ScrumTableState extends State<ScrumTable> {
               onPressed: () => showDialog(
                 context: context,
                 builder: (context) => AcceptGradialog(
-                  message: 'Do you realy want to delete this table?...',
+                  icon: Icons.delete_sweep_rounded,
+                  message: 'This will permanently remove the table...',
                   onAccept: () => delete(),
-                  icon: Icons.remove_rounded,
                 ),
               ),
             ),

@@ -101,26 +101,6 @@ class _ProjectCardState extends State<ProjectCard> {
       tipColor: colourVery,
     ),
   );
-  Widget _buildMethodology() => Center(
-    child: Chip(
-      label: Text(
-        details.methodology.label,
-        style: TextStyle(
-          fontSize: 13,
-          fontFamily: Fonts.RUBIK,
-          fontWeight: FontWeight.w600,
-          fontStyle: FontStyle.normal,
-          color: Colours.INK_UN,
-        ),
-      ),
-      color: WidgetStatePropertyAll(colour),
-      side: BorderSide(
-        strokeAlign: BorderSide.strokeAlignCenter,
-        width: 3,
-        color: colourVery,
-      ),
-    ),
-  );
   Widget _buildCreated() => Wrap(
     alignment: WrapAlignment.end,
     runAlignment: WrapAlignment.end,
@@ -267,9 +247,9 @@ class _ProjectCardState extends State<ProjectCard> {
                           }
                         },
                       ),
-                      _buildMethodology(),
+                      Center(child: buildMethodologyChip(details.methodology)),
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.remove_rounded,
                           size: 23,
                           color: Colours.INK_UN,
@@ -277,10 +257,10 @@ class _ProjectCardState extends State<ProjectCard> {
                         onPressed: () => showDialog(
                           context: context,
                           builder: (context) => AcceptGradialog(
+                            icon: Icons.delete_sweep_rounded,
                             message:
-                                'Do you realy want to delete this project?...',
+                                'This will permanently remove the project...',
                             onAccept: () => delete(),
-                            icon: Icons.remove_rounded,
                           ),
                         ),
                       ),
