@@ -214,7 +214,10 @@ class _ScrumPageState extends State<ScrumPage>
       endDrawer: ValueListenableBuilder(
         valueListenable: _switchDrawersController,
         builder: (context, drawer, child) => switch (drawer) {
-          Drawers.help => HelpDrawer(),
+          Drawers.help => const HelpDrawer(
+            label: 'Scrum',
+            asset: 'assets/help/Scrum processes.png',
+          ),
           Drawers.filter => TaskFilterDrawer(
             initialFilter: board!.filterCriterias,
             onChanged: (filter) => setState(() {

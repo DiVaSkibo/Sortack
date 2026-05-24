@@ -1,6 +1,6 @@
 import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
-import 'package:sortack/_widgets.dart';
+import 'package:sortack/widget/basics.dart';
 
 /// gradialog - dialog with gradient
 class Gradialog extends StatelessWidget {

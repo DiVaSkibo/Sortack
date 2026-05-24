@@ -170,7 +170,10 @@ class _KanbanPageState extends State<KanbanPage> {
       endDrawer: ValueListenableBuilder(
         valueListenable: _switchDrawersController,
         builder: (context, drawer, child) => switch (drawer) {
-          Drawers.help => HelpDrawer(),
+          Drawers.help => const HelpDrawer(
+            label: 'Kanban',
+            asset: 'assets/help/Kanban-board.png',
+          ),
           Drawers.filter => TaskFilterDrawer(
             initialFilter: board!.filterCriterias,
             onChanged: (filter) => setState(() {

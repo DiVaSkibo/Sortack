@@ -2,53 +2,49 @@ import 'package:sortack/_tools.dart';
 import 'package:sortack/_logics.dart';
 import 'package:sortack/widget/basics.dart';
 
-/// help drawer widget - drawer for help
-class HelpDrawer extends StatelessWidget {
-  const HelpDrawer({super.key});
+/// gradrawer - drawer with gradient
+class Gradrawer extends StatelessWidget {
+  final double width;
+  final double height;
+  final Widget? child;
+
+  const Gradrawer({
+    super.key,
+    this.width = 300.0,
+    this.height = 550.0,
+    this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Surface(
-      child: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  radius: 1,
-                  colors: [Colours.CANVAS, Colours.INK_UN],
-                ),
-              ),
-              padding: EdgeInsetsGeometry.all(0),
-              child: Icon(Icons.blur_on_rounded, size: 75),
-            ),
-            TextButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.explore_rounded),
-              label: const Text('Explore'),
-            ),
-            TextButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.fort_rounded),
-              label: const Text('Fort'),
-            ),
-            TextButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.format_paint_rounded),
-              label: const Text('Format paint'),
-            ),
-            TextButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.airplane_ticket_rounded),
-              label: const Text('Airplane ticket'),
-            ),
-            TextButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.church_rounded),
-              label: const Text('Church'),
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      width: width,
+      height: height,
+      child: Drawer(child: child),
+    );
+  }
+}
+
+/// help drawer widget - drawer for help
+class HelpDrawer extends StatelessWidget {
+  final String label;
+  final String asset;
+
+  const HelpDrawer({super.key, required this.label, required this.asset});
+
+  @override
+  Widget build(BuildContext context) {
+    return Gradrawer(
+      width: 550.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 30,
+        children: [
+          Text(label, style: Styles.TEXT),
+          Image.asset(asset),
+        ],
       ),
     );
   }
@@ -72,16 +68,52 @@ class TaskFilterDrawer extends StatefulWidget {
 class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
   late final filter = widget.initialFilter ?? FilterCriteria<TaskParameters>();
 
-  SizedBox _buildPrioritiesFilter() => SizedBox(
-    child: Center(
+  Widget _buildFilter({String? label, required List<ChoiceChip> chips}) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 13,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 23,
+              children: [
+                if (label != null && label.isNotEmpty)
+                  Text(label, style: Styles.TEXT),
+                IconButton(
+                  icon: Icon(
+                    Icons.clear_rounded,
+                    size: 16.0,
+                    color: Colours.BAD,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+            Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
+              runSpacing: 8,
+              children: chips,
+            ),
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Gradrawer(
       child: Column(
-        spacing: 12.5,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 30,
         children: [
-          Text('Priorities:'),
-          Wrap(
-            spacing: 11.0,
-            runSpacing: 9.0,
-            children: Priority.values
+          _buildFilter(
+            label: 'Priorities',
+            chips: Priority.values
                 .map(
                   (value) => ChoiceChip(
                     selected: filter.selected(TaskParameters.priority, value),
@@ -96,20 +128,9 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
                 )
                 .toList(),
           ),
-        ],
-      ),
-    ),
-  );
-  SizedBox _buildPointsFilter() => SizedBox(
-    child: Center(
-      child: Column(
-        spacing: 12.5,
-        children: [
-          Text('Points:'),
-          Wrap(
-            spacing: 11.0,
-            runSpacing: 9.0,
-            children: PointsTShirt.values
+          _buildFilter(
+            label: 'Points',
+            chips: PointsTShirt.values
                 .map(
                   (value) => ChoiceChip(
                     selected: filter.selected(TaskParameters.points, value),
@@ -124,20 +145,9 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
                 )
                 .toList(),
           ),
-        ],
-      ),
-    ),
-  );
-  SizedBox _buildRolesFilter() => SizedBox(
-    child: Center(
-      child: Column(
-        spacing: 12.5,
-        children: [
-          Text('Roles:'),
-          Wrap(
-            spacing: 11.0,
-            runSpacing: 9.0,
-            children: Tag.values
+          _buildFilter(
+            label: 'Tags',
+            chips: Tag.values
                 .map(
                   (value) => ChoiceChip(
                     selected: filter.selected(TaskParameters.role, value),
@@ -153,22 +163,6 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
                 .toList(),
           ),
         ],
-      ),
-    ),
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Surface(
-      child: Drawer(
-        child: Column(
-          spacing: 25,
-          children: [
-            _buildPrioritiesFilter(),
-            _buildPointsFilter(),
-            _buildRolesFilter(),
-          ],
-        ),
       ),
     );
   }
