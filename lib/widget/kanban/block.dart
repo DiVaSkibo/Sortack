@@ -103,7 +103,7 @@ class _KanbanCardState extends State<KanbanCard> {
       child: Center(
         child: task.points != null
             ? Text(task.points!.label, style: Styles.TEXT_UNINFO)
-            : const Icon(Icons.style_outlined, color: Colours.INK_UN),
+            : Icon(TaskParameter.points.icon, color: Colours.INK_UN),
       ),
     ),
     itemBuilder: (context) => [
@@ -137,7 +137,7 @@ class _KanbanCardState extends State<KanbanCard> {
             child: Text(task.deadline!.ddMMMyyyy, style: Styles.TEXT_UNINFO),
           )
         : IconButton(
-            icon: const Icon(Icons.alarm_rounded, color: Colours.INK_UN),
+            icon: Icon(TaskParameter.deadline.icon, color: Colours.INK_UN),
             onPressed: () async {
               DateTime? deadline = await showDatePicker(
                 context: context,
@@ -168,7 +168,7 @@ class _KanbanCardState extends State<KanbanCard> {
       ),
       if (task.assignee.isEmpty)
         IconButton(
-          icon: const Icon(Icons.person_add_outlined, size: 15),
+          icon: Icon(TaskParameter.assignee.icon, size: 15),
           onPressed: () => showDialog(
             context: context,
             builder: (context) => ChipsGradialog(

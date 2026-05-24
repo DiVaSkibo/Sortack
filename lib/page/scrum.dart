@@ -149,19 +149,19 @@ class _ScrumPageState extends State<ScrumPage>
               iconColor: Colours.VERY_LOW,
               title: widget.details.name,
               actions: [
-                PopupMenuButton<TaskParameters>(
+                PopupMenuButton<TaskParameter>(
                   tooltip: 'sort',
                   initialValue: _buf['sort'],
                   icon: const Icon(Icons.sort_rounded),
-                  itemBuilder: (context) => TaskParameters.values
+                  itemBuilder: (context) => TaskParameter.values
                       .map(
                         (value) => PopupMenuItem(
                           value: value,
-                          child: Icon(value.icon()),
+                          child: Icon(value.icon),
                         ),
                       )
                       .toList(),
-                  onSelected: (TaskParameters value) {
+                  onSelected: (TaskParameter value) {
                     setState(() {
                       _buf['sort'] = value;
                       board!.sort(by: value);

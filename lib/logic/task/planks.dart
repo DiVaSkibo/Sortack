@@ -7,7 +7,7 @@ typedef AdvancedPlank = Plank<AdvancedBlock>;
 
 /// task plank interface class - collection of task blocks
 interface class Plank<T extends Block> extends Collector<T>
-    with Sortable<T, TaskParameters>, Filterable<T, TaskParameters> {
+    with Sortable<T, TaskParameter>, Filterable<T, TaskParameter> {
   final String id;
   final List<T> blocks;
   String title;
@@ -26,7 +26,7 @@ interface class Plank<T extends Block> extends Collector<T>
   List<T> get collection => blocks;
 
   @override
-  void sort({by = TaskParameters.id}) {
+  void sort({by = TaskParameter.id}) {
     blocks.sort((a, b) => a.compareTo(b, by));
   }
 }

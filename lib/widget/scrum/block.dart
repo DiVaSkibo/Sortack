@@ -158,7 +158,7 @@ class _ScrumRowState extends State<ScrumRow> {
                   ),
                 )
               : IconButton(
-                  icon: const Icon(Icons.alarm_rounded, color: Colours.INK),
+                  icon: Icon(TaskParameter.deadline.icon, color: Colours.INK),
                   onPressed: () async {
                     DateTime? deadline = await showDatePicker(
                       context: context,
@@ -173,7 +173,7 @@ class _ScrumRowState extends State<ScrumRow> {
                 )
         : task.deadline != null
         ? Text(task.deadline!.ddMMMyyyy, style: Styles.TEXT_INFO)
-        : const Icon(Icons.alarm_rounded, color: Colours.INK_UN),
+        : Icon(TaskParameter.deadline.icon, color: Colours.INK_UN),
   );
   Widget _buildStatus() => enabled
       ? InkWell(
@@ -238,7 +238,7 @@ class _ScrumRowState extends State<ScrumRow> {
             initialValue: task.points,
             icon: task.points != null
                 ? Text(task.points!.label, style: Styles.TEXT_INFO)
-                : const Icon(Icons.style_outlined, color: Colours.INK),
+                : Icon(TaskParameter.points.icon, color: Colours.INK),
             itemBuilder: (context) => [
               for (final point in PointsTShirt.values)
                 PopupMenuItem(
@@ -254,7 +254,7 @@ class _ScrumRowState extends State<ScrumRow> {
           )
         : task.points != null
         ? Text(task.points!.label, style: Styles.TEXT_INFO)
-        : const Icon(Icons.style_outlined, color: Colours.INK_UN),
+        : Icon(TaskParameter.points.icon, color: Colours.INK_UN),
   );
   Widget _buildAssignee() => Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -268,8 +268,8 @@ class _ScrumRowState extends State<ScrumRow> {
         if (task.assignee.isEmpty)
           enabled
               ? IconButton(
-                  icon: const Icon(
-                    Icons.person_add_outlined,
+                  icon: Icon(
+                    TaskParameter.assignee.icon,
                     size: 15,
                     color: Colours.INK,
                   ),
@@ -284,8 +284,8 @@ class _ScrumRowState extends State<ScrumRow> {
                     ),
                   ),
                 )
-              : const Icon(
-                  Icons.person_add_outlined,
+              : Icon(
+                  TaskParameter.assignee.icon,
                   size: 15,
                   color: Colours.INK_UN,
                 ),
@@ -346,8 +346,8 @@ class _ScrumRowState extends State<ScrumRow> {
         if (task.tags.isEmpty)
           enabled
               ? IconButton(
-                  icon: const Icon(
-                    Icons.bookmark_add_outlined,
+                  icon: Icon(
+                    TaskParameter.tags.icon,
                     size: 15,
                     color: Colours.INK,
                   ),
@@ -361,11 +361,7 @@ class _ScrumRowState extends State<ScrumRow> {
                     ),
                   ),
                 )
-              : const Icon(
-                  Icons.bookmark_add_outlined,
-                  size: 15,
-                  color: Colours.INK_UN,
-                ),
+              : Icon(TaskParameter.tags.icon, size: 15, color: Colours.INK_UN),
         for (final tag in task.tags)
           InputChip(
             isEnabled: enabled,

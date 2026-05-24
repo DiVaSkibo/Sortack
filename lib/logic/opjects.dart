@@ -26,7 +26,7 @@ final class ProjectDetails {
 /// criterion = { key : value } entry
 ///
 /// deep criterion = { key : { subkey : value } } entry
-base class FilterCriteria<T extends Parameters> {
+base class FilterCriteria<T extends Parameter> {
   final Map<T, Set> _criteria;
 
   FilterCriteria({Map<T, Set>? criterias}) : _criteria = criterias ?? {};
@@ -42,7 +42,8 @@ base class FilterCriteria<T extends Parameters> {
       _criteria.containsKey(key) ? _criteria[key] ?? {} : {};
   bool selected(T key, dynamic value) => criterion(key).contains(value);
 
-  void clear() => _criteria.clear;
+  void clear() => _criteria.clear();
+
   void replace(FilterCriteria<T> newFilter) {
     if (_criteria == newFilter._criteria) return;
     _criteria.clear();
@@ -73,12 +74,12 @@ base class FilterCriteria<T extends Parameters> {
 }
 
 /// sortable mixin
-mixin Sortable<T, F extends Parameters> on Collector<T> {
+mixin Sortable<T, F extends Parameter> on Collector<T> {
   void sort({F by});
 }
 
 /// filterable mixin
-mixin Filterable<T, F extends Parameters> on Collector<T> {
+mixin Filterable<T, F extends Parameter> on Collector<T> {
   final FilterCriteria<F> filterCriterias = FilterCriteria<F>();
 
   List<T> get filtered => List<T>.of(

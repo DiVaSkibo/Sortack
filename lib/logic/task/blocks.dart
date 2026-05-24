@@ -2,7 +2,7 @@ import 'package:sortack/_tools.dart';
 
 /// immutable task block interface class
 @immutable
-interface class Block with Parameterizable<TaskParameters> {
+interface class Block with Parameterizable<TaskParameter> {
   final String id;
   bool enabled;
   String title;
@@ -23,22 +23,22 @@ interface class Block with Parameterizable<TaskParameters> {
 
   @override
   dynamic getParameter(parameter, {comparable = false}) => switch (parameter) {
-    TaskParameters.id => id,
-    TaskParameters.title => title,
-    TaskParameters.description => description,
-    // TaskParameters.status => comparable ? status.index : status,
-    // TaskParameters.priority => comparable ? priority.index : priority,
-    TaskParameters.points =>
+    TaskParameter.id => id,
+    TaskParameter.title => title,
+    TaskParameter.description => description,
+    // TaskParameter.status => comparable ? status.index : status,
+    // TaskParameter.priority => comparable ? priority.index : priority,
+    TaskParameter.points =>
       comparable ? (points != null ? points!.index : -1) : points,
-    // TaskParameters.role =>
+    // TaskParameter.role =>
     //   role, //comparable ? (role != null ? role!.index : -1) : role,
-    TaskParameters.assignee => assignee,
-    // TaskParameters.notes => notes,
+    TaskParameter.assignee => assignee,
+    // TaskParameter.notes => notes,
     _ => null,
   };
 
   bool testInterval<T extends Comparable>({
-    required TaskParameters by,
+    required TaskParameter by,
     required T from,
     required T to,
   }) {

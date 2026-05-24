@@ -39,12 +39,12 @@ abstract interface class Artefact {
   Color get colour;
 }
 
-abstract interface class Parameters {
-  Type type();
-  List parameterValues();
+abstract interface class Parameter {
+  Type get type;
+  List get parameterValues;
 }
 
-abstract mixin class Parameterizable<T extends Parameters> {
+abstract mixin class Parameterizable<T extends Parameter> {
   dynamic getParameter(T parameter, {bool comparable = false});
   int compareTo(Parameterizable other, T by) {
     final dynamic aValue = getParameter(by, comparable: true);

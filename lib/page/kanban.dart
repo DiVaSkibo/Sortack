@@ -110,19 +110,19 @@ class _KanbanPageState extends State<KanbanPage> {
                     color: Colours.DRIVE_UN,
                   ),
                 ),
-                PopupMenuButton<TaskParameters>(
+                PopupMenuButton<TaskParameter>(
                   tooltip: 'sort',
                   initialValue: _buf['sort'],
                   icon: const Icon(Icons.sort_rounded),
-                  itemBuilder: (context) => TaskParameters.values
+                  itemBuilder: (context) => TaskParameter.values
                       .map(
                         (value) => PopupMenuItem(
                           value: value,
-                          child: Icon(value.icon()),
+                          child: Icon(value.icon),
                         ),
                       )
                       .toList(),
-                  onSelected: (TaskParameters value) {
+                  onSelected: (TaskParameter value) {
                     setState(() {
                       _buf['sort'] = value;
                       board!.sort(by: value);

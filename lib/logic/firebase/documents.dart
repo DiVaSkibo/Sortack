@@ -80,7 +80,7 @@ Block docToBlock<T extends Block>(Document doc, String id) => switch (T) {
     description: doc['description'] ?? '',
     deadline: doc['deadline'] != null
         ? (doc['deadline'] as Timestamp).toDate()
-        : DateTime.now(),
+        : null,
     points: doc['points'] != null
         ? PointsTShirt.values.asNameMap()[doc['points']]
         : null,

@@ -189,55 +189,58 @@ enum ScrumArtefact implements Artefact {
   };
 }
 
-/// task parameters enum - parameters of a task class
+/// task parameter enum - parameter of a task class
 ///
-/// [id, title, description, status, priority, points, role, assignee, notes]
-enum TaskParameters implements Parameters {
+/// [id, title, description, deadline, status, priority, points, tags, assignee, notes]
+enum TaskParameter implements Parameter {
   id,
   title,
   description,
+  deadline,
   status,
   priority,
   points,
-  role,
   assignee,
+  tags,
   notes;
 
   @override
-  Type type() => switch (this) {
+  Type get type => switch (this) {
     id => int,
     title => String,
     description => String,
+    deadline => DateTime,
     status => Status,
     priority => Priority,
     points => Pointing,
-    role => String,
     assignee => String,
+    tags => Tag,
     notes => String,
   };
   @override
-  List parameterValues() => switch (this) {
+  List get parameterValues => switch (this) {
     id => [],
     title => [],
     description => [],
+    deadline => [],
     status => Status.values,
     priority => Priority.values,
     points => PointsTShirt.values,
-    role => [],
     assignee => [],
+    tags => Tag.values,
     notes => [],
   };
-
-  IconData icon() => switch (this) {
-    id => Icons.numbers_rounded,
+  IconData get icon => switch (this) {
+    id => Icons.tag_rounded,
     title => Icons.title_rounded,
     description => Icons.text_fields_rounded,
-    status => Icons.air_rounded,
+    deadline => Icons.alarm_rounded,
+    status => Icons.flag_outlined,
     priority => Icons.priority_high_rounded,
-    points => Icons.adjust_rounded,
-    role => Icons.work_rounded,
-    assignee => Icons.accessibility_rounded,
-    notes => Icons.comment_rounded,
+    points => Icons.style_outlined,
+    assignee => Icons.person_outline_rounded,
+    tags => Icons.bookmark_outline_rounded,
+    notes => Icons.notes_rounded,
   };
 }
 

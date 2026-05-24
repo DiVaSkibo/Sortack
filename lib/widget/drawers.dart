@@ -52,8 +52,8 @@ class HelpDrawer extends StatelessWidget {
 
 /// filter drawer widget - drawer for tasks filtering by parameter
 class TaskFilterDrawer extends StatefulWidget {
-  final FilterCriteria<TaskParameters>? initialFilter;
-  final Function(FilterCriteria<TaskParameters>) onChanged;
+  final FilterCriteria<TaskParameter>? initialFilter;
+  final Function(FilterCriteria<TaskParameter>) onChanged;
 
   const TaskFilterDrawer({
     super.key,
@@ -66,7 +66,7 @@ class TaskFilterDrawer extends StatefulWidget {
 }
 
 class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
-  late final filter = widget.initialFilter ?? FilterCriteria<TaskParameters>();
+  late final filter = widget.initialFilter ?? FilterCriteria<TaskParameter>();
 
   Widget _buildFilter({String? label, required List<ChoiceChip> chips}) =>
       Padding(
@@ -116,11 +116,11 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
             chips: Priority.values
                 .map(
                   (value) => ChoiceChip(
-                    selected: filter.selected(TaskParameters.priority, value),
+                    selected: filter.selected(TaskParameter.priority, value),
                     label: Text(value.label),
                     onSelected: (selected) {
                       setState(() {
-                        filter.update(TaskParameters.priority, value, selected);
+                        filter.update(TaskParameter.priority, value, selected);
                         widget.onChanged(filter);
                       });
                     },
@@ -133,11 +133,11 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
             chips: PointsTShirt.values
                 .map(
                   (value) => ChoiceChip(
-                    selected: filter.selected(TaskParameters.points, value),
+                    selected: filter.selected(TaskParameter.points, value),
                     label: Text(value.label),
                     onSelected: (selected) {
                       setState(() {
-                        filter.update(TaskParameters.points, value, selected);
+                        filter.update(TaskParameter.points, value, selected);
                         widget.onChanged(filter);
                       });
                     },
@@ -150,11 +150,11 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
             chips: Tag.values
                 .map(
                   (value) => ChoiceChip(
-                    selected: filter.selected(TaskParameters.role, value),
+                    selected: filter.selected(TaskParameter.tags, value),
                     label: Text(value.label),
                     onSelected: (selected) {
                       setState(() {
-                        filter.update(TaskParameters.role, value, selected);
+                        filter.update(TaskParameter.tags, value, selected);
                         widget.onChanged(filter);
                       });
                     },

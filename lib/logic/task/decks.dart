@@ -11,7 +11,7 @@ typedef AdvancedMapDeck<F extends Artefact> = MapDeck<AdvancedPlank, F>;
 
 /// task deck interface class - collection of task planks
 interface class Deck<T extends Plank> extends Collector<T>
-    with Sortable<T, TaskParameters>, Filterable<T, TaskParameters> {
+    with Sortable<T, TaskParameter>, Filterable<T, TaskParameter> {
   final List<T> planks;
 
   Deck({List<T>? planks, super.listenable}) : planks = planks ?? [];
@@ -22,14 +22,14 @@ interface class Deck<T extends Plank> extends Collector<T>
   void pushBlock(Block block) => planks.first.push(block);
 
   @override
-  void sort({TaskParameters by = TaskParameters.id}) {
+  void sort({TaskParameter by = TaskParameter.id}) {
     for (final plank in planks) {
       plank.sort(by: by);
     }
   }
 
   @override
-  void filter(FilterCriteria<TaskParameters> criteria) {
+  void filter(FilterCriteria<TaskParameter> criteria) {
     super.filter(criteria);
     for (final plank in planks) {
       plank.filter(criteria);
