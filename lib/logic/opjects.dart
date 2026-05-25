@@ -23,28 +23,29 @@ final class ProjectDetails {
 
 /// base filter criteria class
 ///
-/// criterion = { key : value } entry
+/// criterias = { Parameter : Set } entry
 ///
-/// deep criterion = { key : { subkey : value } } entry
+/// criterion = { values } set
 base class FilterCriteria<T extends Parameter> {
   final Map<T, Set> _criteria;
 
   FilterCriteria({Map<T, Set>? criterias}) : _criteria = criterias ?? {};
 
-  bool isEmpty() => !isNotEmpty();
-  bool isNotEmpty() {
+  bool get isEmpty => !isNotEmpty;
+  bool get isNotEmpty {
     if (_criteria.isEmpty) return false;
     for (final set in _criteria.values) if (set.isNotEmpty) return true;
     return false;
   }
 
-  Set criterion(T key) =>
+  Set operator [](T key) =>
       _criteria.containsKey(key) ? _criteria[key] ?? {} : {};
-  bool selected(T key, dynamic value) => criterion(key).contains(value);
+
+  bool selected(T key, dynamic value) => this[key].contains(value);
 
   void clear() => _criteria.clear();
 
-  void replace(FilterCriteria<T> newFilter) {
+  void copy(FilterCriteria<T> newFilter) {
     if (_criteria == newFilter._criteria) return;
     _criteria.clear();
     _criteria.addAll(newFilter._criteria);
@@ -83,10 +84,10 @@ mixin Filterable<T, F extends Parameter> on Collector<T> {
   final FilterCriteria<F> filterCriterias = FilterCriteria<F>();
 
   List<T> get filtered => List<T>.of(
-    filterCriterias.isEmpty()
+    filterCriterias.isEmpty
         ? collection
         : collection.where((task) => filterCriterias.matches(task)),
   );
 
-  void filter(FilterCriteria<F> criteria) => filterCriterias.replace(criteria);
+  void filter(FilterCriteria<F> criteria) => filterCriterias.copy(criteria);
 }

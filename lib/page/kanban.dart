@@ -114,7 +114,7 @@ class _KanbanPageState extends State<KanbanPage> {
                   tooltip: 'sort',
                   initialValue: _buf['sort'],
                   icon: const Icon(Icons.sort_rounded),
-                  itemBuilder: (context) => TaskParameter.values
+                  itemBuilder: (context) => Block.sortableParameters
                       .map(
                         (value) => PopupMenuItem(
                           value: value,
@@ -176,6 +176,7 @@ class _KanbanPageState extends State<KanbanPage> {
           ),
           Drawers.filter => TaskFilterDrawer(
             initialFilter: board!.filterCriterias,
+            parameters: Block.filterableParameters,
             onChanged: (filter) => setState(() {
               board!.filter(filter);
             }),

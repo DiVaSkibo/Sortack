@@ -34,23 +34,23 @@ class _ScrumRowState extends State<ScrumRow> {
   @override
   void initState() {
     super.initState();
-    if (enabled)
-      _taskController = AdvancedBlockController(
-        widget.task,
-        onUnfocus: () async {
-          setState(() {});
-          try {
-            await FireRources.saveBlock(
-              widget.deckId,
-              widget.plankId,
-              task,
-              widget.order,
-            );
-          } catch (exc) {
-            debugPrint('? ERROR: saving task changes');
-          }
-        },
-      );
+    //if (enabled)
+    _taskController = AdvancedBlockController(
+      widget.task,
+      onUnfocus: () async {
+        setState(() {});
+        try {
+          await FireRources.saveBlock(
+            widget.deckId,
+            widget.plankId,
+            task,
+            widget.order,
+          );
+        } catch (exc) {
+          debugPrint('? ERROR: saving task changes');
+        }
+      },
+    );
   }
 
   @override

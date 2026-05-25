@@ -26,29 +26,22 @@ interface class Block with Parameterizable<TaskParameter> {
     TaskParameter.id => id,
     TaskParameter.title => title,
     TaskParameter.description => description,
-    // TaskParameter.status => comparable ? status.index : status,
-    // TaskParameter.priority => comparable ? priority.index : priority,
+    TaskParameter.deadline => deadline,
     TaskParameter.points =>
       comparable ? (points != null ? points!.index : -1) : points,
-    // TaskParameter.role =>
-    //   role, //comparable ? (role != null ? role!.index : -1) : role,
     TaskParameter.assignee => assignee,
-    // TaskParameter.notes => notes,
     _ => null,
   };
 
-  bool testInterval<T extends Comparable>({
-    required TaskParameter by,
-    required T from,
-    required T to,
-  }) {
-    dynamic value = getParameter(by);
-    if (value == null) return false;
-    if (from == to) return value.compareTo(from) == 0;
-    return from.compareTo(to) <= 0
-        ? value.compareTo(from) >= 0 && value.compareTo(to) <= 0
-        : value.compareTo(from) <= 0 || value.compareTo(to) >= 0;
-  }
+  static const List<TaskParameter> sortableParameters = [
+    TaskParameter.id,
+    TaskParameter.deadline,
+    TaskParameter.points,
+  ];
+  static const List<TaskParameter> filterableParameters = [
+    TaskParameter.points,
+    TaskParameter.assignee,
+  ];
 
   @override
   String toString() =>
@@ -76,6 +69,36 @@ interface class AdvancedBlock extends Block {
     Set<Tag>? tags,
     this.notes = '',
   }) : tags = tags ?? {};
+
+  @override
+  dynamic getParameter(parameter, {comparable = false}) => switch (parameter) {
+    TaskParameter.id => id,
+    TaskParameter.title => title,
+    TaskParameter.description => description,
+    TaskParameter.deadline => deadline,
+    TaskParameter.status => comparable ? status.index : status,
+    TaskParameter.priority => comparable ? priority.index : priority,
+    TaskParameter.points =>
+      comparable ? (points != null ? points!.index : -1) : points,
+    TaskParameter.assignee => assignee,
+    TaskParameter.tags => tags,
+    TaskParameter.notes => notes,
+  };
+
+  static const List<TaskParameter> sortableParameters = [
+    TaskParameter.id,
+    TaskParameter.deadline,
+    TaskParameter.status,
+    TaskParameter.priority,
+    TaskParameter.points,
+  ];
+  static const List<TaskParameter> filterableParameters = [
+    TaskParameter.status,
+    TaskParameter.priority,
+    TaskParameter.points,
+    TaskParameter.assignee,
+    TaskParameter.tags,
+  ];
 
   @override
   String toString() =>

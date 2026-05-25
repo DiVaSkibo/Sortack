@@ -142,7 +142,7 @@ enum PointsTShirt with Labeling, Pointing {
 /// task tags enum - task tags
 ///
 /// [feature, bug, improvement, refactor, research, test, docs,]
-enum Tag with Labeling, ComparableEnum<Tag> {
+enum Tag with Labeling {
   bug,
   docs,
   test,
@@ -191,7 +191,7 @@ enum ScrumArtefact implements Artefact {
 
 /// task parameter enum - parameter of a task class
 ///
-/// [id, title, description, deadline, status, priority, points, tags, assignee, notes]
+/// [id, title, description, deadline, status, priority, points, assignee, tags, notes]
 enum TaskParameter implements Parameter {
   id,
   title,
@@ -229,6 +229,18 @@ enum TaskParameter implements Parameter {
     assignee => [],
     tags => Tag.values,
     notes => [],
+  };
+  String get label => switch (this) {
+    id => 'ID',
+    title => 'Title',
+    description => 'Description',
+    deadline => 'Deadline',
+    status => 'Status',
+    priority => 'Priority',
+    points => 'Points',
+    assignee => 'Assignee',
+    tags => 'Tags',
+    notes => 'Notes',
   };
   IconData get icon => switch (this) {
     id => Icons.tag_rounded,

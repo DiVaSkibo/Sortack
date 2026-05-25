@@ -153,7 +153,7 @@ class _ScrumPageState extends State<ScrumPage>
                   tooltip: 'sort',
                   initialValue: _buf['sort'],
                   icon: const Icon(Icons.sort_rounded),
-                  itemBuilder: (context) => TaskParameter.values
+                  itemBuilder: (context) => AdvancedBlock.sortableParameters
                       .map(
                         (value) => PopupMenuItem(
                           value: value,
@@ -220,6 +220,7 @@ class _ScrumPageState extends State<ScrumPage>
           ),
           Drawers.filter => TaskFilterDrawer(
             initialFilter: board!.filterCriterias,
+            parameters: AdvancedBlock.filterableParameters,
             onChanged: (filter) => setState(() {
               board!.filter(filter);
             }),
