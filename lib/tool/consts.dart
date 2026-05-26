@@ -4,8 +4,8 @@ import 'package:sortack/tool/style.dart';
 
 /// easter egg icons
 const List<IconData> EASTER_EGG_ICONS = [
-  Icons.cruelty_free_outlined,
   Icons.flutter_dash_outlined,
+  Icons.cruelty_free_outlined,
   Icons.emoji_events_outlined,
   Icons.diamond_outlined,
   Icons.auto_awesome_outlined,

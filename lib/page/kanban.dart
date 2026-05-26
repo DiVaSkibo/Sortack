@@ -177,6 +177,7 @@ class _KanbanPageState extends State<KanbanPage> {
           Drawers.filter => TaskFilterDrawer(
             initialFilter: board!.filterCriterias,
             parameters: Block.filterableParameters,
+            assignee: membersProfiles.values.toList(),
             onChanged: (filter) => setState(() {
               board!.filter(filter);
             }),

@@ -54,12 +54,14 @@ class HelpDrawer extends StatelessWidget {
 class TaskFilterDrawer extends StatefulWidget {
   final FilterCriteria<TaskParameter>? initialFilter;
   final List<TaskParameter> parameters;
+  final List<UserProfile>? assignee;
   final Function(FilterCriteria<TaskParameter>) onChanged;
 
   const TaskFilterDrawer({
     super.key,
     this.initialFilter,
     required this.parameters,
+    this.assignee,
     required this.onChanged,
   });
 
@@ -68,6 +70,8 @@ class TaskFilterDrawer extends StatefulWidget {
 }
 
 class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
+  late final parameters = widget.parameters;
+  late final assignee = widget.assignee ?? [];
   late final filter = widget.initialFilter ?? FilterCriteria<TaskParameter>();
 
   Widget _buildFilter({String? label, required List<ChoiceChip> chips}) =>
@@ -113,23 +117,35 @@ class _TaskFilterDrawerState extends State<TaskFilterDrawer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 30,
         children: [
-          for (final parameter in widget.parameters)
+          for (final parameter in parameters)
             _buildFilter(
               label: parameter.label,
-              chips: parameter.parameterValues
-                  .map(
-                    (value) => ChoiceChip(
-                      selected: filter.selected(parameter, value),
-                      label: Text(value.label),
-                      onSelected: (selected) {
-                        setState(() {
-                          filter.update(parameter, value, selected);
-                          widget.onChanged(filter);
-                        });
-                      },
-                    ),
-                  )
-                  .toList(),
+              chips: switch (parameter) {
+                TaskParameter.assignee => assignee.map(
+                  (value) => ChoiceChip(
+                    selected: filter.selected(parameter, value.id),
+                    label: Text(value.name),
+                    onSelected: (selected) {
+                      setState(() {
+                        filter.update(parameter, value.id, selected);
+                        widget.onChanged(filter);
+                      });
+                    },
+                  ),
+                ),
+                _ => parameter.parameterValues.map(
+                  (value) => ChoiceChip(
+                    selected: filter.selected(parameter, value),
+                    label: Text(value.label),
+                    onSelected: (selected) {
+                      setState(() {
+                        filter.update(parameter, value, selected);
+                        widget.onChanged(filter);
+                      });
+                    },
+                  ),
+                ),
+              }.toList(),
             ),
         ],
       ),

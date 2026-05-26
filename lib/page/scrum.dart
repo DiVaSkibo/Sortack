@@ -221,6 +221,7 @@ class _ScrumPageState extends State<ScrumPage>
           Drawers.filter => TaskFilterDrawer(
             initialFilter: board!.filterCriterias,
             parameters: AdvancedBlock.filterableParameters,
+            assignee: membersProfiles.values.toList(),
             onChanged: (filter) => setState(() {
               board!.filter(filter);
             }),

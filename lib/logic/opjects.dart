@@ -68,7 +68,10 @@ base class FilterCriteria<T extends Parameter> {
       final set = criterion.value;
       if (set.isEmpty) continue;
       final value = object.getParameter(key);
-      if (!set.contains(value)) return false;
+      if (value is Set || value is List) {
+        if (!set.any((s) => value.contains(s))) return false;
+      } else if (!set.contains(value))
+        return false;
     }
     return true;
   }
