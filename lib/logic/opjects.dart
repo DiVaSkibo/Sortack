@@ -40,6 +40,8 @@ base class FilterCriteria<T extends Parameter> {
 
   Set operator [](T key) =>
       _criteria.containsKey(key) ? _criteria[key] ?? {} : {};
+  void operator []=(T key, Set value) =>
+      _criteria.containsKey(key) ? _criteria[key] ?? {} : {}[key] = value;
 
   bool selected(T key, dynamic value) => this[key].contains(value);
 

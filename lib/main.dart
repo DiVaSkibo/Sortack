@@ -180,15 +180,11 @@ class MyApp extends StatelessWidget {
             vertical: -3.0,
           ),
           showCheckmark: false,
-          side: const BorderSide(
-            strokeAlign: BorderSide.strokeAlignOutside,
-            width: 1.0,
-            color: Colours.SHIFT_UN,
-          ),
+          side: BorderSide.none,
           selectedColor: Colours.SHIFT,
           color: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected))
-              return Colours.SHIFT;
+              return Colours.F;
             else
               return Colours.a;
           }),

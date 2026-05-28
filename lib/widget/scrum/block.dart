@@ -28,8 +28,8 @@ class ScrumRow extends StatefulWidget {
 
 class _ScrumRowState extends State<ScrumRow> {
   late final bool enabled = widget.task.enabled;
-  late final AdvancedBlockController? _taskController;
-  AdvancedBlock get task => enabled ? _taskController!.task : widget.task;
+  late final AdvancedBlockController _taskController;
+  AdvancedBlock get task => enabled ? _taskController.task : widget.task;
 
   @override
   void initState() {
@@ -38,7 +38,6 @@ class _ScrumRowState extends State<ScrumRow> {
     _taskController = AdvancedBlockController(
       widget.task,
       onUnfocus: () async {
-        setState(() {});
         try {
           await FireRources.saveBlock(
             widget.deckId,
@@ -47,7 +46,7 @@ class _ScrumRowState extends State<ScrumRow> {
             widget.order,
           );
         } catch (exc) {
-          debugPrint('? ERROR: saving task changes');
+          debugPrint('? ERROR: on saving task changes; $exc');
         }
       },
     );
@@ -55,7 +54,7 @@ class _ScrumRowState extends State<ScrumRow> {
 
   @override
   void dispose() {
-    _taskController?.dispose();
+    _taskController.dispose();
     super.dispose();
   }
 
@@ -101,8 +100,8 @@ class _ScrumRowState extends State<ScrumRow> {
   );
   Widget _buildTitle() => enabled
       ? TextField(
-          controller: _taskController?.titleController,
-          focusNode: _taskController?.titleFocus,
+          controller: _taskController.titleController,
+          focusNode: _taskController.titleFocus,
           style: Styles.TEXT_INPUT,
           decoration: Decorations.INPUT_FIELD(
             padding: EdgeInsets.zero,
@@ -110,8 +109,8 @@ class _ScrumRowState extends State<ScrumRow> {
             hoverColor: Colours.CANVAS_AC,
             tipColor: Colours.INK_UN,
           ),
-          onEditingComplete: () => _taskController?.titleFocus.unfocus(),
-          onTapOutside: (event) => _taskController?.titleFocus.unfocus(),
+          onEditingComplete: () => _taskController.titleFocus.unfocus(),
+          onTapOutside: (event) => _taskController.titleFocus.unfocus(),
         )
       : Padding(
           padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 9.0),
@@ -119,8 +118,8 @@ class _ScrumRowState extends State<ScrumRow> {
         );
   Widget _buildDescription() => enabled
       ? TextFormField(
-          controller: _taskController?.descriptionController,
-          focusNode: _taskController?.descriptionFocus,
+          controller: _taskController.descriptionController,
+          focusNode: _taskController.descriptionFocus,
           keyboardType: TextInputType.multiline,
           minLines: 1,
           maxLines: 4,
@@ -131,7 +130,7 @@ class _ScrumRowState extends State<ScrumRow> {
             hoverColor: Colours.CANVAS_AC,
             tipColor: Colours.INK_UN,
           ),
-          onTapOutside: (event) => _taskController?.descriptionFocus.unfocus(),
+          onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
         )
       : Padding(
           padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 9.0),
@@ -149,7 +148,7 @@ class _ScrumRowState extends State<ScrumRow> {
                       lastDate: DateTime(3000),
                     );
                     if (deadline != null) {
-                      _taskController?.updateDeadline(deadline);
+                      _taskController.updateDeadline(deadline);
                     }
                   },
                   child: Text(
@@ -167,7 +166,7 @@ class _ScrumRowState extends State<ScrumRow> {
                       lastDate: DateTime(3000),
                     );
                     if (deadline != null) {
-                      _taskController?.updateDeadline(deadline);
+                      _taskController.updateDeadline(deadline);
                     }
                   },
                 )
@@ -188,7 +187,7 @@ class _ScrumRowState extends State<ScrumRow> {
           onTap: () {
             var newStatus =
                 Status.values[(task.status.index + 1) % Status.values.length];
-            _taskController?.updateStatus(newStatus);
+            _taskController.updateStatus(newStatus);
           },
         )
       : Container(
@@ -226,7 +225,7 @@ class _ScrumRowState extends State<ScrumRow> {
             ],
             constraints: const BoxConstraints.tightFor(),
             onSelected: (value) {
-              _taskController?.updatePriority(value);
+              _taskController.updatePriority(value);
             },
           )
         : Icon(task.priority.icon, size: 26, color: task.priority.colour),
@@ -249,7 +248,7 @@ class _ScrumRowState extends State<ScrumRow> {
             ],
             constraints: const BoxConstraints.tightFor(),
             onSelected: (points) {
-              _taskController?.updatePoints(points);
+              _taskController.updatePoints(points);
             },
           )
         : task.points != null
@@ -273,16 +272,18 @@ class _ScrumRowState extends State<ScrumRow> {
                     size: 15,
                     color: Colours.INK,
                   ),
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => ChipsGradialog(
-                      values: widget.members.values.toSet(),
-                      selected: task.assignee.toSet(),
-                      onPick: (assignee) => _taskController?.updateAssignee(
-                        assignee as Set<String>,
-                      ),
-                    ),
-                  ),
+                  onPressed: () =>
+                      showDialog<Set<String>?>(
+                        context: context,
+                        builder: (context) => ChipsGradialog(
+                          selected: task.assignee.toSet(),
+                          parameter: TaskParameter.assignee,
+                          values: widget.members.values.toSet(),
+                        ),
+                      ).then((newValue) {
+                        if (newValue != null)
+                          _taskController.updateAssignee(newValue);
+                      }),
                 )
               : Icon(
                   TaskParameter.assignee.icon,
@@ -292,19 +293,21 @@ class _ScrumRowState extends State<ScrumRow> {
         for (final asign in task.assignee)
           enabled
               ? TextButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => ChipsGradialog(
-                      values: widget.members.values.toSet(),
-                      selected: task.assignee.toSet(),
-                      onPick: (assignee) => _taskController?.updateAssignee(
-                        assignee as Set<String>,
-                      ),
-                    ),
-                  ),
+                  onPressed: () =>
+                      showDialog<Set<String>?>(
+                        context: context,
+                        builder: (context) => ChipsGradialog(
+                          selected: task.assignee.toSet(),
+                          parameter: TaskParameter.assignee,
+                          values: widget.members.values.toSet(),
+                        ),
+                      ).then((newValue) {
+                        if (newValue != null)
+                          _taskController.updateAssignee(newValue);
+                      }),
                   child: Wrap(
                     alignment: WrapAlignment.start,
-                    runAlignment: WrapAlignment.start,
+                    runAlignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 6,
                     runSpacing: 3,
@@ -319,7 +322,7 @@ class _ScrumRowState extends State<ScrumRow> {
                 )
               : Wrap(
                   alignment: WrapAlignment.start,
-                  runAlignment: WrapAlignment.start,
+                  runAlignment: WrapAlignment.center,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 6,
                   runSpacing: 3,
@@ -351,23 +354,26 @@ class _ScrumRowState extends State<ScrumRow> {
                     size: 15,
                     color: Colours.INK,
                   ),
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => ChipsGradialog(
-                      values: Tag.values.toSet(),
-                      selected: task.tags.toSet(),
-                      onPick: (tags) =>
-                          _taskController?.updateTags(tags as Set<Tag>),
-                    ),
-                  ),
+                  onPressed: () =>
+                      showDialog<Set<Tag>?>(
+                        context: context,
+                        builder: (context) => ChipsGradialog(
+                          selected: task.tags.toSet(),
+                          parameter: TaskParameter.tags,
+                          values: Tag.values.toSet(),
+                        ),
+                      ).then((newValue) {
+                        if (newValue != null)
+                          _taskController.updateTags(newValue);
+                      }),
                 )
               : Icon(TaskParameter.tags.icon, size: 15, color: Colours.INK_UN),
         for (final tag in task.tags)
           InputChip(
             isEnabled: enabled,
             selected: true,
-            label: Text(tag.label),
             color: WidgetStatePropertyAll(tag.colour),
+            label: Text(tag.label),
             labelStyle: const TextStyle(
               fontSize: 10,
               fontFamily: Fonts.RUBIK,
@@ -375,22 +381,25 @@ class _ScrumRowState extends State<ScrumRow> {
               fontStyle: FontStyle.italic,
               color: Colours.O,
             ),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => ChipsGradialog(
-                values: Tag.values.toSet(),
-                selected: task.tags.toSet(),
-                onPick: (tags) => _taskController?.updateTags(tags as Set<Tag>),
-              ),
-            ),
+            onPressed: () =>
+                showDialog<Set<Tag>?>(
+                  context: context,
+                  builder: (context) => ChipsGradialog(
+                    selected: task.tags.toSet(),
+                    parameter: TaskParameter.tags,
+                    values: Tag.values.toSet(),
+                  ),
+                ).then((newValue) {
+                  if (newValue != null) _taskController.updateTags(newValue);
+                }),
           ),
       ],
     ),
   );
   Widget _buildNotes() => enabled
       ? TextFormField(
-          controller: _taskController?.notesController,
-          focusNode: _taskController?.notesFocus,
+          controller: _taskController.notesController,
+          focusNode: _taskController.notesFocus,
           keyboardType: TextInputType.multiline,
           minLines: 1,
           maxLines: 2,
@@ -401,7 +410,7 @@ class _ScrumRowState extends State<ScrumRow> {
             hoverColor: Colours.CANVAS_AC,
             tipColor: Colours.INK_UN,
           ),
-          onTapOutside: (event) => _taskController?.notesFocus.unfocus(),
+          onTapOutside: (event) => _taskController.notesFocus.unfocus(),
         )
       : Text(task.notes, style: Styles.TEXT_INPUT_ITALIC);
 
@@ -416,20 +425,23 @@ class _ScrumRowState extends State<ScrumRow> {
           color: Colours.CANVAS,
         ),
         child: IntrinsicHeight(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(child: _buildOrder()),
-              Expanded(flex: 3, child: _buildTitle()),
-              Expanded(flex: 4, child: _buildDescription()),
-              Expanded(flex: 2, child: _buildDeadline()),
-              Expanded(flex: 2, child: _buildStatus()),
-              Expanded(flex: 2, child: _buildPriority()),
-              Expanded(flex: 2, child: _buildPoints()),
-              Expanded(flex: 2, child: _buildAssignee()),
-              Expanded(flex: 2, child: _buildTags()),
-              Expanded(flex: 3, child: _buildNotes()),
-            ],
+          child: ListenableBuilder(
+            listenable: _taskController,
+            builder: (context, child) => Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(child: _buildOrder()),
+                Expanded(flex: 3, child: _buildTitle()),
+                Expanded(flex: 4, child: _buildDescription()),
+                Expanded(flex: 2, child: _buildDeadline()),
+                Expanded(flex: 2, child: _buildStatus()),
+                Expanded(flex: 2, child: _buildPriority()),
+                Expanded(flex: 2, child: _buildPoints()),
+                Expanded(flex: 2, child: _buildAssignee()),
+                Expanded(flex: 2, child: _buildTags()),
+                Expanded(flex: 3, child: _buildNotes()),
+              ],
+            ),
           ),
         ),
       ),

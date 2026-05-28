@@ -353,6 +353,171 @@ class ProfileAvatar extends StatelessWidget {
   }
 }
 
+/// filter view widget
+class FilterView<T extends Parameter> extends StatefulWidget {
+  final FilterCriteria? initialFilter;
+  final T parameter;
+  final Set? values;
+  final Function(Set) onChanged;
+
+  const FilterView({
+    super.key,
+    this.initialFilter,
+    required this.parameter,
+    this.values,
+    required this.onChanged,
+  });
+
+  @override
+  State<FilterView> createState() => _FilterViewState();
+}
+
+class _FilterViewState extends State<FilterView> {
+  late final filter = widget.initialFilter ?? FilterCriteria();
+
+  List<Widget> _buildChips() => widget.values != null
+      ? widget.values!
+            .map(
+              (value) => ChoiceChip(
+                selected: filter.selected(widget.parameter, value),
+                label: Text(value.toString()),
+                onSelected: (selected) {
+                  setState(() {
+                    filter.update(widget.parameter, value, selected);
+                  });
+                  widget.onChanged(filter[widget.parameter]);
+                },
+              ),
+            )
+            .toList()
+      : [];
+  List<Widget> _buildStatus() => Status.values
+      .map(
+        (value) => ChoiceChip(
+          selected: filter.selected(widget.parameter, value),
+          color: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.selected))
+              return value.colour;
+            else
+              return value.colour.withAlpha(100);
+          }),
+          label: Text(value.label),
+          onSelected: (selected) {
+            setState(() {
+              filter.update(widget.parameter, value, selected);
+            });
+            widget.onChanged(filter[widget.parameter]);
+          },
+        ),
+      )
+      .toList();
+  List<Widget> _buildPriority() => Priority.values
+      .map(
+        (value) => ChoiceChip(
+          selected: filter.selected(widget.parameter, value),
+          color: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.selected))
+              return Colours.O;
+            else
+              return Colours.a;
+          }),
+          label: Icon(
+            value.icon,
+            size: 26,
+            color: filter.selected(widget.parameter, value)
+                ? value.colour
+                : value.colour.withAlpha(100),
+          ),
+          onSelected: (selected) {
+            setState(() {
+              filter.update(widget.parameter, value, selected);
+            });
+            widget.onChanged(filter[widget.parameter]);
+          },
+        ),
+      )
+      .toList();
+  List<Widget> _buildPoints() => PointsTShirt.values
+      .map(
+        (value) => ChoiceChip(
+          selected: filter.selected(widget.parameter, value),
+          label: Text(value.label),
+          onSelected: (selected) {
+            setState(() {
+              filter.update(widget.parameter, value, selected);
+            });
+            widget.onChanged(filter[widget.parameter]);
+          },
+        ),
+      )
+      .toList();
+  List<Widget> _buildAssignee() => widget.values != null
+      ? widget.values!
+            .map(
+              (value) => ChoiceChip(
+                selected: filter.selected(widget.parameter, value.id),
+                label: Wrap(
+                  alignment: WrapAlignment.start,
+                  runAlignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  runSpacing: 3,
+                  children: [
+                    ProfileAvatar(profile: value, radius: 12.5),
+                    Text(value.name),
+                  ],
+                ),
+                onSelected: (selected) {
+                  setState(() {
+                    filter.update(widget.parameter, value.id, selected);
+                  });
+                  widget.onChanged(filter[widget.parameter]);
+                },
+              ),
+            )
+            .toList()
+      : [];
+  List<Widget> _buildTags() => Tag.values
+      .map(
+        (value) => ChoiceChip(
+          selected: filter.selected(widget.parameter, value),
+          color: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.selected))
+              return value.colour;
+            else
+              return value.colour.withAlpha(100);
+          }),
+          label: Text(value.label),
+          onSelected: (selected) {
+            setState(() {
+              filter.update(widget.parameter, value, selected);
+            });
+            widget.onChanged(filter[widget.parameter]);
+          },
+        ),
+      )
+      .toList();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 10,
+      runSpacing: 8,
+      children: switch (widget.parameter) {
+        TaskParameter.status => _buildStatus(),
+        TaskParameter.priority => _buildPriority(),
+        TaskParameter.points => _buildPoints(),
+        TaskParameter.assignee => _buildAssignee(),
+        TaskParameter.tags => _buildTags(),
+        _ => _buildChips(),
+      },
+    );
+  }
+}
+
 /// authentication view widget
 class AuthView extends StatefulWidget {
   const AuthView({super.key});

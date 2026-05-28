@@ -70,8 +70,6 @@ class _KanbanCardState extends State<KanbanCard> {
   Widget _buildTitle() => TextField(
     controller: _taskController.titleController,
     focusNode: _taskController.titleFocus,
-    onEditingComplete: () => _taskController.titleFocus.unfocus(),
-    onTapOutside: (event) => _taskController.titleFocus.unfocus(),
     style: Styles.TEXT_UNINPUT,
     decoration: Decorations.INPUT_FIELD(
       padding: EdgeInsets.all(6.0),
@@ -79,6 +77,8 @@ class _KanbanCardState extends State<KanbanCard> {
       hoverColor: Colours.DRIVE_AC,
       tipColor: Colours.DRIVE_UN,
     ),
+    onEditingComplete: () => _taskController.titleFocus.unfocus(),
+    onTapOutside: (event) => _taskController.titleFocus.unfocus(),
   );
   Widget _buildDescription() => TextFormField(
     controller: _taskController.descriptionController,
@@ -86,7 +86,6 @@ class _KanbanCardState extends State<KanbanCard> {
     keyboardType: TextInputType.multiline,
     minLines: 1,
     maxLines: 4,
-    onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
     style: Styles.TEXT_UNINPUT_MULTILINE,
     decoration: Decorations.INPUT_FIELD(
       padding: EdgeInsets.all(12.0),
@@ -94,30 +93,7 @@ class _KanbanCardState extends State<KanbanCard> {
       hoverColor: Colours.DRIVE_AC,
       tipColor: Colours.DRIVE_UN,
     ),
-  );
-  Widget _buildPoints() => PopupMenuButton<PointsTShirt>(
-    tooltip: 'points',
-    initialValue: task.points,
-    icon: SizedBox(
-      width: 40.0,
-      child: Center(
-        child: task.points != null
-            ? Text(task.points!.label, style: Styles.TEXT_UNINFO)
-            : Icon(TaskParameter.points.icon, color: Colours.INK_UN),
-      ),
-    ),
-    itemBuilder: (context) => [
-      for (final point in PointsTShirt.values)
-        PopupMenuItem(
-          height: 30.0,
-          value: point,
-          child: Center(child: Text(point.label)),
-        ),
-    ],
-    constraints: const BoxConstraints.tightFor(),
-    onSelected: (points) {
-      _taskController.updatePoints(points);
-    },
+    onTapOutside: (event) => _taskController.descriptionFocus.unfocus(),
   );
   Widget _buildDeadline() => SizedBox(
     width: 110.0,
@@ -151,6 +127,30 @@ class _KanbanCardState extends State<KanbanCard> {
             },
           ),
   );
+  Widget _buildPoints() => PopupMenuButton<PointsTShirt>(
+    tooltip: 'points',
+    initialValue: task.points,
+    icon: SizedBox(
+      width: 40.0,
+      child: Center(
+        child: task.points != null
+            ? Text(task.points!.label, style: Styles.TEXT_UNINFO)
+            : Icon(TaskParameter.points.icon, color: Colours.INK_UN),
+      ),
+    ),
+    itemBuilder: (context) => [
+      for (final point in PointsTShirt.values)
+        PopupMenuItem(
+          height: 30.0,
+          value: point,
+          child: Center(child: Text(point.label)),
+        ),
+    ],
+    constraints: const BoxConstraints.tightFor(),
+    onSelected: (points) {
+      _taskController.updatePoints(points);
+    },
+  );
   Widget _buildAssignee() => Wrap(
     alignment: WrapAlignment.center,
     runAlignment: WrapAlignment.center,
@@ -169,30 +169,34 @@ class _KanbanCardState extends State<KanbanCard> {
       if (task.assignee.isEmpty)
         IconButton(
           icon: Icon(TaskParameter.assignee.icon, size: 15),
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => ChipsGradialog(
-              values: widget.members.values.toSet(),
-              selected: task.assignee.toSet(),
-              onPick: (assignee) =>
-                  _taskController.updateAssignee(assignee as Set<String>),
-            ),
-          ),
+          onPressed: () =>
+              showDialog(
+                context: context,
+                builder: (context) => ChipsGradialog(
+                  selected: task.assignee.toSet(),
+                  parameter: TaskParameter.assignee,
+                  values: widget.members.values.toSet(),
+                ),
+              ).then((newValue) {
+                if (newValue != null) _taskController.updateAssignee(newValue);
+              }),
         ),
       for (final asign in task.assignee)
         TextButton(
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => ChipsGradialog(
-              values: widget.members.values.toSet(),
-              selected: task.assignee.toSet(),
-              onPick: (assignee) =>
-                  _taskController.updateAssignee(assignee as Set<String>),
-            ),
-          ),
+          onPressed: () =>
+              showDialog<Set<String>?>(
+                context: context,
+                builder: (context) => ChipsGradialog(
+                  selected: task.assignee.toSet(),
+                  parameter: TaskParameter.assignee,
+                  values: widget.members.values.toSet(),
+                ),
+              ).then((newValue) {
+                if (newValue != null) _taskController.updateAssignee(newValue);
+              }),
           child: Wrap(
             alignment: WrapAlignment.start,
-            runAlignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 6,
             runSpacing: 3,

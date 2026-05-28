@@ -173,16 +173,16 @@ class AcceptGradialog extends StatelessWidget {
 
 /// chips gradialog widget - gradialog for picking chips
 class ChipsGradialog extends StatefulWidget {
-  final Set values;
   final Set? selected;
-  final Function(Set)? onPick;
+  final Parameter? parameter;
+  final Set values;
   final VoidCallback? onCancel;
 
   const ChipsGradialog({
     super.key,
-    required this.values,
     this.selected,
-    this.onPick,
+    this.parameter,
+    required this.values,
     this.onCancel,
   });
 
@@ -192,7 +192,7 @@ class ChipsGradialog extends StatefulWidget {
 
 class _ChipsGradialogState extends State<ChipsGradialog> {
   late final values = widget.values;
-  late final selected = widget.selected ?? {};
+  late Set selected = widget.selected ?? {};
 
   @override
   Widget build(BuildContext context) {
@@ -200,53 +200,30 @@ class _ChipsGradialogState extends State<ChipsGradialog> {
       width: 300.0,
       icon: Icons.rule_folder_rounded,
       title: 'Pick everything that applies!',
-      content: Wrap(
-        alignment: WrapAlignment.center,
-        runAlignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 8,
-        runSpacing: 10,
-        children: values.map((value) {
-          String text;
-          dynamic val = value;
-          if (value is String)
-            text = value;
-          else if (value is Labeling)
-            text = value.label;
-          else if (value is UserProfile) {
-            text = value.name;
-            val = value.id;
-          } else
-            text = value.toString();
-          return ChoiceChip(
-            selected: selected.contains(val),
-            color: val is Tag
-                ? WidgetStateColor.resolveWith((states) {
-                    if (states.contains(WidgetState.selected))
-                      return val.colour;
-                    else
-                      return (val.colour as Color).withAlpha(125);
-                  })
-                : null,
-            label: Text(text),
-            onSelected: (v) {
-              setState(() {
-                if (v)
-                  selected.add(val);
-                else
-                  selected.remove(val);
-              });
-            },
-          );
-        }).toList(),
-      ),
+      content: widget.parameter != null
+          ? FilterView(
+              initialFilter: FilterCriteria(
+                criterias: {widget.parameter!: selected},
+              ),
+              parameter: widget.parameter!,
+              values: values,
+              onChanged: (criterion) {
+                selected = criterion;
+              },
+            )
+          : FilterView(
+              parameter: TaskParameter.id,
+              values: values,
+              onChanged: (criterion) {
+                selected = criterion;
+              },
+            ),
       actions: [
         IconButton(
           iconSize: 18,
           icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
           onPressed: () {
-            Navigator.of(context).pop();
-            widget.onPick?.call(selected);
+            Navigator.of(context).pop(selected);
           },
           style: const ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(Colours.O),
