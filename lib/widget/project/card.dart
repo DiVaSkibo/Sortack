@@ -186,7 +186,7 @@ class _ProjectCardState extends State<ProjectCard> {
               ),
               width: 321.0,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(25.0),
                   topRight: Radius.circular(5.0),
                   bottomLeft: Radius.circular(55.0),
@@ -260,7 +260,7 @@ class _ProjectCardState extends State<ProjectCard> {
                             icon: Icons.delete_sweep_rounded,
                             message:
                                 'This will permanently remove the project...',
-                            onAccept: () => delete(),
+                            onAccept: delete,
                           ),
                         ),
                       ),

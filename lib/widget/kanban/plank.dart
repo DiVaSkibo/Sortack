@@ -68,17 +68,17 @@ final class KanbanColumn {
   );
   Widget _buildColour(BuildContext context) => IconButton(
     icon: const Icon(Icons.colorize_rounded, size: 16, color: Colours.INK),
-    onPressed: () async {
-      final selected = await showDialog<Color>(
-        context: context,
-        builder: (context) => ColourGradialog(),
-      );
-      if (selected != null) {
-        tasks.color = selected;
-        onUnfocus?.call();
-        onChanged();
-      }
-    },
+    onPressed: () =>
+        showDialog<Color?>(
+          context: context,
+          builder: (context) => ColourGradialog(),
+        ).then((result) {
+          if (result != null) {
+            tasks.color = result;
+            onUnfocus?.call();
+            onChanged();
+          }
+        }),
   );
 
   DragAndDropList build() {

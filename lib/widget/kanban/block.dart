@@ -170,15 +170,15 @@ class _KanbanCardState extends State<KanbanCard> {
         IconButton(
           icon: Icon(TaskParameter.assignee.icon, size: 15),
           onPressed: () =>
-              showDialog(
+              showDialog<Set<String>?>(
                 context: context,
                 builder: (context) => ChipsGradialog(
                   selected: task.assignee.toSet(),
                   parameter: TaskParameter.assignee,
                   values: widget.members.values.toSet(),
                 ),
-              ).then((newValue) {
-                if (newValue != null) _taskController.updateAssignee(newValue);
+              ).then((result) {
+                if (result != null) _taskController.updateAssignee(result);
               }),
         ),
       for (final asign in task.assignee)
@@ -191,8 +191,8 @@ class _KanbanCardState extends State<KanbanCard> {
                   parameter: TaskParameter.assignee,
                   values: widget.members.values.toSet(),
                 ),
-              ).then((newValue) {
-                if (newValue != null) _taskController.updateAssignee(newValue);
+              ).then((result) {
+                if (result != null) _taskController.updateAssignee(result);
               }),
           child: Wrap(
             alignment: WrapAlignment.start,

@@ -60,6 +60,58 @@ class Gradialog extends StatelessWidget {
   }
 }
 
+/// accept gradialog widget - gradialog for accept action
+class AcceptGradialog extends StatelessWidget {
+  final String? message;
+  final VoidCallback? onAccept;
+  final VoidCallback? onCancel;
+  final IconData? icon;
+
+  const AcceptGradialog({
+    super.key,
+    this.message,
+    this.onAccept,
+    this.onCancel,
+    this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Gradialog(
+      icon: icon,
+      title: message != null && message!.isNotEmpty
+          ? '$message\nconfirm action?'
+          : 'confirm action?',
+      actions: [
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
+          onPressed: () {
+            Navigator.of(context).pop();
+            onAccept?.call();
+          },
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
+            backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
+          ),
+        ),
+        IconButton(
+          iconSize: 18,
+          icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
+          onPressed: () {
+            Navigator.of(context).pop();
+            onCancel?.call();
+          },
+          style: const ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(Colours.O),
+            backgroundColor: WidgetStatePropertyAll(Colours.BAD),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// colour gradialog widget - gradialog for colour picking
 class ColourGradialog extends StatelessWidget {
   const ColourGradialog({super.key});
@@ -115,58 +167,6 @@ class ColourGradialog extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// accept gradialog widget - gradialog for accept action
-class AcceptGradialog extends StatelessWidget {
-  final String? message;
-  final VoidCallback? onAccept;
-  final VoidCallback? onCancel;
-  final IconData? icon;
-
-  const AcceptGradialog({
-    super.key,
-    this.message,
-    this.onAccept,
-    this.onCancel,
-    this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Gradialog(
-      icon: icon,
-      title: message != null && message!.isNotEmpty
-          ? '$message\nconfirm action?'
-          : 'confirm action?',
-      actions: [
-        IconButton(
-          iconSize: 18,
-          icon: const Icon(Icons.check_rounded, fontWeight: FontWeight.w900),
-          onPressed: () {
-            Navigator.of(context).pop();
-            onAccept?.call();
-          },
-          style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.O),
-            backgroundColor: WidgetStatePropertyAll(Colours.GOOD),
-          ),
-        ),
-        IconButton(
-          iconSize: 18,
-          icon: const Icon(Icons.close_rounded, fontWeight: FontWeight.w900),
-          onPressed: () {
-            Navigator.of(context).pop();
-            onCancel?.call();
-          },
-          style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colours.O),
-            backgroundColor: WidgetStatePropertyAll(Colours.BAD),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -286,9 +286,8 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
     if (project.name.trim().isEmpty) return;
     try {
       FireRources.saveProject(project);
-      if (mounted) Navigator.pop(context);
     } catch (exc) {
-      debugPrint('! ERROR: $exc');
+      debugPrint('! ERROR: on creating project; $exc');
     }
   }
 
@@ -338,7 +337,10 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
         FilledButton.icon(
           icon: const Icon(Icons.add_rounded, size: 20),
           label: const Text('create'),
-          onPressed: fire,
+          onPressed: () {
+            fire();
+            if (mounted) Navigator.of(context).pop();
+          },
           style: const ButtonStyle(
             padding: WidgetStatePropertyAll(
               EdgeInsetsGeometry.symmetric(horizontal: 10.0, vertical: 20.0),
@@ -365,8 +367,11 @@ class _JoinGradialogState extends State<JoinGradialog> {
   Future<void> fire() async {
     final code = _codeController.text.trim();
     if (code.isEmpty) return;
-    FireRources.joinProject(code, FirebaseAuth.instance.currentUser!.uid);
-    Navigator.pop(context);
+    try {
+      FireRources.joinProject(code, FirebaseAuth.instance.currentUser!.uid);
+    } catch (exc) {
+      debugPrint('! ERROR: on joining project; $exc');
+    }
   }
 
   @override
@@ -382,7 +387,10 @@ class _JoinGradialogState extends State<JoinGradialog> {
         FilledButton.icon(
           icon: const Icon(Icons.connect_without_contact_rounded, size: 20),
           label: const Text('join'),
-          onPressed: fire,
+          onPressed: () {
+            fire();
+            if (mounted) Navigator.of(context).pop();
+          },
           style: const ButtonStyle(
             padding: WidgetStatePropertyAll(
               EdgeInsetsGeometry.symmetric(horizontal: 10.0, vertical: 20.0),

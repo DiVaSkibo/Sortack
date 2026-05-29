@@ -280,9 +280,9 @@ class _ScrumRowState extends State<ScrumRow> {
                           parameter: TaskParameter.assignee,
                           values: widget.members.values.toSet(),
                         ),
-                      ).then((newValue) {
-                        if (newValue != null)
-                          _taskController.updateAssignee(newValue);
+                      ).then((result) {
+                        if (result != null)
+                          _taskController.updateAssignee(result);
                       }),
                 )
               : Icon(
@@ -301,9 +301,9 @@ class _ScrumRowState extends State<ScrumRow> {
                           parameter: TaskParameter.assignee,
                           values: widget.members.values.toSet(),
                         ),
-                      ).then((newValue) {
-                        if (newValue != null)
-                          _taskController.updateAssignee(newValue);
+                      ).then((result) {
+                        if (result != null)
+                          _taskController.updateAssignee(result);
                       }),
                   child: Wrap(
                     alignment: WrapAlignment.start,
@@ -362,9 +362,8 @@ class _ScrumRowState extends State<ScrumRow> {
                           parameter: TaskParameter.tags,
                           values: Tag.values.toSet(),
                         ),
-                      ).then((newValue) {
-                        if (newValue != null)
-                          _taskController.updateTags(newValue);
+                      ).then((result) {
+                        if (result != null) _taskController.updateTags(result);
                       }),
                 )
               : Icon(TaskParameter.tags.icon, size: 15, color: Colours.INK_UN),
@@ -389,8 +388,8 @@ class _ScrumRowState extends State<ScrumRow> {
                     parameter: TaskParameter.tags,
                     values: Tag.values.toSet(),
                   ),
-                ).then((newValue) {
-                  if (newValue != null) _taskController.updateTags(newValue);
+                ).then((result) {
+                  if (result != null) _taskController.updateTags(result);
                 }),
           ),
       ],

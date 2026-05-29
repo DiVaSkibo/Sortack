@@ -122,18 +122,18 @@ class _ScrumTableState extends State<ScrumTable> {
   );
   Widget _buildColour(BuildContext context) => IconButton(
     icon: const Icon(Icons.colorize_rounded, size: 16, color: Colours.INK),
-    onPressed: () async {
-      final selected = await showDialog<Color>(
-        context: context,
-        builder: (context) => ColourGradialog(),
-      );
-      if (selected != null) {
-        setState(() {
-          tasks.color = selected;
-        });
-        update();
-      }
-    },
+    onPressed: () =>
+        showDialog<Color?>(
+          context: context,
+          builder: (context) => ColourGradialog(),
+        ).then((result) {
+          if (result != null) {
+            setState(() {
+              tasks.color = result;
+            });
+            update();
+          }
+        }),
   );
   Widget _buildColumn(String text, {int flex = 1}) => Expanded(
     flex: flex,
