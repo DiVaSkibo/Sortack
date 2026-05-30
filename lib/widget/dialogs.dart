@@ -283,11 +283,14 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
   }
 
   Future<void> fire() async {
-    if (project.name.trim().isEmpty) return;
     try {
       FireRources.saveProject(project);
+      if (mounted) Navigator.of(context).pop();
     } catch (exc) {
       debugPrint('! ERROR: on creating project; $exc');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$exc')));
     }
   }
 
@@ -337,10 +340,7 @@ class _ProjectGradialogState extends State<ProjectGradialog> {
         FilledButton.icon(
           icon: const Icon(Icons.add_rounded, size: 20),
           label: const Text('create'),
-          onPressed: () {
-            fire();
-            if (mounted) Navigator.of(context).pop();
-          },
+          onPressed: fire,
           style: const ButtonStyle(
             padding: WidgetStatePropertyAll(
               EdgeInsetsGeometry.symmetric(horizontal: 10.0, vertical: 20.0),
@@ -363,14 +363,38 @@ class JoinGradialog extends StatefulWidget {
 
 class _JoinGradialogState extends State<JoinGradialog> {
   final TextEditingController _codeController = TextEditingController();
+  final FocusNode _codeFocus = FocusNode();
+  bool _validCode = true;
+
+  String get code => _codeController.text.trim();
+
+  @override
+  void initState() {
+    super.initState();
+    _codeFocus.addListener(() {
+      if (!_codeFocus.hasFocus) {
+        setState(() {
+          _validCode = code.isNotEmpty;
+        });
+      }
+    });
+  }
 
   Future<void> fire() async {
-    final code = _codeController.text.trim();
-    if (code.isEmpty) return;
+    if (!_validCode || code.isEmpty) {
+      setState(() {
+        _validCode = code.isNotEmpty;
+      });
+      return;
+    }
     try {
       FireRources.joinProject(code, FirebaseAuth.instance.currentUser!.uid);
+      if (mounted) Navigator.of(context).pop();
     } catch (exc) {
       debugPrint('! ERROR: on joining project; $exc');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(backgroundColor: Colours.BAD, content: Text('$exc')),
+      );
     }
   }
 
@@ -381,16 +405,23 @@ class _JoinGradialogState extends State<JoinGradialog> {
       title: 'Let`s connect to an existing project...',
       content: TextField(
         controller: _codeController,
-        decoration: Decorations.INPUT_FIELD(labelText: 'Code'),
+        focusNode: _codeFocus,
+        decoration: Decorations.INPUT_FIELD(
+          labelText: 'Code',
+          errorText: _validCode ? null : 'code can`t be empty!',
+        ),
+        onEditingComplete: () {
+          _codeFocus.unfocus();
+        },
+        onTapOutside: (event) {
+          _codeFocus.unfocus();
+        },
       ),
       actions: [
         FilledButton.icon(
           icon: const Icon(Icons.connect_without_contact_rounded, size: 20),
           label: const Text('join'),
-          onPressed: () {
-            fire();
-            if (mounted) Navigator.of(context).pop();
-          },
+          onPressed: fire,
           style: const ButtonStyle(
             padding: WidgetStatePropertyAll(
               EdgeInsetsGeometry.symmetric(horizontal: 10.0, vertical: 20.0),

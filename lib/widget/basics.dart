@@ -528,6 +528,7 @@ class AuthView extends StatefulWidget {
 
 class _AuthViewState extends State<AuthView> {
   final AuthController _authController = AuthController();
+  bool _validPassword = true;
 
   @override
   void dispose() {
@@ -568,8 +569,18 @@ class _AuthViewState extends State<AuthView> {
             obscureText: true,
             controller: _authController.passwordController,
             focusNode: _authController.passwordFocus,
-            onEditingComplete: () => _authController.passwordFocus.unfocus(),
-            onTapOutside: (event) => _authController.passwordFocus.unfocus(),
+            onEditingComplete: () {
+              _authController.passwordFocus.unfocus();
+              setState(() {
+                _validPassword = _authController.password.length >= 6;
+              });
+            },
+            onTapOutside: (event) {
+              _authController.passwordFocus.unfocus();
+              setState(() {
+                _validPassword = _authController.password.length >= 6;
+              });
+            },
             style: TextStyle(
               fontSize: 17,
               fontFamily: Fonts.RUBIK,
@@ -579,6 +590,7 @@ class _AuthViewState extends State<AuthView> {
             decoration: Decorations.INPUT_FIELD(
               hintText: 'My password is ...',
               tipColor: Colours.INK,
+              errorText: _validPassword ? null : 'too short!',
             ),
           ),
         ],
@@ -599,14 +611,28 @@ class _AuthViewState extends State<AuthView> {
             ),
           ),
           onPressed: () async {
-            dynamic user = await AuthHandler.signUpin(
-              email: _authController.email,
-              password: _authController.password,
-            );
-            if (user == null)
-              debugPrint(
-                '! ERROR: on joining it; sign in/up user; user is empty...',
+            if (!_validPassword) return;
+            try {
+              dynamic user = await AuthHandler.signUpin(
+                email: _authController.email,
+                password: _authController.password,
               );
+              if (user == null)
+                debugPrint(
+                  '! ERROR: on joining it; sign in/up user; user is empty...',
+                );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colours.BAD,
+                  content: Text('User is empty...'),
+                ),
+              );
+            } catch (exc) {
+              debugPrint('! ERROR: on joining it; sign in/up user; $exc...');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(backgroundColor: Colours.BAD, content: Text('$exc')),
+              );
+            }
           },
         ),
         OutlinedButton.icon(

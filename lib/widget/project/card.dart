@@ -270,8 +270,7 @@ class _ProjectCardState extends State<ProjectCard> {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                context,
+              Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => switch (details.methodology) {
                     Methodology.Kanban => KanbanPage(details: details),

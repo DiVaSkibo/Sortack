@@ -188,6 +188,7 @@ final class Decorations {
     EdgeInsetsGeometry? padding,
     String? labelText,
     String? hintText,
+    String? errorText,
     Color? hoverColor,
     Color? tipColor,
   }) => InputDecoration(
@@ -199,6 +200,7 @@ final class Decorations {
     hoverColor: hoverColor ?? Colours.SHADOW,
     labelText: labelText,
     hintText: hintText,
+    errorText: errorText,
     labelStyle: TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w500,
@@ -209,6 +211,11 @@ final class Decorations {
       fontWeight: FontWeight.w500,
       fontStyle: FontStyle.italic,
       color: tipColor,
+    ),
+    errorStyle: TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      color: Colours.BAD,
     ),
   );
 }

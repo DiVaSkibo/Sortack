@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           onSecondary: Colours.CANVAS,
           surface: Colours.CANVAS,
           onSurface: Colours.F,
-          error: Colours.NOTOK,
+          error: Colours.BAD,
           onError: Colours.O,
         ),
         inputDecorationTheme: const InputDecorationTheme(
@@ -77,12 +77,12 @@ class MyApp extends StatelessWidget {
           focusedBorder: InputBorder.none,
           errorBorder: OutlineInputBorder(
             gapPadding: 0.0,
-            borderSide: BorderSide(color: Colours.NOTOK, width: 2),
+            borderSide: BorderSide(color: Colours.BAD, width: 2),
             borderRadius: BorderRadius.all(Radius.circular(4)),
           ),
           focusedErrorBorder: OutlineInputBorder(
             gapPadding: 0.0,
-            borderSide: BorderSide(color: Colours.NOTOK, width: 1),
+            borderSide: BorderSide(color: Colours.BAD, width: 1),
             borderRadius: BorderRadius.all(Radius.circular(4)),
           ),
         ),
@@ -191,7 +191,7 @@ class MyApp extends StatelessWidget {
           secondarySelectedColor: Colours.SHIFT,
           backgroundColor: Colours.INK_UN,
           surfaceTintColor: Colours.a,
-          deleteIconColor: Colours.NOTOK,
+          deleteIconColor: Colours.BAD,
           shadowColor: Colours.a,
           selectedShadowColor: Colours.a,
           labelStyle: const TextStyle(
@@ -413,6 +413,10 @@ class MyApp extends StatelessWidget {
             fontFamily: Fonts.RUBIK_ONE,
             color: Colours.F,
           ),
+        ),
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Colours.INK_AC,
+          contentTextStyle: Styles.TEXT_UN,
         ),
       ),
       home: Rooter(),
