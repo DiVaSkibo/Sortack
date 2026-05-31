@@ -6,12 +6,14 @@ import 'package:sortack/logic/firebase/authentications.dart';
 import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/_tasks.dart';
 
-/// firestore resources - get, load, save, update, delete and other resources
+/// firestore resources - get, load, save, update, delete, stream and other resources
 final class FireRources {
   static CollectionReference<Document> get _users =>
       FirebaseFirestore.instance.collection('users');
   static CollectionReference<Document> get _decks =>
       FirebaseFirestore.instance.collection('decks');
+
+  const FireRources._();
 
   // GETs
   /// get document query of user
@@ -348,6 +350,17 @@ final class FireRources {
       debugPrint('? ERROR: deleting block; $exc');
       rethrow;
     }
+  }
+
+  // STREAMs
+  /// stream block resource by deck, self id
+  static Stream<T> streamBlock<T extends Block>(String deckId, String id) {
+    final blockRef = FireRources.getBlocks(deckId).doc(id);
+    return blockRef.snapshots().map((docSnapshot) {
+      if (!docSnapshot.exists || docSnapshot.data() == null)
+        throw Exception('? ERROR: on block stream; block does not exist...');
+      return FireRources.loadBlock<T>(docSnapshot);
+    });
   }
 
   // OTHERs

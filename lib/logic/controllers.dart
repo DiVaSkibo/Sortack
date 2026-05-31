@@ -54,8 +54,14 @@ class AuthController extends ChangeNotifier {
 
 /// block controller
 class BlockController extends ChangeNotifier {
-  final Block _task;
-  Block get task => _task;
+  Block _block;
+  Block get block => _block;
+  set block(Block x) {
+    _block = x;
+    titleController.text = x.title;
+    descriptionController.text = x.description;
+    notifyListeners();
+  }
 
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
@@ -63,7 +69,7 @@ class BlockController extends ChangeNotifier {
   final FocusNode descriptionFocus = FocusNode();
   final Function()? onUnfocus;
 
-  BlockController(this._task, {this.onUnfocus}) {
+  BlockController(this._block, {this.onUnfocus}) {
     _initializeControllers();
     _setupFocusListeners();
   }
@@ -78,16 +84,16 @@ class BlockController extends ChangeNotifier {
   }
 
   void _initializeControllers() {
-    titleController = TextEditingController(text: _task.title);
-    descriptionController = TextEditingController(text: _task.description);
+    titleController = TextEditingController(text: _block.title);
+    descriptionController = TextEditingController(text: _block.description);
   }
 
   void _setupFocusListeners() {
     titleFocus.addListener(() {
       if (!titleFocus.hasFocus &&
           titleController.text.isNotEmpty &&
-          titleController.text != _task.title) {
-        _task.title = titleController.text;
+          titleController.text != _block.title) {
+        _block.title = titleController.text;
         onUnfocus?.call();
         notifyListeners();
       }
@@ -95,8 +101,8 @@ class BlockController extends ChangeNotifier {
     descriptionFocus.addListener(() {
       if (!descriptionFocus.hasFocus &&
           descriptionController.text.isNotEmpty &&
-          descriptionController.text != _task.description) {
-        _task.description = descriptionController.text;
+          descriptionController.text != _block.description) {
+        _block.description = descriptionController.text;
         onUnfocus?.call();
         notifyListeners();
       }
@@ -104,22 +110,22 @@ class BlockController extends ChangeNotifier {
   }
 
   void updateDeadline(DateTime deadline) {
-    if (_task.deadline == deadline) return;
-    _task.deadline = deadline;
+    if (_block.deadline == deadline) return;
+    _block.deadline = deadline;
     onUnfocus?.call();
     notifyListeners();
   }
 
   void updatePoints(PointsTShirt points) {
-    if (_task.points == points) return;
-    _task.points = points;
+    if (_block.points == points) return;
+    _block.points = points;
     onUnfocus?.call();
     notifyListeners();
   }
 
   void updateAssignee(Set<String> assignee) {
-    if (_task.assignee == assignee) return;
-    _task.assignee = assignee;
+    if (_block.assignee == assignee) return;
+    _block.assignee = assignee;
     onUnfocus?.call();
     notifyListeners();
   }
@@ -127,8 +133,15 @@ class BlockController extends ChangeNotifier {
 
 /// advanced block controller
 class AdvancedBlockController extends ChangeNotifier {
-  final AdvancedBlock _task;
-  AdvancedBlock get task => _task;
+  AdvancedBlock _block;
+  AdvancedBlock get block => _block;
+  set block(AdvancedBlock x) {
+    _block = x;
+    titleController.text = x.title;
+    descriptionController.text = x.description;
+    notesController.text = x.notes;
+    notifyListeners();
+  }
 
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
@@ -138,7 +151,7 @@ class AdvancedBlockController extends ChangeNotifier {
   final FocusNode notesFocus = FocusNode();
   final Function()? onUnfocus;
 
-  AdvancedBlockController(this._task, {this.onUnfocus}) {
+  AdvancedBlockController(this._block, {this.onUnfocus}) {
     _initializeControllers();
     _setupFocusListeners();
   }
@@ -155,17 +168,17 @@ class AdvancedBlockController extends ChangeNotifier {
   }
 
   void _initializeControllers() {
-    titleController = TextEditingController(text: _task.title);
-    descriptionController = TextEditingController(text: _task.description);
-    notesController = TextEditingController(text: _task.notes);
+    titleController = TextEditingController(text: _block.title);
+    descriptionController = TextEditingController(text: _block.description);
+    notesController = TextEditingController(text: _block.notes);
   }
 
   void _setupFocusListeners() {
     titleFocus.addListener(() {
       if (!titleFocus.hasFocus &&
           titleController.text.isNotEmpty &&
-          titleController.text != _task.title) {
-        _task.title = titleController.text;
+          titleController.text != _block.title) {
+        _block.title = titleController.text;
         onUnfocus?.call();
         notifyListeners();
       }
@@ -173,8 +186,8 @@ class AdvancedBlockController extends ChangeNotifier {
     descriptionFocus.addListener(() {
       if (!descriptionFocus.hasFocus &&
           descriptionController.text.isNotEmpty &&
-          descriptionController.text != _task.description) {
-        _task.description = descriptionController.text;
+          descriptionController.text != _block.description) {
+        _block.description = descriptionController.text;
         onUnfocus?.call();
         notifyListeners();
       }
@@ -182,8 +195,8 @@ class AdvancedBlockController extends ChangeNotifier {
     notesFocus.addListener(() {
       if (!notesFocus.hasFocus &&
           notesController.text.isNotEmpty &&
-          notesController.text != _task.notes) {
-        _task.notes = notesController.text;
+          notesController.text != _block.notes) {
+        _block.notes = notesController.text;
         onUnfocus?.call();
         notifyListeners();
       }
@@ -191,43 +204,43 @@ class AdvancedBlockController extends ChangeNotifier {
   }
 
   void updateDeadline(DateTime deadline) {
-    if (_task.deadline == deadline) return;
-    _task.deadline = deadline;
+    if (_block.deadline == deadline) return;
+    _block.deadline = deadline;
     onUnfocus?.call();
     notifyListeners();
   }
 
   void updateStatus(Status status) {
-    if (_task.status == status) return;
-    _task.status = status;
+    if (_block.status == status) return;
+    _block.status = status;
     onUnfocus?.call();
     notifyListeners();
   }
 
   void updatePriority(Priority priority) {
-    if (_task.priority == priority) return;
-    _task.priority = priority;
+    if (_block.priority == priority) return;
+    _block.priority = priority;
     onUnfocus?.call();
     notifyListeners();
   }
 
   void updatePoints(PointsTShirt points) {
-    if (_task.points == points) return;
-    _task.points = points;
+    if (_block.points == points) return;
+    _block.points = points;
     onUnfocus?.call();
     notifyListeners();
   }
 
   void updateAssignee(Set<String> assignee) {
-    if (_task.assignee == assignee) return;
-    _task.assignee = assignee;
+    if (_block.assignee == assignee) return;
+    _block.assignee = assignee;
     onUnfocus?.call();
     notifyListeners();
   }
 
   void updateTags(Set<Tag> tags) {
-    if (_task.tags == tags) return;
-    _task.tags = tags;
+    if (_block.tags == tags) return;
+    _block.tags = tags;
     onUnfocus?.call();
     notifyListeners();
   }

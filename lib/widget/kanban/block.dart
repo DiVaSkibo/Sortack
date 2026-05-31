@@ -28,7 +28,8 @@ class KanbanCard extends StatefulWidget {
 
 class _KanbanCardState extends State<KanbanCard> {
   late final BlockController _taskController;
-  Block get task => _taskController.task;
+  Block get task => _taskController.block;
+  set task(Block x) => _taskController.block = x;
 
   @override
   void initState() {
@@ -213,71 +214,202 @@ class _KanbanCardState extends State<KanbanCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(2.5),
-      child: ListenableBuilder(
-        listenable: _taskController,
-        builder: (context, child) => ExpansionTile(
-          maintainState: true,
-          expandedCrossAxisAlignment: CrossAxisAlignment.center,
-          tilePadding: const EdgeInsets.only(
-            left: 10.0,
-            right: 10.0,
-            top: 0.0,
-            bottom: 7.5,
-          ),
-          childrenPadding: const EdgeInsets.only(bottom: 7.5),
-          collapsedShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(26)),
-            side: BorderSide.none,
-          ),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(26)),
-            side: BorderSide.none,
-          ),
-          collapsedBackgroundColor: Colours.DRIVE,
-          backgroundColor: Colours.MEDIUM,
-          collapsedIconColor: Colours.INK_UN,
-          iconColor: Colours.INK_UN,
-          collapsedTextColor: Colours.DRIVE_UN,
-          textColor: Colours.DRIVE_UN,
-          leading: const Icon(
-            Icons.drag_indicator_outlined,
-            size: 17,
-            color: Colours.INK,
-          ),
-          title: _buildTitle(),
-          subtitle: _buildAssignee(),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.delete_forever_rounded,
-              size: 18,
-              color: Colours.SHIFT,
-              shadows: List.generate(
-                20,
-                (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
+      child: StreamBuilder<Block>(
+        stream: FireRources.streamBlock<Block>(widget.deckId, task.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return ExpansionTile(
+              enabled: false,
+              showTrailingIcon: false,
+              maintainState: true,
+              expandedCrossAxisAlignment: CrossAxisAlignment.center,
+              tilePadding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10.0,
+                top: 0.0,
+                bottom: 7.5,
+              ),
+              childrenPadding: const EdgeInsets.only(bottom: 7.5),
+              collapsedShape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(26)),
+                side: BorderSide.none,
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(26)),
+                side: BorderSide.none,
+              ),
+              collapsedBackgroundColor: Colours.INK_AC,
+              backgroundColor: Colours.F,
+              title: const SizedBox.shrink(),
+            );
+          if (snapshot.hasError)
+            return ExpansionTile(
+              enabled: false,
+              maintainState: true,
+              expandedCrossAxisAlignment: CrossAxisAlignment.center,
+              tilePadding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10.0,
+                top: 0.0,
+                bottom: 7.5,
+              ),
+              childrenPadding: const EdgeInsets.only(bottom: 7.5),
+              collapsedShape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(26)),
+                side: BorderSide.none,
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(26)),
+                side: BorderSide.none,
+              ),
+              collapsedBackgroundColor: Colours.BAD,
+              backgroundColor: Colours.NOTOK,
+              collapsedIconColor: Colours.F,
+              iconColor: Colours.INK_AC,
+              collapsedTextColor: Colours.O,
+              textColor: Colours.O,
+              leading: const Icon(
+                Icons.drag_indicator_outlined,
+                size: 17,
+                color: Colours.CANVAS_AC,
+              ),
+              title: const SizedBox.shrink(),
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.delete_forever_rounded,
+                  size: 18,
+                  color: Colours.SHIFT,
+                  shadows: List.generate(
+                    20,
+                    (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
+                  ),
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AcceptGradialog(
+                    icon: Icons.delete_sweep_rounded,
+                    message: 'This will permanently remove the task...',
+                    onAccept: delete,
+                  ),
+                ),
+              ),
+            );
+          if (!snapshot.hasData)
+            return ExpansionTile(
+              maintainState: true,
+              expandedCrossAxisAlignment: CrossAxisAlignment.center,
+              tilePadding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10.0,
+                top: 0.0,
+                bottom: 7.5,
+              ),
+              childrenPadding: const EdgeInsets.only(bottom: 7.5),
+              collapsedShape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(26)),
+                side: BorderSide.none,
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(26)),
+                side: BorderSide.none,
+              ),
+              collapsedBackgroundColor: Colours.DRIVE,
+              backgroundColor: Colours.MEDIUM,
+              collapsedIconColor: Colours.INK_UN,
+              iconColor: Colours.INK_UN,
+              collapsedTextColor: Colours.DRIVE_UN,
+              textColor: Colours.DRIVE_UN,
+              leading: const Icon(
+                Icons.drag_indicator_outlined,
+                size: 17,
+                color: Colours.INK,
+              ),
+              title: const SizedBox.shrink(),
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.delete_forever_rounded,
+                  size: 18,
+                  color: Colours.SHIFT,
+                  shadows: List.generate(
+                    20,
+                    (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
+                  ),
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AcceptGradialog(
+                    icon: Icons.delete_sweep_rounded,
+                    message: 'This will permanently remove the task...',
+                    onAccept: delete,
+                  ),
+                ),
+              ),
+            );
+          task = snapshot.data!;
+          return ExpansionTile(
+            maintainState: true,
+            expandedCrossAxisAlignment: CrossAxisAlignment.center,
+            tilePadding: const EdgeInsets.only(
+              left: 10.0,
+              right: 10.0,
+              top: 0.0,
+              bottom: 7.5,
+            ),
+            childrenPadding: const EdgeInsets.only(bottom: 7.5),
+            collapsedShape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(26)),
+              side: BorderSide.none,
+            ),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(26)),
+              side: BorderSide.none,
+            ),
+            collapsedBackgroundColor: Colours.DRIVE,
+            backgroundColor: Colours.MEDIUM,
+            collapsedIconColor: Colours.INK_UN,
+            iconColor: Colours.INK_UN,
+            collapsedTextColor: Colours.DRIVE_UN,
+            textColor: Colours.DRIVE_UN,
+            leading: const Icon(
+              Icons.drag_indicator_outlined,
+              size: 17,
+              color: Colours.INK,
+            ),
+            title: _buildTitle(),
+            subtitle: _buildAssignee(),
+            trailing: IconButton(
+              icon: Icon(
+                Icons.delete_forever_rounded,
+                size: 18,
+                color: Colours.SHIFT,
+                shadows: List.generate(
+                  20,
+                  (index) => const Shadow(blurRadius: 0.75, color: Colours.O),
+                ),
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => AcceptGradialog(
+                  icon: Icons.delete_sweep_rounded,
+                  message: 'This will permanently remove the task...',
+                  onAccept: delete,
+                ),
               ),
             ),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AcceptGradialog(
-                icon: Icons.delete_sweep_rounded,
-                message: 'This will permanently remove the task...',
-                onAccept: () => delete(),
+            children: [
+              _buildDescription(),
+              const SizedBox(height: 9.0),
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [_buildPoints(), _buildDeadline()],
+                ),
               ),
-            ),
-          ),
-          children: [
-            _buildDescription(),
-            const SizedBox(height: 9.0),
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [_buildPoints(), _buildDeadline()],
-              ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       ),
     );
   }

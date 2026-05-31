@@ -29,7 +29,8 @@ class ScrumRow extends StatefulWidget {
 class _ScrumRowState extends State<ScrumRow> {
   late final bool enabled = widget.task.enabled;
   late final AdvancedBlockController _taskController;
-  AdvancedBlock get task => enabled ? _taskController.task : widget.task;
+  AdvancedBlock get task => enabled ? _taskController.block : widget.task;
+  set task(AdvancedBlock x) => enabled ? _taskController.block = x : null;
 
   @override
   void initState() {
@@ -424,23 +425,77 @@ class _ScrumRowState extends State<ScrumRow> {
           color: Colours.CANVAS,
         ),
         child: IntrinsicHeight(
-          child: ListenableBuilder(
-            listenable: _taskController,
-            builder: (context, child) => Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(child: _buildOrder()),
-                Expanded(flex: 3, child: _buildTitle()),
-                Expanded(flex: 4, child: _buildDescription()),
-                Expanded(flex: 2, child: _buildDeadline()),
-                Expanded(flex: 2, child: _buildStatus()),
-                Expanded(flex: 2, child: _buildPriority()),
-                Expanded(flex: 2, child: _buildPoints()),
-                Expanded(flex: 2, child: _buildAssignee()),
-                Expanded(flex: 2, child: _buildTags()),
-                Expanded(flex: 3, child: _buildNotes()),
-              ],
+          child: StreamBuilder<AdvancedBlock>(
+            stream: FireRources.streamBlock<AdvancedBlock>(
+              widget.deckId,
+              task.id,
             ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting)
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(child: _buildOrder()),
+                    Expanded(flex: 3, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 4, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
+                    Expanded(flex: 3, child: Container(color: Colours.SHADOW)),
+                  ],
+                );
+              if (snapshot.hasError)
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(child: _buildOrder()),
+                    Expanded(flex: 3, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 4, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 2, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 2, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 2, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 2, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 2, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 2, child: Container(color: Colours.BAD)),
+                    Expanded(flex: 3, child: Container(color: Colours.BAD)),
+                  ],
+                );
+              if (!snapshot.hasData)
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(child: _buildOrder()),
+                    Expanded(flex: 3, child: const SizedBox.shrink()),
+                    Expanded(flex: 4, child: const SizedBox.shrink()),
+                    Expanded(flex: 2, child: const SizedBox.shrink()),
+                    Expanded(flex: 2, child: const SizedBox.shrink()),
+                    Expanded(flex: 2, child: const SizedBox.shrink()),
+                    Expanded(flex: 2, child: const SizedBox.shrink()),
+                    Expanded(flex: 2, child: const SizedBox.shrink()),
+                    Expanded(flex: 2, child: const SizedBox.shrink()),
+                    Expanded(flex: 3, child: const SizedBox.shrink()),
+                  ],
+                );
+              task = snapshot.data!;
+              return Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(child: _buildOrder()),
+                  Expanded(flex: 3, child: _buildTitle()),
+                  Expanded(flex: 4, child: _buildDescription()),
+                  Expanded(flex: 2, child: _buildDeadline()),
+                  Expanded(flex: 2, child: _buildStatus()),
+                  Expanded(flex: 2, child: _buildPriority()),
+                  Expanded(flex: 2, child: _buildPoints()),
+                  Expanded(flex: 2, child: _buildAssignee()),
+                  Expanded(flex: 2, child: _buildTags()),
+                  Expanded(flex: 3, child: _buildNotes()),
+                ],
+              );
+            },
           ),
         ),
       ),

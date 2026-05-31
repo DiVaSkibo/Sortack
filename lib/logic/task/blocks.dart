@@ -1,7 +1,6 @@
 import 'package:sortack/_tools.dart';
 
 /// immutable task block interface class
-@immutable
 interface class Block with Parameterizable<TaskParameter> {
   final String id;
   bool enabled;
