@@ -49,6 +49,7 @@ final class KanbanColumn {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 20,
+        fontFamily: Fonts.RUBIK,
         fontWeight: FontWeight.w600,
         color: tasks.color,
       ),
@@ -92,27 +93,66 @@ final class KanbanColumn {
         gradient: Gradients.PLANK,
         borderRadius: BorderRadius.circular(15.0),
       ),
-      header: ListenableBuilder(
-        listenable: _titleController,
-        builder: (context, child) => Wrap(
-          alignment: WrapAlignment.center,
-          runAlignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            const SizedBox(
-              width: 38.0,
+      header: StreamBuilder<Plank>(
+        stream: FireRources.streamPlank<Plank>(deckId, tasks.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return const Padding(
+              padding: EdgeInsets.all(15.0),
               child: Center(
-                child: Icon(
-                  Icons.drag_indicator_outlined,
-                  size: 17,
-                  color: Colours.INK_UN,
+                child: Text(
+                  'waiting...',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: Fonts.RUBIK,
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.italic,
+                    color: Colours.INK_AC,
+                  ),
                 ),
               ),
-            ),
-            _buildTitle(context),
-            _buildColour(context),
-          ],
-        ),
+            );
+          if (snapshot.hasError)
+            return const Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Center(
+                child: Text(
+                  'has error!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: Fonts.RUBIK,
+                    fontWeight: FontWeight.w700,
+                    fontStyle: FontStyle.italic,
+                    color: Colours.BAD,
+                  ),
+                ),
+              ),
+            );
+          if (snapshot.hasData) {
+            tasks.title = snapshot.data!.title;
+            tasks.color = snapshot.data!.color;
+            _titleController.text = tasks.title;
+          }
+          return Wrap(
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              const SizedBox(
+                width: 38.0,
+                child: Center(
+                  child: Icon(
+                    Icons.drag_indicator_outlined,
+                    size: 17,
+                    color: Colours.INK_UN,
+                  ),
+                ),
+              ),
+              _buildTitle(context),
+              _buildColour(context),
+            ],
+          );
+        },
       ),
       children: List.generate(
         visibleTasks.length,

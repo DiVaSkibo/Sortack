@@ -353,13 +353,23 @@ final class FireRources {
   }
 
   // STREAMs
+  /// stream plank resource by deck, self id
+  static Stream<T> streamPlank<T extends Plank>(String deckId, String id) {
+    final plankRef = getPlanks(deckId).doc(id);
+    return plankRef.snapshots().map((docSnapshot) {
+      if (!docSnapshot.exists || docSnapshot.data() == null)
+        throw Exception('? ERROR: on plank stream; plank does not exist...');
+      return loadPlank<T>(docSnapshot);
+    });
+  }
+
   /// stream block resource by deck, self id
   static Stream<T> streamBlock<T extends Block>(String deckId, String id) {
-    final blockRef = FireRources.getBlocks(deckId).doc(id);
+    final blockRef = getBlocks(deckId).doc(id);
     return blockRef.snapshots().map((docSnapshot) {
       if (!docSnapshot.exists || docSnapshot.data() == null)
         throw Exception('? ERROR: on block stream; block does not exist...');
-      return FireRources.loadBlock<T>(docSnapshot);
+      return loadBlock<T>(docSnapshot);
     });
   }
 
