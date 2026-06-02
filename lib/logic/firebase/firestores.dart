@@ -42,8 +42,27 @@ final class FireRources {
     return null;
   }
 
+  /// load project details resource by id
+  static Future<ProjectDetails> loadProjectDetails(String id) async {
+    final doc = await _decks.doc(id).get();
+    final data = doc.data() as Document;
+    return ProjectDetails(
+      id: id,
+      name: data['name'],
+      description: data['description'],
+      methodology:
+          Methodology.values.asNameMap()[data['methodology']] ??
+          Methodology.Kanban,
+      created: data['created'] != null
+          ? (data['created'] as Timestamp).toDate()
+          : DateTime.now(),
+      owner: data['owner'],
+      members: List<String>.from(data['members'] ?? []),
+    );
+  }
+
   /// load project details resource by doc
-  static ProjectDetails loadProjectDetails(DocumentSnapshot doc) {
+  static ProjectDetails loadProjectDetailsDoc(DocumentSnapshot doc) {
     final data = doc.data() as Document;
     return ProjectDetails(
       id: doc.id,
@@ -353,6 +372,30 @@ final class FireRources {
   }
 
   // STREAMs
+  /// stream user decks count
+  static Stream<List<String>> streamUserDecks(User user) {
+    final userDecks = getUserDecks(user).snapshots();
+    return userDecks
+        .map((querySnapshot) {
+          return querySnapshot.docs.map((doc) => doc.id).toList();
+        })
+        .distinct(
+          (previous, next) => const ListEquality().equals(previous, next),
+        );
+  }
+
+  /// stream project details resource by deck, self id
+  static Stream<ProjectDetails> streamProjectDetails(String id) {
+    final detailsRef = _decks.doc(id);
+    return detailsRef.snapshots().map((docSnapshot) {
+      if (!docSnapshot.exists || docSnapshot.data() == null)
+        throw Exception(
+          '? ERROR: on project details stream; project details does not exist...',
+        );
+      return loadProjectDetailsDoc(docSnapshot);
+    });
+  }
+
   /// stream plank resource by deck, self id
   static Stream<T> streamPlank<T extends Plank>(String deckId, String id) {
     final plankRef = getPlanks(deckId).doc(id);

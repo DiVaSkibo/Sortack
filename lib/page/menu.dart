@@ -61,34 +61,20 @@ class _MenuPageState extends State<MenuPage> {
       body: Ground(
         scrollable: true,
         over: true,
-        child: StreamBuilder(
-          stream: FireRources.getUserDecks(currentUser).snapshots(),
+        child: StreamBuilder<List<String>>(
+          stream: FireRources.streamUserDecks(currentUser),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting)
-              return Center(child: buildLoading());
-            if (snapshot.hasError)
-              return Center(
-                child: ListTile(
-                  leading: Icon(Icons.error_outline_rounded),
-                  trailing: Text(snapshot.error.toString()),
-                ),
-              );
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
-              return Center(child: buildEasterEgg());
+            if (!snapshot.hasData) return Center(child: buildLoading());
             return Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.start,
               spacing: 50,
-              runSpacing: 100,
-              children: snapshot.data!.docs
-                  .map(
-                    (doc) => ProjectCard(
-                      key: ValueKey(doc.id),
-                      details: FireRources.loadProjectDetails(doc),
-                    ),
-                  )
-                  .toList(),
+              runSpacing: 50,
+              children: [
+                for (final id in snapshot.data!)
+                  ProjectCard(key: ValueKey(id), id: id),
+              ],
             );
           },
         ),

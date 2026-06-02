@@ -7,9 +7,9 @@ import 'package:sortack/page/kanban.dart';
 import 'package:sortack/page/scrum.dart';
 
 class ProjectCard extends StatefulWidget {
-  final ProjectDetails details;
+  final String id;
 
-  const ProjectCard({super.key, required this.details});
+  const ProjectCard({super.key, required this.id});
 
   @override
   State<ProjectCard> createState() => _ProjectCardState();
@@ -18,6 +18,7 @@ class ProjectCard extends StatefulWidget {
 class _ProjectCardState extends State<ProjectCard> {
   late final ProjectDetailsController _deckDetailsController;
   ProjectDetails get details => _deckDetailsController.project;
+  set details(ProjectDetails x) => _deckDetailsController.project = x;
   Map<String, UserProfile> membersProfiles = {};
   bool _isLoading = true;
 
@@ -34,23 +35,28 @@ class _ProjectCardState extends State<ProjectCard> {
   void initState() {
     super.initState();
     _loadData();
-    _deckDetailsController = ProjectDetailsController(
-      widget.details,
-      onUnfocus: () async {
-        try {
-          await FireRources.saveProject(details);
-        } catch (exc) {
-          debugPrint('? ERROR: saving details changes; $exc');
-        }
-      },
-    );
   }
 
   Future<void> _loadData() async {
+    _isLoading = true;
     try {
+      // project details
+      ProjectDetails loadedDetails = await FireRources.loadProjectDetails(
+        widget.id,
+      );
+      _deckDetailsController = ProjectDetailsController(
+        loadedDetails,
+        onUnfocus: () async {
+          try {
+            await FireRources.saveProject(details);
+          } catch (exc) {
+            debugPrint('? ERROR: on saving details changes; $exc');
+          }
+        },
+      );
       // profiles data
       Map<String, UserProfile> loadedProfiles = {};
-      for (String uid in widget.details.members) {
+      for (final uid in details.members) {
         final profile = await FireRources.loadUserProfile(uid);
         if (profile != null) loadedProfiles[uid] = profile;
       }
@@ -62,6 +68,23 @@ class _ProjectCardState extends State<ProjectCard> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _loadProfiles() async {
+    try {
+      // profiles data
+      Map<String, UserProfile> loadedProfiles = {};
+      for (final uid in details.members) {
+        final profile = await FireRources.loadUserProfile(uid);
+        if (profile != null) loadedProfiles[uid] = profile;
+      }
+      if (!mounted) return;
+      setState(() {
+        membersProfiles = loadedProfiles;
+      });
+    } catch (exc) {
+      debugPrint('! ERROR: on loading profiles; $exc');
     }
   }
 
@@ -134,8 +157,14 @@ class _ProjectCardState extends State<ProjectCard> {
           color: colourVery,
         ),
       ),
-      ProfileAvatar(profile: membersProfiles[details.owner]!, radius: 20.0),
-      Text(membersProfiles[details.owner]!.name, style: Styles.TEXT_UN),
+      membersProfiles[details.owner] != null
+          ? ProfileAvatar(
+              profile: membersProfiles[details.owner]!,
+              radius: 20.0,
+            )
+          : buildLoading(size: 40.0),
+      if (membersProfiles[details.owner] != null)
+        Text(membersProfiles[details.owner]!.name, style: Styles.TEXT_UN),
     ],
   );
   Widget? _buildMembers() => details.members.skip(1).isNotEmpty
@@ -163,11 +192,17 @@ class _ProjectCardState extends State<ProjectCard> {
                   spacing: 6,
                   runSpacing: 3,
                   children: [
-                    ProfileAvatar(
-                      profile: membersProfiles[member]!,
-                      radius: 12.5,
-                    ),
-                    Text(membersProfiles[member]!.name, style: Styles.TEXT_UN),
+                    membersProfiles[member] != null
+                        ? ProfileAvatar(
+                            profile: membersProfiles[member]!,
+                            radius: 12.5,
+                          )
+                        : buildLoading(size: 40.0),
+                    if (membersProfiles[member] != null)
+                      Text(
+                        membersProfiles[member]!.name,
+                        style: Styles.TEXT_UN,
+                      ),
                   ],
                 ),
           ],
@@ -177,106 +212,295 @@ class _ProjectCardState extends State<ProjectCard> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Center(child: buildLoading())
-        : InkWell(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15.0,
-                vertical: 15.0,
+        ? Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15.0,
+              vertical: 15.0,
+            ),
+            width: 321.0,
+            height: 123.0,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(25.0),
+                topRight: Radius.circular(5.0),
+                bottomLeft: Radius.circular(55.0),
+                bottomRight: Radius.circular(5.0),
               ),
-              width: 321.0,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(25.0),
-                  topRight: Radius.circular(5.0),
-                  bottomLeft: Radius.circular(55.0),
-                  bottomRight: Radius.circular(5.0),
-                ),
-                border: BoxBorder.all(
-                  strokeAlign: BorderSide.strokeAlignCenter,
-                  width: 6,
-                  color: switch (details.methodology) {
-                    Methodology.Kanban => Colours.HIGH,
-                    Methodology.Scrum => Colours.LOW,
-                  },
-                ),
-                gradient: RadialGradient(
-                  center: AlignmentGeometry.topCenter,
-                  radius: 1.75,
-                  colors: switch (details.methodology) {
-                    Methodology.Kanban => [Colours.HIGH, Colours.VERY_HIGH],
-                    Methodology.Scrum => [Colours.LOW, Colours.VERY_LOW],
-                  },
+              border: BoxBorder.all(
+                strokeAlign: BorderSide.strokeAlignCenter,
+                width: 6,
+                color: Colours.INK_AC,
+              ),
+              gradient: const RadialGradient(
+                center: AlignmentGeometry.topCenter,
+                radius: 1.75,
+                colors: [Colours.F, Colours.INK_AC],
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'waiting...',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: Fonts.RUBIK,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  color: Colours.O,
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 15,
-                children: [
-                  _buildName(),
-                  _buildDescription(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 10,
-                    children: [_buildOwner(), _buildCreated()],
+            ),
+          )
+        : StreamBuilder<ProjectDetails>(
+            stream: FireRources.streamProjectDetails(widget.id),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting)
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15.0,
+                    vertical: 15.0,
                   ),
-                  ?_buildMembers(),
-                  SizedBox(height: 5.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.link_rounded,
-                          size: 23,
-                          color: Colours.INK_UN,
-                        ),
-                        onPressed: () async {
-                          await Clipboard.setData(
-                            ClipboardData(text: details.id),
-                          );
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Copied the project code '),
-                              ),
-                            );
-                          }
-                        },
+                  width: 321.0,
+                  height: 123.0,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(25.0),
+                      topRight: Radius.circular(5.0),
+                      bottomLeft: Radius.circular(55.0),
+                      bottomRight: Radius.circular(5.0),
+                    ),
+                    border: BoxBorder.all(
+                      strokeAlign: BorderSide.strokeAlignCenter,
+                      width: 6,
+                      color: Colours.INK_AC,
+                    ),
+                    gradient: const RadialGradient(
+                      center: AlignmentGeometry.topCenter,
+                      radius: 1.75,
+                      colors: [Colours.F, Colours.INK_AC],
+                    ),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'waiting...',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: Fonts.RUBIK,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.italic,
+                        color: Colours.O,
                       ),
-                      Center(child: buildMethodologyChip(details.methodology)),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.remove_rounded,
-                          size: 23,
-                          color: Colours.INK_UN,
-                        ),
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (context) => AcceptGradialog(
-                            icon: Icons.delete_sweep_rounded,
-                            message:
-                                'This will permanently remove the project...',
-                            onAccept: delete,
+                    ),
+                  ),
+                );
+              if (snapshot.hasError)
+                return InkWell(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0,
+                      vertical: 15.0,
+                    ),
+                    width: 321.0,
+                    height: 234.0,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(25.0),
+                        topRight: Radius.circular(5.0),
+                        bottomLeft: Radius.circular(55.0),
+                        bottomRight: Radius.circular(5.0),
+                      ),
+                      border: BoxBorder.all(
+                        strokeAlign: BorderSide.strokeAlignCenter,
+                        width: 6,
+                        color: Colours.BAD,
+                      ),
+                      gradient: const RadialGradient(
+                        center: AlignmentGeometry.topCenter,
+                        radius: 1.75,
+                        colors: [Colours.NOTOK, Colours.BAD],
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 15,
+                      children: [
+                        const Text(
+                          'has error!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: Fonts.RUBIK,
+                            fontWeight: FontWeight.w800,
+                            fontStyle: FontStyle.italic,
+                            color: Colours.O,
                           ),
                         ),
+                        const SizedBox(height: 5.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.link_rounded,
+                                size: 23,
+                                color: Colours.INK_UN,
+                              ),
+                              onPressed: () async {
+                                await Clipboard.setData(
+                                  ClipboardData(text: details.id),
+                                );
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Copied the project code '),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                            Center(
+                              child: buildMethodologyChip(details.methodology),
+                            ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.remove_rounded,
+                                size: 23,
+                                color: Colours.INK_UN,
+                              ),
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (context) => AcceptGradialog(
+                                  icon: Icons.delete_sweep_rounded,
+                                  message:
+                                      'This will permanently remove the project...',
+                                  onAccept: delete,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => switch (details.methodology) {
+                          Methodology.Kanban => KanbanPage(details: details),
+                          Methodology.Scrum => ScrumPage(details: details),
+                        },
+                      ),
+                    );
+                  },
+                );
+              if (snapshot.hasData) {
+                details = snapshot.data!;
+                final hasMissingProfiles = details.members.any(
+                  (uid) => !membersProfiles.containsKey(uid),
+                );
+                if (hasMissingProfiles) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _loadProfiles();
+                  });
+                }
+              }
+              return InkWell(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15.0,
+                    vertical: 15.0,
+                  ),
+                  width: 321.0,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(25.0),
+                      topRight: Radius.circular(5.0),
+                      bottomLeft: Radius.circular(55.0),
+                      bottomRight: Radius.circular(5.0),
+                    ),
+                    border: BoxBorder.all(
+                      strokeAlign: BorderSide.strokeAlignCenter,
+                      width: 6,
+                      color: colour,
+                    ),
+                    gradient: RadialGradient(
+                      center: AlignmentGeometry.topCenter,
+                      radius: 1.75,
+                      colors: [colour, colourVery],
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 15,
+                    children: [
+                      _buildName(),
+                      _buildDescription(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: 10,
+                        children: [_buildOwner(), _buildCreated()],
+                      ),
+                      ?_buildMembers(),
+                      const SizedBox(height: 5.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.link_rounded,
+                              size: 23,
+                              color: Colours.INK_UN,
+                            ),
+                            onPressed: () async {
+                              await Clipboard.setData(
+                                ClipboardData(text: details.id),
+                              );
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Copied the project code '),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          Center(
+                            child: buildMethodologyChip(details.methodology),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.remove_rounded,
+                              size: 23,
+                              color: Colours.INK_UN,
+                            ),
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => AcceptGradialog(
+                                icon: Icons.delete_sweep_rounded,
+                                message:
+                                    'This will permanently remove the project...',
+                                onAccept: delete,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => switch (details.methodology) {
-                    Methodology.Kanban => KanbanPage(details: details),
-                    Methodology.Scrum => ScrumPage(details: details),
-                  },
                 ),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => switch (details.methodology) {
+                        Methodology.Kanban => KanbanPage(details: details),
+                        Methodology.Scrum => ScrumPage(details: details),
+                      },
+                    ),
+                  );
+                },
               );
             },
           );

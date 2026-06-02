@@ -248,15 +248,19 @@ class AdvancedBlockController extends ChangeNotifier {
 
 /// project details controller
 class ProjectDetailsController extends ChangeNotifier {
-  final ProjectDetails _project;
+  ProjectDetails _project;
   ProjectDetails get project => _project;
+  set project(ProjectDetails x) {
+    _project = x;
+    nameController.text = x.name;
+    descriptionController.text = x.description ?? '';
+    notifyListeners();
+  }
 
   late final TextEditingController nameController;
   late final TextEditingController descriptionController;
-  late final TextEditingController ownerController;
   final FocusNode nameFocus = FocusNode();
   final FocusNode descriptionFocus = FocusNode();
-  final FocusNode ownerFocus = FocusNode();
   final Function()? onUnfocus;
 
   ProjectDetailsController(this._project, {this.onUnfocus}) {
@@ -268,17 +272,14 @@ class ProjectDetailsController extends ChangeNotifier {
   void dispose() {
     nameFocus.dispose();
     descriptionFocus.dispose();
-    ownerFocus.dispose();
     nameController.dispose();
     descriptionController.dispose();
-    ownerController.dispose();
     super.dispose();
   }
 
   void _initializeControllers() {
     nameController = TextEditingController(text: _project.name);
     descriptionController = TextEditingController(text: _project.description);
-    ownerController = TextEditingController(text: _project.owner);
   }
 
   void _setupFocusListeners() {
@@ -297,13 +298,6 @@ class ProjectDetailsController extends ChangeNotifier {
         notifyListeners();
       }
     });
-    ownerFocus.addListener(() {
-      if (!ownerFocus.hasFocus && ownerController.text != _project.owner) {
-        _project.owner = ownerController.text;
-        onUnfocus?.call();
-        notifyListeners();
-      }
-    });
   }
 
   void updateMethodology(Methodology methodology) {
@@ -315,6 +309,12 @@ class ProjectDetailsController extends ChangeNotifier {
   void updateCreated(DateTime created) {
     if (_project.created == created) return;
     _project.created = created;
+    notifyListeners();
+  }
+
+  void updateOwner(String owner) {
+    if (_project.owner == owner) return;
+    _project.owner = owner;
     notifyListeners();
   }
 
