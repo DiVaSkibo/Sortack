@@ -112,6 +112,41 @@ class AcceptGradialog extends StatelessWidget {
   }
 }
 
+class PickerGradialog<T> extends StatelessWidget {
+  final IconData? icon;
+  final String? title;
+  final Set<T> values;
+  final Widget Function(T) builder;
+
+  const PickerGradialog({
+    super.key,
+    this.icon,
+    this.title,
+    required this.values,
+    required this.builder,
+  });
+
+  Widget _buildValue(BuildContext context, T value) => TextButton(
+    onPressed: () => Navigator.of(context).pop(value),
+    child: builder(value),
+  );
+  @override
+  Widget build(BuildContext context) {
+    return Gradialog(
+      icon: icon,
+      title: title,
+      content: Wrap(
+        direction: Axis.vertical,
+        alignment: WrapAlignment.spaceEvenly,
+        runAlignment: WrapAlignment.spaceEvenly,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 7,
+        children: [for (final value in values) _buildValue(context, value)],
+      ),
+    );
+  }
+}
+
 /// colour gradialog widget - gradialog for colour picking
 class ColourGradialog extends StatelessWidget {
   const ColourGradialog({super.key});

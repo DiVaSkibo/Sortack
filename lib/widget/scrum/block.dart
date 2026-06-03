@@ -8,8 +8,10 @@ class ScrumRow extends StatefulWidget {
   final String deckId, plankId;
   final AdvancedBlock task;
   final int order;
+  final bool sprinting;
   final Map<String, UserProfile> members;
   final VoidCallback onDelete;
+  final List<AdvancedPlank> sprints;
 
   ScrumRow({
     Key? key,
@@ -17,9 +19,12 @@ class ScrumRow extends StatefulWidget {
     required this.plankId,
     required this.task,
     required this.order,
+    this.sprinting = false,
     Map<String, UserProfile>? members,
     required this.onDelete,
+    List<AdvancedPlank>? sprints,
   }) : members = members ?? {},
+       sprints = sprints ?? [],
        super(key: key ?? ObjectKey(task));
 
   @override
@@ -70,34 +75,88 @@ class _ScrumRowState extends State<ScrumRow> {
     }
   }
 
-  Widget _buildOrder() => Center(
-    child: enabled
-        ? TextButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AcceptGradialog(
-                icon: Icons.delete_sweep_rounded,
-                message: 'This will permanently remove the task...',
-                onAccept: () => delete(),
+  Widget _buildOrder() => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0),
+    child: Center(
+      child: enabled
+          ? PopupMenuButton<TaskOperations>(
+              tooltip: 'to operate',
+              itemBuilder: (context) => [
+                for (final opera in TaskOperations.values)
+                  if (opera == TaskOperations.delete ||
+                      opera == TaskOperations.sprint && !widget.sprinting ||
+                      opera == TaskOperations.unsprint && widget.sprinting)
+                    PopupMenuItem(
+                      height: 30.0,
+                      value: opera,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: 8,
+                        children: [Icon(opera.icon), Text(opera.label)],
+                      ),
+                    ),
+              ],
+              constraints: const BoxConstraints.tightFor(),
+              onSelected: (opera) {
+                switch (opera) {
+                  case TaskOperations.sprint:
+                    showDialog(
+                      context: context,
+                      builder: (context) => PickerGradialog<AdvancedPlank>(
+                        icon: Icons.rocket_launch_rounded,
+                        title: 'This task is ready to join the sprint...',
+                        values: widget.sprints.toSet(),
+                        builder: (value) => SizedBox(
+                          width: 250.0,
+                          height: 25.0,
+                          child: Center(
+                            child: Text(value.title, style: Styles.TEXT_INFO),
+                          ),
+                        ),
+                      ),
+                    ).then((result) {
+                      FireRources.saveBlock(widget.deckId, result.id, task, -1);
+                    });
+                  case TaskOperations.unsprint:
+                    showDialog(
+                      context: context,
+                      builder: (context) => AcceptGradialog(
+                        icon: Icons.rocket_rounded,
+                        message: 'This task is leaving the sprint...',
+                        onAccept: () {
+                          FireRources.saveBlock(widget.deckId, '', task, -1);
+                        },
+                      ),
+                    );
+                  case TaskOperations.delete:
+                    showDialog(
+                      context: context,
+                      builder: (context) => AcceptGradialog(
+                        icon: Icons.delete_sweep_rounded,
+                        message: 'This will permanently remove the task...',
+                        onAccept: delete,
+                      ),
+                    );
+                }
+              },
+              child: Text(
+                '${widget.order + 1}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontFamily: Fonts.RUBIK_MONO_ONE,
+                  color: Colours.INK_UN,
+                ),
               ),
-            ),
-            child: Text(
+            )
+          : Text(
               '${widget.order + 1}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontFamily: Fonts.RUBIK_MONO_ONE,
                 color: Colours.INK_UN,
               ),
             ),
-          )
-        : Text(
-            '${widget.order + 1}',
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: Fonts.RUBIK_MONO_ONE,
-              color: Colours.INK_UN,
-            ),
-          ),
+    ),
   );
   Widget _buildTitle() => enabled
       ? TextField(
@@ -432,10 +491,12 @@ class _ScrumRowState extends State<ScrumRow> {
               return Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  ReorderableDragStartListener(
-                    enabled: enabled,
-                    index: widget.order,
-                    child: Expanded(child: _buildOrder()),
+                  Expanded(
+                    child: ReorderableDragStartListener(
+                      enabled: enabled,
+                      index: widget.order,
+                      child: _buildOrder(),
+                    ),
                   ),
                   Expanded(flex: 3, child: Container(color: Colours.SHADOW)),
                   Expanded(flex: 4, child: Container(color: Colours.SHADOW)),
@@ -452,10 +513,12 @@ class _ScrumRowState extends State<ScrumRow> {
               return Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  ReorderableDragStartListener(
-                    enabled: enabled,
-                    index: widget.order,
-                    child: Expanded(child: _buildOrder()),
+                  Expanded(
+                    child: ReorderableDragStartListener(
+                      enabled: enabled,
+                      index: widget.order,
+                      child: _buildOrder(),
+                    ),
                   ),
                   Expanded(flex: 3, child: Container(color: Colours.BAD)),
                   Expanded(flex: 4, child: Container(color: Colours.BAD)),
@@ -472,10 +535,12 @@ class _ScrumRowState extends State<ScrumRow> {
               return Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  ReorderableDragStartListener(
-                    enabled: enabled,
-                    index: widget.order,
-                    child: Expanded(child: _buildOrder()),
+                  Expanded(
+                    child: ReorderableDragStartListener(
+                      enabled: enabled,
+                      index: widget.order,
+                      child: _buildOrder(),
+                    ),
                   ),
                   Expanded(flex: 3, child: const SizedBox.shrink()),
                   Expanded(flex: 4, child: const SizedBox.shrink()),
@@ -492,10 +557,12 @@ class _ScrumRowState extends State<ScrumRow> {
             return Row(
               mainAxisSize: MainAxisSize.max,
               children: [
-                ReorderableDragStartListener(
-                  enabled: enabled,
-                  index: widget.order,
-                  child: Expanded(child: _buildOrder()),
+                Expanded(
+                  child: ReorderableDragStartListener(
+                    enabled: enabled,
+                    index: widget.order,
+                    child: _buildOrder(),
+                  ),
                 ),
                 Expanded(flex: 3, child: _buildTitle()),
                 Expanded(flex: 4, child: _buildDescription()),

@@ -52,5 +52,5 @@ interface class MapDeck<T extends Plank, F extends Artefact> extends Deck<T> {
   @override
   List<T> get planks => (decks[selectedKey] as Deck<T>).planks;
   Deck<T> get deck => decks[selectedKey] as Deck<T>;
-  Deck<T> deckOf(String key) => decks[key] as Deck<T>;
+  Deck<T> deckOf(F key) => decks[key] as Deck<T>;
 }

@@ -282,6 +282,9 @@ class _ScrumPageState extends State<ScrumPage>
                             nextTables: board!.decks[entry.key.next]!,
                             members: membersProfiles,
                             artefact: entry.key,
+                            sprints: board!
+                                .deckOf(ScrumArtefact.sprintBacklog)
+                                .planks,
                           ),
                         )
                         .toList(),

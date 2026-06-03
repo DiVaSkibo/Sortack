@@ -9,6 +9,7 @@ class ScrumBoard extends StatefulWidget {
   final AdvancedDeck nextTables;
   final Map<String, UserProfile>? members;
   final ScrumArtefact artefact;
+  final List<AdvancedPlank>? sprints;
 
   const ScrumBoard({
     super.key,
@@ -17,6 +18,7 @@ class ScrumBoard extends StatefulWidget {
     required this.nextTables,
     this.members,
     required this.artefact,
+    this.sprints,
   });
 
   @override
@@ -111,7 +113,8 @@ class _ScrumBoardState extends State<ScrumBoard> {
                 ],
                 _ => null,
               },
-              constant: widget.artefact != ScrumArtefact.increments,
+              constant: widget.artefact == ScrumArtefact.increments,
+              sprinting: widget.artefact == ScrumArtefact.sprintBacklog,
               onDelete: widget.artefact != ScrumArtefact.productBacklog
                   ? () {
                       setState(() {
@@ -119,6 +122,7 @@ class _ScrumBoardState extends State<ScrumBoard> {
                       });
                     }
                   : null,
+              sprints: widget.sprints,
             ),
           ),
         ),

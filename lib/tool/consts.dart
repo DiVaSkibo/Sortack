@@ -156,39 +156,6 @@ enum Tag with Labeling {
   Color get colour => Colours.RAINBOW[index];
 }
 
-/// scrum artefact enum - scrum artefacts
-///
-/// [Product Backlog, Sprint Backlog, Increments]
-enum ScrumArtefact implements Artefact {
-  productBacklog,
-  sprintBacklog,
-  increments;
-
-  @override
-  String get label => switch (this) {
-    productBacklog => 'Product Backlog',
-    sprintBacklog => 'Sprint Backlog',
-    increments => 'Increments',
-  };
-  @override
-  IconData get icon => switch (this) {
-    productBacklog => Icons.all_inbox_rounded,
-    sprintBacklog => Icons.history_toggle_off_rounded,
-    increments => Icons.extension_rounded,
-  };
-  @override
-  Color get colour => switch (this) {
-    productBacklog => Colours.SHIFT,
-    sprintBacklog => Colours.DRIVE,
-    increments => Colours.ANCHOR,
-  };
-  ScrumArtefact get next => switch (this) {
-    productBacklog => sprintBacklog,
-    sprintBacklog => increments,
-    increments => sprintBacklog,
-  };
-}
-
 /// task parameter enum - parameter of a task class
 ///
 /// [id, title, description, deadline, status, priority, points, assignee, tags, notes]
@@ -256,10 +223,60 @@ enum TaskParameter implements Parameter {
   };
 }
 
+/// scrum artefact enum - scrum artefacts
+///
+/// [Product Backlog, Sprint Backlog, Increments]
+enum ScrumArtefact implements Artefact {
+  productBacklog,
+  sprintBacklog,
+  increments;
+
+  @override
+  String get label => switch (this) {
+    productBacklog => 'Product Backlog',
+    sprintBacklog => 'Sprint Backlog',
+    increments => 'Increments',
+  };
+  @override
+  IconData get icon => switch (this) {
+    productBacklog => Icons.all_inbox_rounded,
+    sprintBacklog => Icons.history_toggle_off_rounded,
+    increments => Icons.extension_rounded,
+  };
+  @override
+  Color get colour => switch (this) {
+    productBacklog => Colours.SHIFT,
+    sprintBacklog => Colours.DRIVE,
+    increments => Colours.ANCHOR,
+  };
+  ScrumArtefact get next => switch (this) {
+    productBacklog => sprintBacklog,
+    sprintBacklog => increments,
+    increments => sprintBacklog,
+  };
+}
+
 /// drawers enum
 ///
 /// [help, info, control, filter]
 enum Drawers { help, info, control, filter }
+
+/// task operations
+///
+/// [sprint, delete]
+enum TaskOperations with Labeling {
+  sprint,
+  unsprint,
+  delete;
+
+  @override
+  String get label => name;
+  IconData get icon => switch (this) {
+    sprint => Icons.rocket_launch_rounded,
+    unsprint => Icons.rocket_rounded,
+    delete => Icons.delete_forever_rounded,
+  };
+}
 
 /// random avatar
 String randAvatar() =>

@@ -11,7 +11,9 @@ class ScrumTable extends StatefulWidget {
   final Map<String, UserProfile>? members;
   final List<Iction>? ictions;
   final bool constant;
+  final bool sprinting;
   final VoidCallback? onDelete;
+  final List<AdvancedPlank>? sprints;
 
   ScrumTable({
     Key? key,
@@ -21,7 +23,9 @@ class ScrumTable extends StatefulWidget {
     this.members,
     this.ictions,
     this.constant = false,
+    this.sprinting = false,
     this.onDelete,
+    this.sprints,
   }) : super(key: key ?? ObjectKey(tasks));
 
   @override
@@ -314,7 +318,7 @@ class _ScrumTableState extends State<ScrumTable> {
                         ),
                       ),
                     ),
-                if (widget.constant)
+                if (!widget.constant)
                   IconButton(
                     icon: Icon(
                       Icons.playlist_remove_rounded,
@@ -485,7 +489,7 @@ class _ScrumTableState extends State<ScrumTable> {
                       ),
                     ),
                   ),
-              if (widget.constant)
+              if (!widget.constant)
                 IconButton(
                   icon: Icon(
                     Icons.playlist_remove_rounded,
@@ -578,12 +582,14 @@ class _ScrumTableState extends State<ScrumTable> {
                         plankId: tasks.id,
                         task: visibleTasks[index],
                         order: index,
+                        sprinting: widget.sprinting,
                         members: widget.members,
                         onDelete: () {
                           setState(() {
                             tasks.pop(visibleTasks[index]);
                           });
                         },
+                        sprints: widget.sprints,
                       ),
                       onReorder: (oldIndex, newIndex) async {
                         if (newIndex > oldIndex) newIndex -= 1;

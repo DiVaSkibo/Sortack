@@ -116,6 +116,7 @@ final class FireRources {
       planksMap = <String, AdvancedPlank>{};
     else
       planksMap = <String, Plank>{};
+    String? firstId;
     for (var doc in planksSnapshot.docs) {
       final plank;
       if (T == AdvancedMapDeck<F>)
@@ -127,6 +128,7 @@ final class FireRources {
         (x) => x.label == data['key'] as String,
         orElse: () => keys.first,
       );
+      if (key == keys.first) firstId = doc.id;
       planksMap[doc.id] = plank;
       if (!planks.containsKey(key)) {
         if (T == AdvancedMapDeck<F>)
@@ -148,6 +150,8 @@ final class FireRources {
       final plankId = data['plankId'] as String?;
       if (plankId != null && planksMap.containsKey(plankId))
         planksMap[plankId]!.blocks.add(block);
+      else if (firstId != null && planksMap.containsKey(firstId))
+        planksMap[firstId]!.blocks.add(block);
     }
 
     // map deck decks
