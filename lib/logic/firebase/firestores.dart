@@ -6,7 +6,7 @@ import 'package:sortack/logic/firebase/authentications.dart';
 import 'package:sortack/logic/opjects.dart';
 import 'package:sortack/logic/_tasks.dart';
 
-/// firestore resources - get, load, save, update, delete, stream and other resources
+/// firestore resources - get, load, stream, save, update, delete and other resources
 final class FireRources {
   static CollectionReference<Document> get _users =>
       FirebaseFirestore.instance.collection('users');
@@ -234,6 +234,51 @@ final class FireRources {
     return docToBlock<T>(doc, docsnap.id) as T;
   }
 
+  // STREAMs
+  /// stream user decks count
+  static Stream<List<String>> streamUserDecks(User user) {
+    final userDecks = getUserDecks(user).snapshots();
+    return userDecks
+        .map((querySnapshot) {
+          return querySnapshot.docs.map((doc) => doc.id).toList();
+        })
+        .distinct(
+          (previous, next) => const ListEquality().equals(previous, next),
+        );
+  }
+
+  /// stream project details resource by deck, self id
+  static Stream<ProjectDetails> streamProjectDetails(String id) {
+    final detailsRef = _decks.doc(id);
+    return detailsRef.snapshots().map((docSnapshot) {
+      if (!docSnapshot.exists || docSnapshot.data() == null)
+        throw Exception(
+          '? ERROR: on project details stream; project details does not exist...',
+        );
+      return loadProjectDetailsDoc(docSnapshot);
+    });
+  }
+
+  /// stream plank resource by deck, self id
+  static Stream<T> streamPlank<T extends Plank>(String deckId, String id) {
+    final plankRef = getPlanks(deckId).doc(id);
+    return plankRef.snapshots().map((docSnapshot) {
+      if (!docSnapshot.exists || docSnapshot.data() == null)
+        throw Exception('? ERROR: on plank stream; plank does not exist...');
+      return loadPlank<T>(docSnapshot);
+    });
+  }
+
+  /// stream block resource by deck, self id
+  static Stream<T> streamBlock<T extends Block>(String deckId, String id) {
+    final blockRef = getBlocks(deckId).doc(id);
+    return blockRef.snapshots().map((docSnapshot) {
+      if (!docSnapshot.exists || docSnapshot.data() == null)
+        throw Exception('? ERROR: on block stream; block does not exist...');
+      return loadBlock<T>(docSnapshot);
+    });
+  }
+
   // SAVEs
   /// save user profile resource
   static Future<void> saveUserProfile(UserProfile user) async {
@@ -369,51 +414,6 @@ final class FireRources {
       debugPrint('? ERROR: deleting block; $exc');
       rethrow;
     }
-  }
-
-  // STREAMs
-  /// stream user decks count
-  static Stream<List<String>> streamUserDecks(User user) {
-    final userDecks = getUserDecks(user).snapshots();
-    return userDecks
-        .map((querySnapshot) {
-          return querySnapshot.docs.map((doc) => doc.id).toList();
-        })
-        .distinct(
-          (previous, next) => const ListEquality().equals(previous, next),
-        );
-  }
-
-  /// stream project details resource by deck, self id
-  static Stream<ProjectDetails> streamProjectDetails(String id) {
-    final detailsRef = _decks.doc(id);
-    return detailsRef.snapshots().map((docSnapshot) {
-      if (!docSnapshot.exists || docSnapshot.data() == null)
-        throw Exception(
-          '? ERROR: on project details stream; project details does not exist...',
-        );
-      return loadProjectDetailsDoc(docSnapshot);
-    });
-  }
-
-  /// stream plank resource by deck, self id
-  static Stream<T> streamPlank<T extends Plank>(String deckId, String id) {
-    final plankRef = getPlanks(deckId).doc(id);
-    return plankRef.snapshots().map((docSnapshot) {
-      if (!docSnapshot.exists || docSnapshot.data() == null)
-        throw Exception('? ERROR: on plank stream; plank does not exist...');
-      return loadPlank<T>(docSnapshot);
-    });
-  }
-
-  /// stream block resource by deck, self id
-  static Stream<T> streamBlock<T extends Block>(String deckId, String id) {
-    final blockRef = getBlocks(deckId).doc(id);
-    return blockRef.snapshots().map((docSnapshot) {
-      if (!docSnapshot.exists || docSnapshot.data() == null)
-        throw Exception('? ERROR: on block stream; block does not exist...');
-      return loadBlock<T>(docSnapshot);
-    });
   }
 
   // OTHERs

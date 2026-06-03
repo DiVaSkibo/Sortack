@@ -12,6 +12,7 @@ class KanbanPage extends StatefulWidget {
 }
 
 class _KanbanPageState extends State<KanbanPage> {
+  late ProjectDetails details = widget.details;
   late final Deck? board;
   Map<String, UserProfile> membersProfiles = {};
   bool _isLoading = true;
@@ -29,13 +30,11 @@ class _KanbanPageState extends State<KanbanPage> {
   Future<void> _loadData() async {
     try {
       // board data
-      final Deck loadedDeck = await FireRources.loadDeck<Deck>(
-        widget.details.id,
-      );
+      final Deck loadedDeck = await FireRources.loadDeck<Deck>(details.id);
       board = loadedDeck;
       // profiles data
       Map<String, UserProfile> loadedProfiles = {};
-      for (String uid in widget.details.members) {
+      for (String uid in details.members) {
         final profile = await FireRources.loadUserProfile(uid);
         if (profile != null) loadedProfiles[uid] = profile;
       }
@@ -50,9 +49,26 @@ class _KanbanPageState extends State<KanbanPage> {
     }
   }
 
+  Future<void> _loadProfiles() async {
+    try {
+      // profiles data
+      Map<String, UserProfile> loadedProfiles = {};
+      for (final uid in details.members) {
+        final profile = await FireRources.loadUserProfile(uid);
+        if (profile != null) loadedProfiles[uid] = profile;
+      }
+      if (!mounted) return;
+      setState(() {
+        membersProfiles = loadedProfiles;
+      });
+    } catch (exc) {
+      debugPrint('! ERROR: on loading profiles; $exc');
+    }
+  }
+
   void addTaskList() async {
     // generate
-    final docRef = FireRources.getPlanks(widget.details.id).doc();
+    final docRef = FireRources.getPlanks(details.id).doc();
     final newTaskList = Plank(id: docRef.id);
     // display
     setState(() {
@@ -60,11 +76,7 @@ class _KanbanPageState extends State<KanbanPage> {
     });
     // fire
     try {
-      await FireRources.savePlank(
-        widget.details.id,
-        newTaskList,
-        board!.length - 1,
-      );
+      await FireRources.savePlank(details.id, newTaskList, board!.length - 1);
     } catch (exc) {
       debugPrint('! ERROR: on creating new tasklist; $exc');
     }
@@ -72,7 +84,7 @@ class _KanbanPageState extends State<KanbanPage> {
 
   void addTask() async {
     // generate
-    final docRef = FireRources.getBlocks(widget.details.id).doc();
+    final docRef = FireRources.getBlocks(details.id).doc();
     final newTask = Block(id: docRef.id);
     // check if no tasklists
     if (board!.isEmpty) addTaskList();
@@ -83,7 +95,7 @@ class _KanbanPageState extends State<KanbanPage> {
     // fire
     try {
       await FireRources.saveBlock(
-        widget.details.id,
+        details.id,
         board!.first.id,
         newTask,
         board!.first.length - 1,
@@ -95,121 +107,142 @@ class _KanbanPageState extends State<KanbanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _isLoading
-          ? const Overground.loading()
-          : Overground(
-              icon: Icons.view_kanban_rounded,
-              title: widget.details.name,
-              iconColor: Colours.VERY_HIGH,
-              actions: [
-                IconButton(
-                  onPressed: () => addTaskList(),
-                  icon: const Icon(
-                    Icons.add_box_outlined,
-                    color: Colours.DRIVE_UN,
-                  ),
-                ),
-                PopupMenuButton<TaskParameter>(
-                  tooltip: 'sort',
-                  initialValue: _buf['sort'],
-                  icon: const Icon(Icons.sort_rounded),
-                  itemBuilder: (context) => Block.sortableParameters
-                      .map(
-                        (value) => PopupMenuItem(
-                          value: value,
-                          child: Icon(value.icon),
+    return StreamBuilder<ProjectDetails>(
+      stream: FireRources.streamProjectDetails(details.id),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          details = snapshot.data!;
+          final hasMissingProfiles = details.members.any(
+            (uid) => !membersProfiles.containsKey(uid),
+          );
+          if (hasMissingProfiles) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _loadProfiles();
+            });
+          }
+        }
+        return Scaffold(
+          appBar: _isLoading
+              ? const Overground.loading()
+              : Overground(
+                  icon: Icons.view_kanban_rounded,
+                  title: details.name,
+                  iconColor: Colours.VERY_HIGH,
+                  actions: [
+                    IconButton(
+                      onPressed: () => addTaskList(),
+                      icon: const Icon(
+                        Icons.add_box_outlined,
+                        color: Colours.DRIVE_UN,
+                      ),
+                    ),
+                    PopupMenuButton<TaskParameter>(
+                      tooltip: 'sort',
+                      initialValue: _buf['sort'],
+                      icon: const Icon(Icons.sort_rounded),
+                      itemBuilder: (context) => Block.sortableParameters
+                          .map(
+                            (value) => PopupMenuItem(
+                              value: value,
+                              child: Icon(value.icon),
+                            ),
+                          )
+                          .toList(),
+                      onSelected: (TaskParameter value) {
+                        setState(() {
+                          _buf['sort'] = value;
+                          board!.sort(by: value);
+                        });
+                      },
+                    ),
+                    Builder(
+                      builder: (context) => IconButton(
+                        onPressed: () => _switchDrawersController.show(
+                          context,
+                          Drawers.filter,
                         ),
-                      )
-                      .toList(),
-                  onSelected: (TaskParameter value) {
-                    setState(() {
-                      _buf['sort'] = value;
-                      board!.sort(by: value);
-                    });
+                        icon: const Icon(
+                          Icons.filter_alt_outlined,
+                        ), //filter_list_rounded
+                      ),
+                    ),
+                    Builder(
+                      builder: (context) => IconButton(
+                        onPressed: () => _switchDrawersController.show(
+                          context,
+                          Drawers.help,
+                        ),
+                        icon: const Icon(
+                          Icons.help_rounded,
+                          color: Colours.ANCHOR_UN,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(
+                        Icons.exit_to_app_rounded,
+                        color: Colours.INK_UN,
+                      ),
+                    ),
+                  ],
+                  onRender: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KanbanPage(details: details),
+                      ),
+                    );
                   },
                 ),
-                Builder(
-                  builder: (context) => IconButton(
-                    onPressed: () =>
-                        _switchDrawersController.show(context, Drawers.filter),
-                    icon: const Icon(
-                      Icons.filter_alt_outlined,
-                    ), //filter_list_rounded
+          endDrawer: ValueListenableBuilder(
+            valueListenable: _switchDrawersController,
+            builder: (context, drawer, child) => switch (drawer) {
+              Drawers.help => const HelpDrawer(
+                label: 'Kanban',
+                asset: 'assets/help/Kanban-board.png',
+              ),
+              Drawers.filter => TaskFilterDrawer(
+                initialFilter: board!.filterCriterias,
+                parameters: Block.filterableParameters,
+                assignee: membersProfiles.values.toList(),
+                onChanged: (filter) => setState(() {
+                  board!.filter(filter);
+                }),
+              ),
+              _ => Drawer(),
+            },
+          ),
+          body: Ground(
+            over: true,
+            child: _isLoading
+                ? Center(child: buildLoading())
+                : (board == null || board!.planks.isEmpty)
+                ? Center(child: buildEasterEgg())
+                : KanbanBoard(
+                    id: details.id,
+                    columns: board!,
+                    members: membersProfiles,
                   ),
-                ),
-                Builder(
-                  builder: (context) => IconButton(
-                    onPressed: () =>
-                        _switchDrawersController.show(context, Drawers.help),
-                    icon: const Icon(
-                      Icons.help_rounded,
-                      color: Colours.ANCHOR_UN,
+          ),
+          floatingActionButton: _isLoading || board == null
+              ? null
+              : FloatingActionButton(
+                  heroTag: 'btnAddTask',
+                  child: Icon(
+                    Icons.add_task_rounded,
+                    shadows: List.generate(
+                      30,
+                      (index) =>
+                          const Shadow(blurRadius: 1.15, color: Colours.O),
                     ),
                   ),
+                  onPressed: () => addTask(),
                 ),
-                IconButton(
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(
-                    Icons.exit_to_app_rounded,
-                    color: Colours.INK_UN,
-                  ),
-                ),
-              ],
-              onRender: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => KanbanPage(details: widget.details),
-                  ),
-                );
-              },
-            ),
-      endDrawer: ValueListenableBuilder(
-        valueListenable: _switchDrawersController,
-        builder: (context, drawer, child) => switch (drawer) {
-          Drawers.help => const HelpDrawer(
-            label: 'Kanban',
-            asset: 'assets/help/Kanban-board.png',
-          ),
-          Drawers.filter => TaskFilterDrawer(
-            initialFilter: board!.filterCriterias,
-            parameters: Block.filterableParameters,
-            assignee: membersProfiles.values.toList(),
-            onChanged: (filter) => setState(() {
-              board!.filter(filter);
-            }),
-          ),
-          _ => Drawer(),
-        },
-      ),
-      body: Ground(
-        over: true,
-        child: _isLoading
-            ? Center(child: buildLoading())
-            : (board == null || board!.planks.isEmpty)
-            ? Center(child: buildEasterEgg())
-            : KanbanBoard(
-                id: widget.details.id,
-                columns: board!,
-                members: membersProfiles,
-              ),
-      ),
-      floatingActionButton: _isLoading || board == null
-          ? null
-          : FloatingActionButton(
-              heroTag: 'btnAddTask',
-              child: Icon(
-                Icons.add_task_rounded,
-                shadows: List.generate(
-                  30,
-                  (index) => const Shadow(blurRadius: 1.15, color: Colours.O),
-                ),
-              ),
-              onPressed: () => addTask(),
-            ),
+        );
+      },
     );
   }
 }
