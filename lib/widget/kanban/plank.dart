@@ -96,38 +96,6 @@ final class KanbanColumn {
       header: StreamBuilder<Plank>(
         stream: FireRources.streamPlank<Plank>(deckId, tasks.id),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting)
-            return const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Center(
-                child: Text(
-                  'waiting...',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: Fonts.RUBIK,
-                    fontWeight: FontWeight.w500,
-                    fontStyle: FontStyle.italic,
-                    color: Colours.INK_AC,
-                  ),
-                ),
-              ),
-            );
-          if (snapshot.hasError)
-            return const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Center(
-                child: Text(
-                  'has error!',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: Fonts.RUBIK,
-                    fontWeight: FontWeight.w700,
-                    fontStyle: FontStyle.italic,
-                    color: Colours.BAD,
-                  ),
-                ),
-              ),
-            );
           if (snapshot.hasData) {
             tasks.title = snapshot.data!.title;
             tasks.color = snapshot.data!.color;

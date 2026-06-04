@@ -58,27 +58,29 @@ class _MenuPageState extends State<MenuPage> {
                 );
               },
             ),
-      body: Ground(
-        scrollable: true,
-        over: true,
-        child: StreamBuilder<List<String>>(
-          stream: FireRources.streamUserDecks(currentUser),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return Center(child: buildLoading());
-            return Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.start,
-              spacing: 50,
-              runSpacing: 50,
-              children: [
-                for (final id in snapshot.data!)
-                  ProjectCard(key: ValueKey(id), id: id),
-              ],
-            );
-          },
-        ),
-      ),
+      body: _isLoading
+          ? Center(child: buildLoading())
+          : Ground(
+              scrollable: true,
+              over: true,
+              child: StreamBuilder<List<String>>(
+                stream: FireRources.streamUserDecks(currentUser),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return Center(child: buildEasterEgg());
+                  return Wrap(
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.start,
+                    spacing: 50,
+                    runSpacing: 50,
+                    children: [
+                      for (final id in snapshot.data!)
+                        ProjectCard(key: ValueKey(id), id: id),
+                    ],
+                  );
+                },
+              ),
+            ),
       floatingActionButton: Wrap(
         spacing: 20,
         runSpacing: 20,

@@ -487,73 +487,9 @@ class _ScrumRowState extends State<ScrumRow> {
             task.id,
           ),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting)
-              return Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: ReorderableDragStartListener(
-                      enabled: enabled,
-                      index: widget.order,
-                      child: _buildOrder(),
-                    ),
-                  ),
-                  Expanded(flex: 3, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 4, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 2, child: Container(color: Colours.SHADOW)),
-                  Expanded(flex: 3, child: Container(color: Colours.SHADOW)),
-                ],
-              );
-            if (snapshot.hasError)
-              return Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: ReorderableDragStartListener(
-                      enabled: enabled,
-                      index: widget.order,
-                      child: _buildOrder(),
-                    ),
-                  ),
-                  Expanded(flex: 3, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 4, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 2, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 2, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 2, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 2, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 2, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 2, child: Container(color: Colours.BAD)),
-                  Expanded(flex: 3, child: Container(color: Colours.BAD)),
-                ],
-              );
-            if (!snapshot.hasData)
-              return Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: ReorderableDragStartListener(
-                      enabled: enabled,
-                      index: widget.order,
-                      child: _buildOrder(),
-                    ),
-                  ),
-                  Expanded(flex: 3, child: const SizedBox.shrink()),
-                  Expanded(flex: 4, child: const SizedBox.shrink()),
-                  Expanded(flex: 2, child: const SizedBox.shrink()),
-                  Expanded(flex: 2, child: const SizedBox.shrink()),
-                  Expanded(flex: 2, child: const SizedBox.shrink()),
-                  Expanded(flex: 2, child: const SizedBox.shrink()),
-                  Expanded(flex: 2, child: const SizedBox.shrink()),
-                  Expanded(flex: 2, child: const SizedBox.shrink()),
-                  Expanded(flex: 3, child: const SizedBox.shrink()),
-                ],
-              );
-            task = snapshot.data!;
+            if (snapshot.hasData) {
+              task = snapshot.data!;
+            }
             return Row(
               mainAxisSize: MainAxisSize.max,
               children: [
