@@ -323,7 +323,13 @@ class ProfileAvatar extends StatelessWidget {
           avatar: randAvatar(),
         ),
       );
-    if (kIsWeb) {
+    if (profile.avatar.startsWith('assets/avatar/AVATAR_')) {
+      return CircleAvatar(
+        radius: radius,
+        backgroundImage: AssetImage(profile.avatar),
+        backgroundColor: Colours.CANVAS_UN,
+      );
+    } else if (kIsWeb) {
       final String viewId = 'avatar-image-${profile.avatar.hashCode}';
       ui_web.platformViewRegistry.registerViewFactory(viewId, (int viewId) {
         final web.HTMLImageElement img = web.HTMLImageElement()
