@@ -621,13 +621,6 @@ class _AuthViewState extends State<AuthView> {
                 debugPrint(
                   '! ERROR: on joining it; sign in/up user; user is empty...',
                 );
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colours.BAD,
-                  content: Text('User is empty...'),
-                ),
-              );
             } catch (exc) {
               debugPrint('! ERROR: on joining it; sign in/up user; $exc...');
               // ignore: use_build_context_synchronously

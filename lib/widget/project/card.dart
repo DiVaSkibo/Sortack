@@ -237,18 +237,6 @@ class _ProjectCardState extends State<ProjectCard> {
                 colors: [Colours.F, Colours.INK_AC],
               ),
             ),
-            child: const Center(
-              child: Text(
-                'waiting...',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: Fonts.RUBIK,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.italic,
-                  color: Colours.O,
-                ),
-              ),
-            ),
           )
         : StreamBuilder<ProjectDetails>(
             stream: FireRources.streamProjectDetails(widget.id),

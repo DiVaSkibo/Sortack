@@ -30,17 +30,3 @@ interface class Plank<T extends Block> extends Collector<T>
     blocks.sort((a, b) => a.compareTo(b, by));
   }
 }
-
-// /// task plank interface class
-// interface class TitledPlank extends Plank {
-//   String title;
-//   Color color;
-
-//   TitledPlank({
-//     required super.id,
-//     this.title = '',
-//     this.color = Colours.ANCHOR,
-//     super.blocks,
-//     super.listenable,
-//   });
-// }

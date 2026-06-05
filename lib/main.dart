@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import '_tools.dart';
+import 'firebase_options.dart';
 import 'root.dart';
 
 void main() async {
@@ -24,9 +24,9 @@ class MyApp extends StatelessWidget {
         visualDensity: const VisualDensity(horizontal: -4.0, vertical: -4.0),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: Colours.DRIVE,
-          selectionColor: Colours.DRIVE_UN,
-          selectionHandleColor: Colours.DRIVE_AC,
+          cursorColor: Colours.SHADOW,
+          selectionColor: Colours.GLOSS,
+          selectionHandleColor: Colours.GLOSS,
         ),
         colorScheme: const ColorScheme.dark(
           brightness: Brightness.dark,
@@ -96,8 +96,8 @@ class MyApp extends StatelessWidget {
           strokeCap: StrokeCap.round,
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
           stopIndicatorRadius: 40.0,
-          color: Colours.SHIFT,
-          stopIndicatorColor: Colours.DRIVE,
+          color: Colours.INK_AC,
+          stopIndicatorColor: Colours.OK,
           linearTrackColor: Colours.CANVAS_AC,
           circularTrackColor: Colours.CANVAS_AC,
           refreshBackgroundColor: Colours.CANVAS_AC,
@@ -256,7 +256,7 @@ class MyApp extends StatelessWidget {
           color: Colours.CANVAS_AC,
           surfaceTintColor: Colours.a,
           shadowColor: Colours.a,
-          iconColor: Colours.SHIFT,
+          iconColor: Colours.DRIVE,
           iconSize: 20,
           textStyle: TextStyle(color: Colours.WARNING),
           labelTextStyle: WidgetStatePropertyAll(
