@@ -475,43 +475,41 @@ class _ScrumRowState extends State<ScrumRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(width: 2, color: Colours.GLOSS)),
-        color: Colours.CANVAS,
-      ),
-      child: IntrinsicHeight(
-        child: StreamBuilder<AdvancedBlock>(
-          stream: FireRources.streamBlock<AdvancedBlock>(
-            widget.deckId,
-            task.id,
+    return ReorderableDragStartListener(
+      enabled: enabled,
+      index: widget.order,
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(width: 2, color: Colours.GLOSS)),
+          color: Colours.CANVAS,
+        ),
+        child: IntrinsicHeight(
+          child: StreamBuilder<AdvancedBlock>(
+            stream: FireRources.streamBlock<AdvancedBlock>(
+              widget.deckId,
+              task.id,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                task = snapshot.data!;
+              }
+              return Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(child: _buildOrder()),
+                  Expanded(flex: 3, child: _buildTitle()),
+                  Expanded(flex: 4, child: _buildDescription()),
+                  Expanded(flex: 3, child: _buildDeadline()),
+                  Expanded(flex: 2, child: _buildStatus()),
+                  Expanded(flex: 2, child: _buildPriority()),
+                  Expanded(flex: 2, child: _buildPoints()),
+                  Expanded(flex: 3, child: _buildAssignee()),
+                  Expanded(flex: 3, child: _buildTags()),
+                  Expanded(flex: 4, child: _buildNotes()),
+                ],
+              );
+            },
           ),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              task = snapshot.data!;
-            }
-            return Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: ReorderableDragStartListener(
-                    enabled: enabled,
-                    index: widget.order,
-                    child: _buildOrder(),
-                  ),
-                ),
-                Expanded(flex: 3, child: _buildTitle()),
-                Expanded(flex: 4, child: _buildDescription()),
-                Expanded(flex: 2, child: _buildDeadline()),
-                Expanded(flex: 2, child: _buildStatus()),
-                Expanded(flex: 2, child: _buildPriority()),
-                Expanded(flex: 2, child: _buildPoints()),
-                Expanded(flex: 2, child: _buildAssignee()),
-                Expanded(flex: 2, child: _buildTags()),
-                Expanded(flex: 3, child: _buildNotes()),
-              ],
-            );
-          },
         ),
       ),
     );
