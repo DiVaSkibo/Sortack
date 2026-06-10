@@ -90,7 +90,12 @@ class _ProjectCardState extends State<ProjectCard> {
 
   void delete() async {
     try {
-      await FireRources.deleteDeck(details.id);
+      final uid = AuthHandler.cuid;
+      if (uid == null) throw Exception('user is empty...');
+      if (uid == details.owner)
+        await FireRources.deleteDeck(details.id);
+      else
+        FireRources.leaveProject(details.id, uid);
     } catch (exc) {
       debugPrint('! ERROR: on deleting project; $exc');
     }

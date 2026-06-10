@@ -427,12 +427,28 @@ final class FireRources {
     try {
       final docSnapshot = await deckRef.get();
       if (!docSnapshot.exists)
-        throw Exception('ERROR: project "$deckId" does not exist');
+        throw Exception('project "$deckId" does not exist...');
       await deckRef.update({
         'members': FieldValue.arrayUnion([uid]),
       });
     } catch (exc) {
       debugPrint('! ERROR: joining user into the project; $exc');
+      rethrow;
+    }
+  }
+
+  /// leave user the project
+  static Future<void> leaveProject(String deckId, String uid) async {
+    final deckRef = _decks.doc(deckId);
+    try {
+      final docSnapshot = await deckRef.get();
+      if (!docSnapshot.exists)
+        throw Exception('project "$deckId" does not exist...');
+      await deckRef.update({
+        'members': FieldValue.arrayRemove([uid]),
+      });
+    } catch (exc) {
+      debugPrint('! ERROR: leaving user the project; $exc');
       rethrow;
     }
   }

@@ -105,7 +105,7 @@ class _ScrumRowState extends State<ScrumRow> {
                       builder: (context) => PickerGradialog<AdvancedPlank>(
                         icon: Icons.rocket_launch_rounded,
                         title: 'This task is ready to join the sprint...',
-                        values: widget.sprints.toSet(),
+                        values: widget.sprints.reversed.toSet(),
                         builder: (value) => SizedBox(
                           width: 250.0,
                           height: 25.0,

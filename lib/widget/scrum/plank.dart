@@ -81,14 +81,17 @@ class _ScrumTableState extends State<ScrumTable> {
 
   void clean() async {
     var tasksIds = tasks.blocks.map((block) => block.id).toList();
+    if (widget.sprinting)
+      for (final block in tasks.blocks)
+        await FireRources.saveBlock(widget.deckId, '', block, -1);
     // display
     setState(() {
       tasks.clear();
     });
     // fire
-    for (final taskId in tasksIds) {
-      await FireRources.deleteBlock(widget.deckId, taskId);
-    }
+    if (!widget.sprinting)
+      for (final taskId in tasksIds)
+        await FireRources.deleteBlock(widget.deckId, taskId);
   }
 
   void delete() async {
@@ -225,7 +228,7 @@ class _ScrumTableState extends State<ScrumTable> {
                     context: context,
                     builder: (context) => AcceptGradialog(
                       message: 'This will empty the table completely...',
-                      onAccept: () => clean(),
+                      onAccept: clean,
                       icon: Icons.playlist_remove_rounded,
                     ),
                   ),

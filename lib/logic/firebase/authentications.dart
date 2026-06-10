@@ -11,6 +11,7 @@ class AuthHandler {
     clientId:
         '441522416299-dauq6s84p2n594rv019di2lqpmfl15qb.apps.googleusercontent.com',
   );
+  static String? get cuid => FirebaseAuth.instance.currentUser?.uid;
 
   AuthHandler._();
 

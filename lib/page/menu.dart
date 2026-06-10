@@ -20,7 +20,7 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _loadProfile() async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final uid = AuthHandler.cuid;
     if (uid != null) {
       final loadedProfile = await FireRources.loadUserProfile(uid);
       setState(() {
