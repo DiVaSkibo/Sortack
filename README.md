@@ -8,7 +8,7 @@
 > Sortack designed to help teams plan, track, and manage their work efficiently. It offers a centralized platform for organizing tasks, bugs, and projects, supporting various methodologies like Scrum and Kanban through features  such as agile projects, backlogs, and reports.
 
 
-## tools
+## used tools
 
 * Dart + Flutter
 * Firebase
